@@ -1,3 +1,19 @@
+@font-face {
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 400;
+  src: url("assets/fonts/NanumSquareR.woff") format("woff");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "NanumSquare";
+  font-style: normal;
+  font-weight: 700;
+  src: url("assets/fonts/NanumSquareB.woff") format("woff");
+  font-display: swap;
+}
+
 :root {
   color-scheme: light;
   --ink: #191919;
@@ -5,7 +21,7 @@
   --surface: #f7f7f7;
   --accent: #3182f6;
   --line: #e8e8e8;
-  font-family: Arial, "Apple SD Gothic Neo", sans-serif;
+  font-family: "NanumSquare", Arial, "Apple SD Gothic Neo", sans-serif;
   font-size: 16px;
 }
 
@@ -38,6 +54,7 @@ h3 { font-size: 1.2rem; }
 .intro { color: var(--muted); font-size: clamp(1rem, 2vw, 1.25rem); margin: 32px 0; }
 .primary-link { color: var(--accent); font-weight: 700; text-decoration: none; }
 .content-section { border-top: 1px solid var(--line); padding: 96px 0; }
+.section-intro { color: var(--muted); margin: 24px 0 0; }
 .contact-copy { color: var(--muted); margin: 32px 0 12px; }
 .experience-card { align-items: flex-start; border-bottom: 1px solid var(--line); display: flex; gap: 32px; justify-content: space-between; padding: 28px 0; }
 .experience-card p { margin: 8px 0 0; }
@@ -62,6 +79,11 @@ h3 { font-size: 1.2rem; }
 .dodge-pad { display: flex; gap: 12px; }
 .dodge-pad .direction-button { height: 52px; width: 72px; }
 .game-help { font-size: .78rem; margin: 0; text-align: center; }
+.sample-grid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 40px; }
+.sample-card { border: 1px solid var(--line); border-radius: 20px; padding: 28px; }
+.sample-card h3 { margin-top: 12px; }
+.sample-card p { margin-bottom: 0; }
+.sample-type { color: var(--accent); font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
 .site-footer { color: var(--muted); margin: 0 auto; max-width: 1120px; padding: 32px; }
 .site-footer p { margin: 0; }
 
@@ -73,6 +95,7 @@ h3 { font-size: 1.2rem; }
   .hero { min-height: 520px; padding: 104px 0 72px; }
   .content-section { padding: 72px 0; }
   .experience-card { display: block; }
+  .sample-grid { grid-template-columns: 1fr; }
   .game-shell { padding: 24px 16px; }
   .game-toolbar { display: block; }
   .scoreboard { margin-top: 12px; }
