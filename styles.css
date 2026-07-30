@@ -24,7 +24,7 @@ a:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
   padding: 24px 32px;
 }
 .brand { font-size: 1.2rem; font-weight: 800; text-decoration: none; }
-nav { display: flex; gap: 24px; }
+nav { display: flex; flex-wrap: wrap; gap: 24px; justify-content: flex-end; }
 nav a { color: var(--muted); font-size: .9rem; text-decoration: none; }
 nav a:hover { color: var(--ink); }
 
@@ -38,12 +38,32 @@ h3 { font-size: 1.2rem; }
 .intro { color: var(--muted); font-size: clamp(1rem, 2vw, 1.25rem); margin: 32px 0; }
 .primary-link { color: var(--accent); font-weight: 700; text-decoration: none; }
 .content-section { border-top: 1px solid var(--line); padding: 96px 0; }
+.contact-copy { color: var(--muted); margin: 32px 0 12px; }
 .experience-card { align-items: flex-start; border-bottom: 1px solid var(--line); display: flex; gap: 32px; justify-content: space-between; padding: 28px 0; }
 .experience-card p { margin: 8px 0 0; }
 .muted { color: var(--muted); }
-.game-placeholder { background: var(--surface); border-radius: 24px; margin-top: 40px; padding: 48px; }
-.game-placeholder p { margin: 0; }
-.game-placeholder p + p { margin-top: 8px; }
+.game-shell { background: var(--surface); border-radius: 24px; margin-top: 40px; max-width: 620px; padding: 32px; }
+.game-toolbar { align-items: flex-start; display: flex; justify-content: space-between; gap: 20px; }
+.game-toolbar p { margin: 0; }
+.game-label { font-size: .75rem; font-weight: 800; letter-spacing: .12em; }
+.scoreboard { display: flex; gap: 16px; color: var(--muted); font-size: .8rem; }
+.scoreboard strong { color: var(--ink); font-size: 1rem; margin-left: 4px; }
+.game-stage { background: #fff; border: 2px solid var(--line); border-radius: 16px; display: grid; margin: 24px auto; max-width: 320px; overflow: hidden; }
+#game-board { display: block; height: auto; max-width: 100%; width: 320px; }
+.game-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.game-button { background: #fff; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); cursor: pointer; font: inherit; font-size: .85rem; padding: 10px 16px; }
+.game-button:hover:not(:disabled), .game-button:focus-visible { border-color: var(--accent); color: var(--accent); }
+.game-button:disabled { cursor: not-allowed; opacity: .45; }
+.game-button-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.game-button-primary:hover:not(:disabled), .game-button-primary:focus-visible { background: #246fd5; color: #fff; }
+.direction-pad { display: grid; grid-template-columns: repeat(3, 48px); grid-template-rows: repeat(2, 48px); gap: 8px; justify-content: center; margin: 24px auto 12px; }
+.direction-button { background: #fff; border: 1px solid var(--line); border-radius: 14px; color: var(--ink); cursor: pointer; font-size: 1.25rem; touch-action: manipulation; }
+.direction-button:active, .direction-button:focus-visible { border-color: var(--accent); color: var(--accent); outline: 3px solid rgba(49, 130, 246, .22); }
+.direction-up { grid-column: 2; grid-row: 1; }
+.direction-left { grid-column: 1; grid-row: 2; }
+.direction-down { grid-column: 2; grid-row: 2; }
+.direction-right { grid-column: 3; grid-row: 2; }
+.game-help { font-size: .78rem; margin: 0; text-align: center; }
 .site-footer { color: var(--muted); margin: 0 auto; max-width: 1120px; padding: 32px; }
 .site-footer p { margin: 0; }
 
@@ -55,6 +75,8 @@ h3 { font-size: 1.2rem; }
   .hero { min-height: 520px; padding: 104px 0 72px; }
   .content-section { padding: 72px 0; }
   .experience-card { display: block; }
-  .game-placeholder { padding: 32px 24px; }
+  .game-shell { padding: 24px 16px; }
+  .game-toolbar { display: block; }
+  .scoreboard { margin-top: 12px; }
   .site-footer { padding: 24px 20px; }
 }
