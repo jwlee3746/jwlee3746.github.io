@@ -1,7 +1,33 @@
 "use strict";
 
-const year = document.querySelector("#current-year");
-if (year) year.textContent = new Date().getFullYear();
+document.querySelectorAll("#current-year, .current-year").forEach((year) => {
+  year.textContent = new Date().getFullYear();
+});
+
+const postIndex = [
+  { id: "leetcode-131", title: "[Leetcode] 131. Palindrome Partitioning", keywords: "backtracking palindrome dfs", excerpt: "모든 palindrome partitioning을 구하는 문제" },
+  { id: "leetcode-2597", title: "[Leetcode] 2597. The Number of Beautiful Subsets", keywords: "dp backtracking divide conquer", excerpt: "차이 조건을 만족하는 부분집합의 개수" },
+  { id: "leetcode-1255", title: "[Leetcode] 1255. Maximum Score Words Formed by Letters", keywords: "backtracking search", excerpt: "문자로 만들 수 있는 단어들의 최대 점수" },
+  { id: "leetcode-1208", title: "[Leetcode] 1208. Get Equal Substrings Within Budget", keywords: "two pointer sliding window", excerpt: "예산 안에서 만들 수 있는 최대 부분문자열" },
+  { id: "leetcode-1404", title: "[Leetcode] 1404. Number of Steps to Reduce a Number", keywords: "implementation bit manipulation", excerpt: "이진 표현을 1로 줄이는 시행 횟수" },
+  { id: "leetcode-1442", title: "[Leetcode] 1442. Count Triplets That Can Form Two Arrays of Equal XOR", keywords: "prefix xor dp brute force", excerpt: "두 배열의 XOR가 같아지는 triplet 개수" },
+  { id: "leetcode-2024", title: "[Leetcode] 2024. Maximize the Confusion of an Exam", keywords: "two pointer sliding window", excerpt: "T 또는 F의 가장 긴 연속 구간" }
+];
+
+const searchForm = document.querySelector(".search-form");
+const searchInput = document.querySelector("#post-search");
+const searchResults = document.querySelector("#search-results");
+if (searchForm && searchInput && searchResults) {
+  function renderResults(query) {
+    const normalized = query.trim().toLowerCase();
+    const matches = postIndex.filter((post) => `${post.title} ${post.keywords} ${post.excerpt}`.toLowerCase().includes(normalized));
+    searchResults.innerHTML = matches.length
+      ? matches.map((post) => `<article class="search-result"><p class="post-meta">LeetCode</p><h2><a href="blog.html#${post.id}">${post.title}</a></h2><p class="muted">${post.excerpt}</p></article>`).join("")
+      : `<p class="muted">검색 결과가 없습니다.</p>`;
+  }
+  searchForm.addEventListener("submit", (event) => { event.preventDefault(); renderResults(searchInput.value); });
+  renderResults("");
+}
 
 const board = document.querySelector("#game-board");
 const gameStatus = document.querySelector("#game-status");
