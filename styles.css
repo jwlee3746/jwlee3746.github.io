@@ -59,10 +59,8 @@ h3 { font-size: 1.2rem; }
 .direction-pad { display: grid; grid-template-columns: repeat(3, 48px); grid-template-rows: repeat(2, 48px); gap: 8px; justify-content: center; margin: 24px auto 12px; }
 .direction-button { background: #fff; border: 1px solid var(--line); border-radius: 14px; color: var(--ink); cursor: pointer; font-size: 1.25rem; touch-action: manipulation; }
 .direction-button:active, .direction-button:focus-visible { border-color: var(--accent); color: var(--accent); outline: 3px solid rgba(49, 130, 246, .22); }
-.direction-up { grid-column: 2; grid-row: 1; }
-.direction-left { grid-column: 1; grid-row: 2; }
-.direction-down { grid-column: 2; grid-row: 2; }
-.direction-right { grid-column: 3; grid-row: 2; }
+.dodge-pad { display: flex; gap: 12px; }
+.dodge-pad .direction-button { height: 52px; width: 72px; }
 .game-help { font-size: .78rem; margin: 0; text-align: center; }
 .site-footer { color: var(--muted); margin: 0 auto; max-width: 1120px; padding: 32px; }
 .site-footer p { margin: 0; }

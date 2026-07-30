@@ -60,7 +60,7 @@
         <div class="game-shell">
           <div class="game-toolbar">
             <div>
-              <p class="game-label">SNAKE</p>
+              <p class="game-label">똥피하기</p>
               <p id="game-status" class="muted" role="status" aria-live="polite">시작 버튼을 눌러 게임을 시작하세요.</p>
             </div>
             <div class="scoreboard" aria-label="게임 점수">
@@ -69,20 +69,18 @@
             </div>
           </div>
           <div class="game-stage">
-            <canvas id="game-board" width="320" height="320" aria-label="지렁이 게임 보드"></canvas>
+            <canvas id="game-board" width="320" height="400" aria-label="똥피하기 게임 보드"></canvas>
           </div>
           <div class="game-actions">
             <button id="start-game" class="game-button game-button-primary" type="button">시작</button>
             <button id="pause-game" class="game-button" type="button" disabled>일시정지</button>
             <button id="restart-game" class="game-button" type="button">재시작</button>
           </div>
-          <div class="direction-pad" aria-label="모바일 방향 조작">
-            <button class="direction-button direction-up" type="button" data-direction="up" aria-label="위로 이동">↑</button>
-            <button class="direction-button direction-left" type="button" data-direction="left" aria-label="왼쪽으로 이동">←</button>
-            <button class="direction-button direction-down" type="button" data-direction="down" aria-label="아래로 이동">↓</button>
-            <button class="direction-button direction-right" type="button" data-direction="right" aria-label="오른쪽으로 이동">→</button>
+          <div class="direction-pad dodge-pad" aria-label="모바일 방향 조작">
+            <button class="direction-button" type="button" data-direction="left" aria-label="왼쪽으로 이동">←</button>
+            <button class="direction-button" type="button" data-direction="right" aria-label="오른쪽으로 이동">→</button>
           </div>
-          <p class="game-help muted">방향키 또는 WASD로 이동 · 스페이스바로 일시정지</p>
+          <p class="game-help muted">← → 또는 A/D로 이동 · 스페이스바로 일시정지</p>
         </div>
       </section>
     </main>
