@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko">
+  <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="파이썬으로 redis를 구현해보자."><title>이재원 | [프로젝트] 파이썬으로 redis 구현하기[1]</title><link rel="icon" href="../favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../styles.css"><script>window.MathJax={tex:{inlineMath:[["$","$"]],displayMath:[["$$","$$"]]},options:{skipHtmlTags:["script","noscript","style","textarea","pre","code"]}};</script><script src="../script.js" defer></script><script src="../assets/js/mathjax/tex-svg.js" defer></script></head>
+  <body data-page="post">
+    <header class="site-header"><a class="brand" href="../index.html" aria-label="홈으로 이동">JW</a><nav aria-label="주요 메뉴"><a href="../index.html">Home</a><a href="../about.html">About</a><a class="active" href="../blog.html">Blog</a><a href="../project.html">Project</a><a href="../search.html">Search</a><a href="../games.html">Games</a><a href="../contact.html">Contact</a></nav></header>
+    <main class="with-sidebar">
+      <div class="main-col">
+        <article class="post">
+          <header class="post-header"><p class="post-meta"><time datetime="2024-06-11">2024-06-11</time></p><h1>[프로젝트] 파이썬으로 redis 구현하기[1]</h1><p class="section-intro">파이썬으로 redis를 구현해보자.</p><p class="cat-row"><a class="cat-badge" href="../category-project.html">Project</a></p><p class="tag-row"><span class="tag">#Project</span></p></header>
+          <nav class="toc" aria-label="목차"><h2>목차</h2><ul><li class="toc-l2"><a href="#sec-1">Introduction</a></li><li class="toc-l2"><a href="#sec-2">Bind to a port</a></li><li class="toc-l2"><a href="#sec-3">Response to PING</a></li></ul></nav>
+          <div class="post-body">
+<h2 id="sec-1">Introduction</h2>
+<p>Redis는 데이터베이스, 캐시, 메시지 브로커, streaming 엔진으로 사용되는 in-memory 데이터 구조이다. 기본 명령어를 제공하는 redis 서버를 만들면서, TCP 서버와 redis 프로토콜 방식을 이해한다.</p>
+<div class="code-wrap"><pre><code>git clone https://git.codecrafters.io/c87c57b60b92b708 codecrafters-redis-python
+cd codecrafters-redis-python</code></pre></div>
+<h2 id="sec-2">Bind to a port</h2>
+<p>포트 6379를 사용하는 TCP 서버를 연다</p>
+<p>Redis의 서버 및 클라이언트 모두 TCP 프로토콜 위에서 동작한다.</p>
+<div class="code-wrap"><pre><code class="language-python">import socket
+
+def main():
+    print("Logs from your program will appear here!")
+
+    server_socket = socket.create_server(("localhost", 6379), reuse_port=True)
+    server_socket.accept() # wait for client
+
+if __name__ == "__main__":
+    main()</code></pre></div>
+<h2 id="sec-3">Response to PING</h2>
+<p>Redis의 기초 명령어 중 하나인 <strong>PING</strong> 커멘드를 구현한다.
+클라이언트가 PING 명령어를 보내면 +PONG\r\n 로 응답한다.</p>
+<div class="code-wrap"><pre><code class="language-python">import socket
+
+
+def main():
+    print("Logs from your program will appear here!")
+
+    PONG = "+PONG\r\n"
+
+    server_socket = socket.create_server(("localhost", 6379), reuse_port=True)
+    client, addr = server_socket.accept()  # wait for client
+
+    with client:
+        client.recv(1024)
+        client.send(PONG.encode())
+
+
+if __name__ == "__main__":
+    main()
+</code></pre></div>
+
+          </div>
+        </article>
+        
+        <p class="back-link"><a class="text-link" href="../blog.html">← Blog 목록</a></p>
+      </div>
+      <aside class="cat-sidebar" aria-label="카테고리"><h2><a href="../categories.html">Categories</a></h2><ul><li><a href="../category-algorithm.html">Algorithm <span class="cat-count">7</span></a></li><li><a href="../category-computer-vision.html">Computer Vision <span class="cat-count">2</span></a></li><li><a href="../category-generative-model.html">Generative Model <span class="cat-count">2</span></a></li><li><a href="../category-machine-learning.html">Machine Learning <span class="cat-count">4</span></a></li><li><a href="../category-mlops.html">MLOps <span class="cat-count">1</span></a></li><li><a href="../category-nlp.html">NLP <span class="cat-count">3</span></a></li><li><a href="../category-paper.html">Paper <span class="cat-count">4</span></a></li><li><a class="active" href="../category-project.html">Project <span class="cat-count">1</span></a></li><li><a href="../category-etc.html">Etc <span class="cat-count">1</span></a></li></ul></aside>
+    </main>
+    <footer class="site-footer"><p>© <span class="current-year">2026</span> Jaewon Lee</p></footer>
+  </body>
+</html>

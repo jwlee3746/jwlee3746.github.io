@@ -1,112 +1,27 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="이재원 - Machine Learning Engineer">
-    <title>이재원 | Machine Learning Engineer</title>
+    <title>이재원 | Home</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="styles.css">
     <script src="script.js" defer></script>
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="#top" aria-label="홈으로 이동">JW</a>
-      <nav aria-label="주요 메뉴">
-        <a href="#top">Home</a>
-        <a href="#about">About</a>
-        <a href="#experience">Experience</a>
-        <a href="#samples">Samples</a>
-        <a href="#games">Games</a>
-        <a href="#contact">Contact</a>
-      </nav>
+      <a class="brand" href="index.html" aria-label="홈으로 이동">JW</a>
+      <nav aria-label="주요 메뉴"><a class="active" href="index.html">Home</a><a href="about.html">About</a><a href="blog.html">Blog</a><a href="project.html">Project</a><a href="search.html">Search</a><a href="games.html">Games</a><a href="contact.html">Contact</a></nav>
     </header>
-
-    <main id="top">
-      <section class="hero" id="about" aria-labelledby="hero-title">
+    <main>
+      <section class="hero page-hero" aria-labelledby="home-title">
         <p class="eyebrow">Machine Learning Engineer · Seoul</p>
-        <h1 id="hero-title">이재원</h1>
+        <h1 id="home-title">이재원</h1>
         <p class="intro">Bixby LLM 모델 및 Agent 플랫폼 개발을 담당하고 있습니다.</p>
-        <a class="primary-link" href="https://www.linkedin.com/in/jwlee3746/" rel="noreferrer">LinkedIn 보기 <span aria-hidden="true">↗</span></a>
-      </section>
-
-      <section class="content-section" id="experience" aria-labelledby="experience-title">
-        <p class="eyebrow">Experience</p>
-        <h2 id="experience-title">이력서</h2>
-        <p class="section-intro">Machine Learning Engineer로서의 현재 역할과 학력을 간단히 정리했습니다.</p>
-        <article class="experience-card">
-          <div>
-            <h3>Samsung Electronics</h3>
-            <p>Machine Learning Engineer</p>
-          </div>
-          <p class="muted">2024.07 — 현재<br>Seoul, South Korea</p>
-        </article>
-        <article class="experience-card">
-          <div>
-            <h3>Korea Advanced Institute of Science and Technology</h3>
-            <p>컴퓨터과학 학사</p>
-          </div>
-          <p class="muted">2017.03 — 2024.02</p>
-        </article>
-      </section>
-
-      <section class="content-section samples-section" id="samples" aria-labelledby="samples-title">
-        <p class="eyebrow">Selected Samples</p>
-        <h2 id="samples-title">프로젝트와 글 샘플</h2>
-        <p class="section-intro">예전 프로필 사이트에 있던 포스트 중 일부를 샘플로 남겼습니다.</p>
-        <div class="sample-grid">
-          <article class="sample-card">
-            <p class="sample-type">Research sample</p>
-            <h3>Attention Is All You Need: Transformer의 Encoder, Decoder</h3>
-            <p class="muted">예전 프로필 사이트의 논문 리뷰 샘플</p>
-          </article>
-          <article class="sample-card">
-            <p class="sample-type">Post sample</p>
-            <h3>Generative Model: Variational Inference (변분 추론)</h3>
-            <p class="muted">예전 프로필 사이트의 머신러닝 포스트 샘플</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="content-section contact-section" id="contact" aria-labelledby="contact-title">
-        <p class="eyebrow">Contact</p>
-        <h2 id="contact-title">함께 이야기해요.</h2>
-        <p class="contact-copy">프로필과 이력은 LinkedIn에서 확인할 수 있습니다.</p>
-        <a class="primary-link" href="https://www.linkedin.com/in/jwlee3746/" rel="noreferrer">LinkedIn으로 연락하기 <span aria-hidden="true">↗</span></a>
-      </section>
-
-      <section class="content-section games-section" id="games" aria-labelledby="games-title">
-        <p class="eyebrow">Games</p>
-        <h2 id="games-title">잠깐 쉬어가세요.</h2>
-        <div class="game-shell">
-          <div class="game-toolbar">
-            <div>
-              <p class="game-label">똥피하기</p>
-              <p id="game-status" class="muted" role="status" aria-live="polite">시작 버튼을 눌러 게임을 시작하세요.</p>
-            </div>
-            <div class="scoreboard" aria-label="게임 점수">
-              <span>점수 <strong id="score">0</strong></span>
-              <span>최고 <strong id="high-score">0</strong></span>
-            </div>
-          </div>
-          <div class="game-stage">
-            <canvas id="game-board" width="320" height="400" aria-label="똥피하기 게임 보드"></canvas>
-          </div>
-          <div class="game-actions">
-            <button id="start-game" class="game-button game-button-primary" type="button">시작</button>
-            <button id="pause-game" class="game-button" type="button" disabled>일시정지</button>
-            <button id="restart-game" class="game-button" type="button">재시작</button>
-          </div>
-          <div class="direction-pad dodge-pad" aria-label="모바일 방향 조작">
-            <button class="direction-button" type="button" data-direction="left" aria-label="왼쪽으로 이동">←</button>
-            <button class="direction-button" type="button" data-direction="right" aria-label="오른쪽으로 이동">→</button>
-          </div>
-          <p class="game-help muted">← → 또는 A/D로 이동 · 스페이스바로 일시정지</p>
-        </div>
+        <div class="link-row"><a class="primary-link" href="about.html">이력서 보기 <span aria-hidden="true">→</span></a><a class="secondary-link" href="blog.html">Blog 보기 <span aria-hidden="true">→</span></a></div>
       </section>
     </main>
-
-    <footer class="site-footer">
-      <p>© <span id="current-year">2026</span> Jaewon Lee</p>
-    </footer>
+    <footer class="site-footer"><p>© <span class="current-year">2026</span> Jaewon Lee</p></footer>
   </body>
 </html>

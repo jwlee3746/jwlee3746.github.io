@@ -1,7 +1,41 @@
 "use strict";
 
-const year = document.querySelector("#current-year");
-if (year) year.textContent = new Date().getFullYear();
+document.querySelectorAll("#current-year, .current-year").forEach((year) => {
+  year.textContent = new Date().getFullYear();
+});
+
+// 포스트 인덱스는 assets/js/posts-index.js가 제공한다 (예전 lunr-store.js 대응).
+const postIndex = Array.isArray(window.POSTS_INDEX) ? window.POSTS_INDEX : [];
+
+// 예전 Blog 앵커 링크(blog.html#leetcode-131 등)를 포스트 페이지로 이어준다.
+if (document.body.dataset.page === "blog" && window.location.hash.length > 1) {
+  const target = postIndex.find((post) => post.id === decodeURIComponent(window.location.hash.slice(1)));
+  if (target) window.location.replace(target.url);
+}
+
+const searchForm = document.querySelector(".search-form");
+const searchInput = document.querySelector("#post-search");
+const searchResults = document.querySelector("#search-results");
+if (searchForm && searchInput && searchResults) {
+  const escapeHtml = (value) => String(value).replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+
+  function renderResults(query) {
+    const normalized = query.trim().toLowerCase();
+    const matches = postIndex.filter((post) =>
+      `${post.title} ${post.excerpt} ${post.categories.join(" ")} ${post.tags.join(" ")} ${post.body}`.toLowerCase().includes(normalized)
+    );
+    searchResults.innerHTML = matches.length
+      ? matches
+          .map(
+            (post) =>
+              `<article class="search-result"><p class="post-meta"><time datetime="${post.date}">${post.date}</time> · ${escapeHtml(post.categories.join(", "))}</p><h2><a href="${post.url}">${escapeHtml(post.title)}</a></h2><p class="muted">${escapeHtml(post.excerpt)}</p></article>`
+          )
+          .join("")
+      : `<p class="muted">검색 결과가 없습니다.</p>`;
+  }
+  searchForm.addEventListener("submit", (event) => { event.preventDefault(); renderResults(searchInput.value); });
+  renderResults("");
+}
 
 const board = document.querySelector("#game-board");
 const gameStatus = document.querySelector("#game-status");
