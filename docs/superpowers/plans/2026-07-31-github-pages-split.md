@@ -530,7 +530,7 @@ Expected: 블로그 2커밋(Task 1, 2), 포트폴리오 5커밋(spec, plan, Task
 - [ ] **Step 2: 옛 이름 비우기**
 
 ```bash
-gh repo rename blog --repo jwlee3746/jwlee3746.github.io --yes
+gh repo rename blog --repo jwlee3746/jwlee3746.github.io --confirm
 ```
 
 Expected: `✓ Renamed repository jwlee3746/blog`
@@ -538,12 +538,12 @@ Expected: `✓ Renamed repository jwlee3746/blog`
 - [ ] **Step 3: 포트폴리오가 이름 가져가기**
 
 ```bash
-gh repo rename jwlee3746.github.io --repo jwlee3746/jwlee37463.github.io --yes
+gh repo rename jwlee3746.github.io --repo jwlee3746/jwlee37463.github.io --confirm
 ```
 
 Expected: `✓ Renamed repository jwlee3746/jwlee3746.github.io`
 
-이름 충돌로 거부되면: `gh repo rename blog-tmp --repo jwlee3746/blog --yes`로 예약을 털어낸 뒤 이 단계를 재시도하고, 성공 후 `gh repo rename blog --repo jwlee3746/blog-tmp --yes`로 되돌린다.
+이름 충돌로 거부되면: `gh repo rename blog-tmp --repo jwlee3746/blog --confirm`로 예약을 털어낸 뒤 이 단계를 재시도하고, 성공 후 `gh repo rename blog --repo jwlee3746/blog-tmp --confirm`로 되돌린다.
 
 - [ ] **Step 4: 로컬 remote 정리**
 
@@ -692,8 +692,8 @@ git -C /home/ubuntu/temp/portfolio branch -d site-restructure
 Task 6 이후 문제가 생기면 rename을 역순으로 되돌린다.
 
 ```bash
-gh repo rename jwlee37463.github.io --repo jwlee3746/jwlee3746.github.io --yes
-gh repo rename jwlee3746.github.io --repo jwlee3746/blog --yes
+gh repo rename jwlee37463.github.io --repo jwlee3746/jwlee3746.github.io --confirm
+gh repo rename jwlee3746.github.io --repo jwlee3746/blog --confirm
 ```
 
 파일 변경은 각 레포에서 머지 커밋을 revert한다. 블로그의 `_config.yml`에서 `baseurl` 값을 비우면 루트 기준으로 돌아간다.
