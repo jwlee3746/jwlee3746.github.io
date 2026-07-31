@@ -523,7 +523,7 @@ git -C /home/ubuntu/temp/blog      diff main..site-restructure --stat
 git -C /home/ubuntu/temp/portfolio diff main..site-restructure --stat
 ```
 
-Expected: 블로그 2커밋, 포트폴리오 4커밋 (spec 커밋 포함)
+Expected: 블로그 2커밋(Task 1, 2), 포트폴리오 5커밋(spec, plan, Task 3, 4, 5)
 
 - [ ] **Step 2: 옛 이름 비우기**
 
