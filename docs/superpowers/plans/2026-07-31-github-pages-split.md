@@ -411,11 +411,13 @@ cd /home/ubuntu/temp/portfolio
 echo "=== 삭제 대상 잔존 참조 (0이어야 함) ==="
 grep -n 'blog\.html\|blog-[0-9]\|search\.html\|categories\.html\|category-\|posts/\|assets/\|POSTS_INDEX' \
   index.html about.html project.html games.html contact.html script.js
-echo "=== /blog/ 링크 (5개 nav + 히어로 1 + 카드 2 = 8개) ==="
-grep -c 'href="/blog/' index.html about.html project.html games.html contact.html
+echo "=== /blog/ 링크 (nav 5 + 히어로 1 + 카드 3 = 9개) ==="
+grep -o 'href="/blog/' index.html about.html project.html games.html contact.html | sort | uniq -c
 ```
 
-Expected: 첫 grep은 출력 없음. 두 번째는 `index.html:2`, `about.html:1`, `project.html:3`, `games.html:1`, `contact.html:1`
+Expected: 첫 grep은 출력 없음. 두 번째는 occurrence 기준 `index.html` 2, `about.html` 1, `project.html` 4, `games.html` 1, `contact.html` 1 — 합계 9.
+
+`grep -c`는 줄 단위로 세므로 쓰지 않는다. `project.html`은 압축되어 있어 카드의 링크 3개(제목·카테고리 배지·읽기)가 한 줄에 몰려 있고, `grep -c`로는 2로 집계된다.
 
 - [ ] **Step 6: 커밋**
 
