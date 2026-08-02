@@ -138,6 +138,8 @@
   .card-title .arrow { color: var(--muted); font-weight: 400; display: inline-block; transition: transform .2s ease; }
   a.card:hover .arrow { transform: translate(2px, -2px); }
   .card-desc { margin: 8px 0 0; font-size: 14px; line-height: 1.7; color: var(--muted); text-wrap: pretty; }
+  /* 수치·핵심어만 한 단계 밝게 — 카드 전체가 밝아지면 강조가 사라진다 */
+  .card-desc strong { color: var(--text-soft); font-weight: 600; }
 
   .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
   .chip {
@@ -219,7 +221,7 @@
     <section id="about" aria-labelledby="about-h">
       <h2 class="sr-only" id="about-h">소개</h2>
       <p class="prose">삼성전자 MX사업부 Language AI 팀에서 <strong>Bixby의 LLM 모델 개발</strong>과 <strong>에이전틱 플랫폼 개발</strong>을 하고 있습니다. 모델 튜닝부터 에이전트가 도구를 쓰고 실행하는 구조까지, LLM이 실제 제품 안에서 동작하게 만드는 일이 주된 관심사입니다.</p>
-      <p class="prose">그 전에는 KAIST에서 metric learning과 준지도 학습을 연구했고, 한국어 오픈도메인 QA와 안드로이드 온디바이스 추론 프로젝트를 진행했습니다.</p>
+      <p class="prose">그 전에는 가상 데이터 기업 <strong>Pebblous</strong>에서 AI 학습용 데이터 진단·개선 과제를 연구 개발했고, KAIST에서 metric learning과 준지도 학습을 연구하며 한국어 오픈도메인 QA와 안드로이드 온디바이스 추론 프로젝트를 진행했습니다.</p>
     </section>
 
     <section id="experience" aria-labelledby="experience-h">
@@ -238,11 +240,23 @@
             </div>
           </div>
         </a>
+        <a class="card" href="/projects/mvm-plus/">
+          <div class="card-meta">2022.05 — 2023.02</div>
+          <div>
+            <div class="card-title">연구 개발 · Pebblous <span class="arrow" aria-hidden="true">→</span></div>
+            <p class="card-desc">가상 데이터 기업. AI 학습용 데이터를 진단·개선하는 '데이터 클리닉' 과제에 참여해, metric learning 기반 생성 모델 MVM+를 설계했습니다.</p>
+            <div class="chips">
+              <span class="chip">PyTorch</span>
+              <span class="chip">GAN</span>
+              <span class="chip">Metric Learning</span>
+            </div>
+          </div>
+        </a>
         <a class="card" href="https://github.com/jwlee3746" target="_blank" rel="noopener">
           <div class="card-meta">— 2023</div>
           <div>
             <div class="card-title">학부 연구 · KAIST</div>
-            <p class="card-desc">Metric learning과 준지도 학습 연구. 한국어 오픈도메인 QA(KorQuAD), 안드로이드 온디바이스 추론 프로젝트 수행.</p>
+            <p class="card-desc">Metric learning과 준지도 학습 연구. 네이버 검색 스니펫 기반 오픈도메인 QA, 안드로이드 온디바이스 추론 프로젝트 수행.</p>
             <div class="chips">
               <span class="chip">PyTorch</span>
               <span class="chip">BERT</span>
@@ -262,25 +276,25 @@
             <p class="card-desc">LLM 에이전트 하네스 프롬프트·전략·세팅 모음.</p>
           </div>
         </a>
-        <a class="card" href="https://github.com/jwlee3746/PIRL-korquad-open-cs492h" target="_blank" rel="noopener">
+        <a class="card" href="/projects/naver-snippet-qa/">
           <div class="card-meta tag">PyTorch · BERT</div>
           <div>
-            <div class="card-title">PIRL-korquad-open <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></div>
-            <p class="card-desc">한국어 오픈도메인 QA (KorQuAD).</p>
+            <div class="card-title">네이버 스니펫 오픈도메인 QA <span class="arrow" aria-hidden="true">→</span></div>
+            <p class="card-desc">불완전한 검색 스니펫에서 답을 찾는 QA 모델. 학습 데이터의 90%가 unanswerable인 불균형을 KorQuAD 6만 pair 증강으로 보완하고, KoELECTRA 앙상블로 마무리했습니다.</p>
           </div>
         </a>
-        <a class="card" href="https://github.com/jwlee3746/pytorch_MVM" target="_blank" rel="noopener">
+        <a class="card" href="/projects/mvm-plus/">
           <div class="card-meta tag">PyTorch</div>
           <div>
-            <div class="card-title">pytorch_MVM <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></div>
-            <p class="card-desc">GAN 기반 adversarial metric learning.</p>
+            <div class="card-title">MVM+ · 생성 모델에 metric 심기 <span class="arrow" aria-hidden="true">→</span></div>
+            <p class="card-desc">GAN 기반 매니폴드 매칭 생성 모델. 중심·크기만 맞추던 기존 손실을 <strong>Average Hausdorff loss</strong>로 바꾸고, triplet loss를 cosine similarity loss로 교체했습니다.</p>
           </div>
         </a>
-        <a class="card" href="https://github.com/jwlee3746/KAIST_NAVER_semi_sup_vision" target="_blank" rel="noopener">
+        <a class="card" href="/projects/naver-shopping-semisup/">
           <div class="card-meta tag">PyTorch</div>
           <div>
-            <div class="card-title">KAIST_NAVER_semi_sup_vision <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></div>
-            <p class="card-desc">준지도 이미지 분류 (KAIST–NAVER).</p>
+            <div class="card-title">네이버 쇼핑 이미지 준지도 분류 <span class="arrow" aria-hidden="true">→</span></div>
+            <p class="card-desc">흔들리고 잘린 실사용자 사진을 레이블 없이 학습. RandAugment와 변형 MixMatch로 <strong>top-1 56 → 69%, top-5 78 → 86%</strong>.</p>
           </div>
         </a>
         <a class="card" href="https://github.com/jwlee3746/CS330-pj4-Mobile-Systems-for-ML" target="_blank" rel="noopener">

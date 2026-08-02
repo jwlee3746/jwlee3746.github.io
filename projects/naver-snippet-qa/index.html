@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>네이버 스니펫 오픈도메인 QA · 이재원</title>
+<meta name="description" content="잘려 있는 검색 스니펫에서 답을 찾는 한국어 QA 모델. 90%가 unanswerable인 불균형 데이터를 증강으로 보완하고 KoELECTRA 앙상블로 마무리했습니다.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="네이버 스니펫 오픈도메인 QA">
+<meta property="og:description" content="90%가 unanswerable인 검색 스니펫 데이터로 한국어 QA 모델 학습하기.">
+<meta property="og:url" content="https://jwlee3746.github.io/projects/naver-snippet-qa/">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/project.css">
+</head>
+<body>
+
+<div class="wrap">
+  <a class="back" href="/#projects">← 포트폴리오</a>
+
+  <header class="head">
+    <div class="eyebrow">2020 · KAIST × NAVER</div>
+    <h1>네이버 스니펫 오픈도메인 QA</h1>
+    <p class="lede">검색 결과에 뜨는 스니펫은 문장이 중간에서 잘려 있습니다. 그 조각글에서 답을 찾아내는 한국어 QA 모델을 만들었습니다. 학습 데이터의 90%에 아예 답이 들어 있지 않다는 것이 가장 큰 벽이었습니다.</p>
+
+    <dl class="meta">
+      <dt>기간</dt>
+      <dd>2020</dd>
+      <dt>역할</dt>
+      <dd>데이터 분석 · 증강 전략 설계 · 모델 ablation 및 앙상블</dd>
+      <dt>스택</dt>
+      <dd><div class="chips">
+        <span class="chip">PyTorch</span>
+        <span class="chip">BERT</span>
+        <span class="chip">KoELECTRA</span>
+        <span class="chip">KorQuAD</span>
+      </div></dd>
+      <dt>코드</dt>
+      <dd><a href="https://github.com/jwlee3746/PIRL-korquad-open-cs492h" target="_blank" rel="noopener">PIRL-korquad-open-cs492h <span aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></a></dd>
+    </dl>
+  </header>
+
+  <main>
+    <section>
+      <h2>문제</h2>
+      <p>오픈도메인 QA 과제이지만 데이터가 특이했습니다. 네이버 검색 결과로 나타나는 <strong>스니펫</strong>을 그대로 쓰기 때문에, SQuAD나 KorQuAD처럼 잘 다듬어진 문단이 주어지지 않습니다. 모델은 이 조각글 안에서 답을 찾아내야 합니다.</p>
+      <p>데이터를 열어 보니 두 가지가 걸렸습니다.</p>
+      <ul>
+        <li><strong>극단적인 불균형.</strong> 학습 데이터의 90%가 unanswerable — 주어진 스니펫 안에 정답이 아예 존재하지 않았습니다.</li>
+        <li><strong>끊긴 문장.</strong> 스니펫은 문장이 완성되어 있지 않아, 모델이 전체 맥락을 잡기 어렵습니다.</li>
+      </ul>
+      <p>질문 유형도 한쪽으로 쏠려 있었습니다. Who · When · What · Where 같은 단답형이 대부분이었고, How와 Why는 100개도 되지 않았습니다.</p>
+    </section>
+
+    <section>
+      <h2>접근</h2>
+
+      <h3>1. 두 종류의 데이터 증강</h3>
+      <p>두 문제에 각각 다른 처방을 붙였습니다.</p>
+      <p><strong>답이 없는 질문에는 맥락을 되찾아 줬습니다.</strong> 스니펫이 잘려 나가면서 정답까지 함께 잘려 나간 경우가 많았습니다. 그래서 스니펫의 출처 url을 따라가 원문 context를 검색해 오고, 그 내용으로 지문을 보강(amplify)했습니다. 예를 들어 세종대왕에 관한 질문의 정답이 <code>1397년 5월 7일</code>인데 스니펫에는 그 대목이 잘려 있다면, 원문에서 해당 부분을 찾아 지문에 되살리는 식입니다.</p>
+      <p><strong>끊긴 문장에는 완성된 문장을 섞었습니다.</strong> KorQuAD 1.0에서 <strong>60,000개의 full-form QA pair</strong>를 가져와 학습 데이터에 보충했습니다. 온전한 문장으로 된 예시를 함께 보여주면, 모델이 일반적인 맥락을 이해하는 데 도움이 되리라는 판단이었습니다.</p>
+
+      <h3>2. 사전학습 모델 비교와 앙상블</h3>
+      <p>먼저 단일 모델로 ablation study를 돌렸습니다.</p>
+      <ul>
+        <li>BERT-multilingual — 베이스라인</li>
+        <li>KoBERT, HanBERT, Electra</li>
+        <li><strong>KoELECTRA</strong> — 가장 좋았습니다</li>
+      </ul>
+      <p>그다음 variance를 줄이기 위해 앙상블 구성을 바꿔 가며 비교했습니다. KoELECTRA-base 단독, KoELECTRA-small v2 + distilKoBERT 조합, KoELECTRA-small v2 4개 묶음. 여기에 learning rate · optimizer · dropout을 조정했습니다.</p>
+    </section>
+
+    <section>
+      <h2>얻은 것</h2>
+      <p><strong>데이터 쪽에서.</strong> 결국 중요한 것은 모델에게 올바른 맥락을 담은 데이터를 주는 일이었습니다. 스니펫에 특화된 모델을 만든다고 해서 스니펫 데이터만 써야 하는 것은 아니었습니다. 스니펫 + KorQuAD, 스니펫 + SQuAD 조합이 모두 도움이 됐습니다. 다만 지문이 길다고 무조건 좋은 것도 아니었습니다 — 필요한 것은 길이가 아니라 <strong>일반적인 맥락</strong>이었습니다.</p>
+      <p><strong>모델 쪽에서.</strong> 모델의 variance를 줄이는 일이 성능만큼 중요했습니다. 각 모델의 base 버전을 기준으로 ablation을 하고, 크기를 늘려 가며 확인한 뒤, 앙상블로 묶는 순서로 접근했습니다. 다만 앙상블을 키울수록 <strong>성능 향상 폭이 점점 줄어들었습니다.</strong> 모델을 키우는 수직적 확장과 여러 모델을 묶는 수평적 확장 사이의 trade-off를 어디서 끊을지가 실제 판단 지점이었습니다.</p>
+    </section>
+
+    <section>
+      <h2>남은 질문</h2>
+      <p>프로젝트를 끝내면서 가장 걸렸던 것은, url 원문을 일일이 검색해 지문을 보강하는 과정이 지나치게 번거롭다는 점이었습니다. 이 과정을 자동화할 수는 없을까. 모델에게 검색 기능을 쥐여 주고 url 원문을 스스로 읽어 오게 할 수는 없을까.</p>
+      <div class="callout">
+        <p>2023년에 이 페이지를 다시 열어 보며 덧붙인 메모 — <strong>“LLM을 사용한다면?”</strong></p>
+      </div>
+      <p>지금은 그 질문에 해당하는 일을 하고 있습니다. 에이전트가 도구를 호출해 필요한 정보를 직접 가져오는 구조가, 그때 손으로 하던 일을 대신합니다.</p>
+    </section>
+
+    <section>
+      <h2>자료</h2>
+      <div class="docs">
+        <a class="doc" href="/assets/docs/naver-snippet-qa-report.pdf" target="_blank" rel="noopener">
+          <span class="doc-kind">보고서</span>
+          <span class="doc-name">네이버 검색 결과 데이터를 이용한 QA 모델 학습 <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></span>
+        </a>
+      </div>
+    </section>
+  </main>
+</div>
+
+</body>
+</html>
