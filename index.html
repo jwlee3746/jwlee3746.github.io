@@ -21,6 +21,7 @@
     --text: #e6edf3;
     --text-soft: #a9b1ba;
     --muted: #747d87;
+    --border: #22282f;
     --card-hover: rgba(255, 255, 255, .045);
     --accent: var(--accent-base);
     --chip-bg: color-mix(in oklab, var(--accent-base) 13%, transparent);
@@ -120,10 +121,24 @@
   .more { display: inline-block; margin-top: 24px; font-family: var(--mono); font-size: 13px; }
 
   .plain { margin: 0; padding: 0; }
-  .skills { display: flex; flex-direction: column; gap: 20px; max-width: 560px; }
-  .skill-row { display: grid; grid-template-columns: 128px 1fr; gap: 20px; }
-  .skill-row .card-meta { padding-top: 6px; }
-  .skill-row .chips { margin-top: 0; }
+
+  /* 썸네일: img가 없거나 로드에 실패하면 배경 패턴이 그대로 드러나
+     빈칸처럼 보이지 않는다. 썸네일을 아직 안 넣은 글도 그대로 걸 수 있다. */
+  .thumb {
+    width: 128px; aspect-ratio: 16 / 10;
+    border-radius: 4px; overflow: hidden;
+    border: 1px solid var(--border);
+    background:
+      linear-gradient(135deg, var(--chip-bg), transparent 65%),
+      repeating-linear-gradient(45deg, rgba(255, 255, 255, .022) 0 6px, transparent 6px 12px),
+      #14181e;
+    transition: border-color .25s ease;
+  }
+  /* 논문 캡처는 대부분 흰 배경이라 다크 화면에서 튄다. 평소엔 낮춰두고 hover에서 살린다. */
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: .82; transition: opacity .25s ease; }
+  a.card:hover .thumb { border-color: var(--accent); }
+  a.card:hover .thumb img { opacity: 1; }
+  .post-cat { font-family: var(--mono); font-size: 11px; color: var(--accent); margin-bottom: 6px; }
 
   /* ── 반응형 ──────────────────────────────── */
   @media (max-width: 900px) {
@@ -159,8 +174,8 @@
         <a href="#about"><span class="line"></span><span class="label">소개</span></a>
         <a href="#experience"><span class="line"></span><span class="label">경력</span></a>
         <a href="#projects"><span class="line"></span><span class="label">프로젝트</span></a>
+        <a href="#writing"><span class="line"></span><span class="label">글</span></a>
         <a href="#education"><span class="line"></span><span class="label">학력</span></a>
-        <a href="#skills"><span class="line"></span><span class="label">기술 스택</span></a>
       </nav>
     </div>
     <div class="side-foot">
@@ -249,6 +264,46 @@
       <a class="more" href="https://github.com/jwlee3746?tab=repositories" target="_blank" rel="noopener">GitHub에서 전체 보기 →</a>
     </section>
 
+    <!-- 글: 썸네일은 블로그 글의 이미지를 그대로 참조한다.
+         새 글을 걸 때 썸네일이 아직 없으면 <div class="thumb"></div>만 두면 되고,
+         카드 모양은 그대로 유지된다. -->
+    <section id="writing">
+      <h3 class="sec-title">글</h3>
+      <div class="cards">
+        <a class="card" href="/blog/Paper/Attention1/">
+          <div class="thumb">
+            <img src="/blog/assets/images/posts_img/2024-05-19-1/transformer.png" alt="" loading="lazy" onerror="this.remove()">
+          </div>
+          <div>
+            <div class="post-cat">논문 리뷰</div>
+            <div class="card-title">Attention Is All You Need [1] — Encoder · Decoder <span class="arrow">↗</span></div>
+            <p class="card-desc">Transformer의 인코더·디코더 구조를 그림과 코드로 따라가며 정리했습니다.</p>
+          </div>
+        </a>
+        <a class="card" href="/blog/Paper/Attention2/">
+          <div class="thumb">
+            <img src="/blog/assets/images/posts_img/2024-05-20-1/attention1.png" alt="" loading="lazy" onerror="this.remove()">
+          </div>
+          <div>
+            <div class="post-cat">논문 리뷰</div>
+            <div class="card-title">Attention Is All You Need [2] — Attention <span class="arrow">↗</span></div>
+            <p class="card-desc">Self-Attention과 Multi-Head Attention을 병렬성 관점에서 뜯어봤습니다.</p>
+          </div>
+        </a>
+        <a class="card" href="/blog/Paper/Attention3/">
+          <div class="thumb">
+            <img src="/blog/assets/images/posts_img/2024-05-21-1/PEexample.png" alt="" loading="lazy" onerror="this.remove()">
+          </div>
+          <div>
+            <div class="post-cat">논문 리뷰</div>
+            <div class="card-title">Attention Is All You Need [3] — Feed-Forward · Positional Encoding <span class="arrow">↗</span></div>
+            <p class="card-desc">위치 정보를 인코딩하는 방식과 FFN의 역할을 정리했습니다.</p>
+          </div>
+        </a>
+      </div>
+      <a class="more" href="/blog/">블로그 전체 보기 →</a>
+    </section>
+
     <section id="education">
       <h3 class="sec-title">학력</h3>
       <div class="card plain">
@@ -260,28 +315,6 @@
       </div>
     </section>
 
-    <section id="skills">
-      <h3 class="sec-title">기술 스택</h3>
-      <div class="skills">
-        <div class="skill-row">
-          <div class="card-meta">언어 · ML</div>
-          <div class="chips">
-            <span class="chip">Python</span>
-            <span class="chip">PyTorch</span>
-            <span class="chip">Kotlin</span>
-          </div>
-        </div>
-        <div class="skill-row">
-          <div class="card-meta">LLM · 에이전트</div>
-          <div class="chips">
-            <span class="chip">LangChain</span>
-            <span class="chip">LangGraph</span>
-            <span class="chip">Langfuse</span>
-            <span class="chip">OpenClaw</span>
-          </div>
-        </div>
-      </div>
-    </section>
   </main>
 </div>
 
