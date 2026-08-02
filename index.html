@@ -1,60 +1,322 @@
 <!doctype html>
 <html lang="ko">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="이재원 - Machine Learning Engineer">
-    <title>이재원</title>
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <style>
-      :root { color-scheme: light dark; }
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        min-height: 100vh;
-        display: grid;
-        place-items: center;
-        padding: 2rem;
-        font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-        line-height: 1.6;
-        background: #ffffff;
-        color: #16181d;
-      }
-      main { max-width: 32rem; text-align: center; }
-      .eyebrow {
-        margin: 0 0 0.5rem;
-        font-size: 0.8rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: #8b93a1;
-      }
-      h1 { margin: 0 0 0.75rem; font-size: clamp(1.75rem, 5vw, 2.5rem); letter-spacing: -0.02em; }
-      p.lead { margin: 0 0 1.75rem; color: #5c6370; }
-      a.cta {
-        display: inline-block;
-        padding: 0.7rem 1.4rem;
-        border: 1px solid currentColor;
-        border-radius: 999px;
-        color: inherit;
-        text-decoration: none;
-        font-weight: 500;
-        transition: background 0.15s ease, color 0.15s ease;
-      }
-      a.cta:hover, a.cta:focus-visible { background: #16181d; color: #ffffff; }
-      @media (prefers-color-scheme: dark) {
-        body { background: #0f1115; color: #e6e8ec; }
-        p.lead { color: #9aa1ad; }
-        .eyebrow { color: #6b7280; }
-        a.cta:hover, a.cta:focus-visible { background: #e6e8ec; color: #0f1115; }
-      }
-    </style>
-  </head>
-  <body>
-    <main>
-      <p class="eyebrow">Machine Learning Engineer · Seoul</p>
-      <h1>이재원</h1>
-      <p class="lead">포트폴리오 페이지를 새로 만들고 있습니다.</p>
-      <a class="cta" href="/blog/">기술 블로그 보기 →</a>
-    </main>
-  </body>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>이재원 · ML 엔지니어</title>
+<meta name="description" content="이재원 (Jaewon Lee) — 삼성전자 MX사업부 Language AI. Bixby LLM 모델 개발과 에이전틱 플랫폼 개발.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="이재원 · ML 엔지니어">
+<meta property="og:description" content="삼성전자 MX사업부 Language AI. LLM을 실제 제품에 태우는 일을 합니다.">
+<meta property="og:url" content="https://jwlee3746.github.io/">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --accent-base: #5eead4;
+    --bg: #0e1116;
+    --text: #e6edf3;
+    --text-soft: #a9b1ba;
+    --muted: #747d87;
+    --card-hover: rgba(255, 255, 255, .045);
+    --accent: var(--accent-base);
+    --chip-bg: color-mix(in oklab, var(--accent-base) 13%, transparent);
+    --spotlight: color-mix(in oklab, var(--accent-base) 7%, transparent);
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--bg); scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: 'IBM Plex Sans KR', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    transition: background-color .35s ease, color .35s ease;
+  }
+  a { color: var(--accent); text-decoration: none; transition: color .25s ease; }
+  a:hover { color: var(--text); }
+  ::selection { background: var(--accent); color: var(--bg); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+  .spotlight {
+    position: fixed; inset: 0; pointer-events: none; z-index: 5;
+    transition: background .2s ease;
+  }
+
+  .layout {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 48px;
+    display: grid;
+    grid-template-columns: minmax(320px, 5fr) 7fr;
+    gap: 48px;
+  }
+
+  /* ── 사이드바 ─────────────────────────────── */
+  .side {
+    position: sticky; top: 0;
+    height: 100vh;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 96px 24px 72px 0;
+  }
+  .name { margin: 0; font-size: 44px; font-weight: 700; letter-spacing: -.02em; line-height: 1.15; }
+  .name-en { margin-top: 8px; font-family: var(--mono); font-size: 14px; color: var(--text-soft); }
+  .role { margin: 20px 0 0; font-size: 18px; font-weight: 500; color: var(--text); }
+  .tagline { margin: 14px 0 0; max-width: 320px; font-size: 15px; line-height: 1.65; color: var(--muted); text-wrap: pretty; }
+
+  .nav { margin-top: 56px; display: flex; flex-direction: column; }
+  .nav a { display: flex; align-items: center; gap: 14px; padding: 9px 0; color: var(--muted); }
+  .nav .line {
+    display: inline-block; height: 1px; width: 28px; background: var(--muted);
+    transition: width .25s ease, background-color .25s ease;
+  }
+  .nav .label { font-size: 12px; font-weight: 600; letter-spacing: .14em; color: var(--muted); transition: color .25s ease; }
+  .nav a:hover .line, .nav a.active .line { width: 56px; background: var(--text); }
+  .nav a:hover .label, .nav a.active .label { color: var(--text); }
+
+  .resume-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 24px; font-family: var(--mono); font-size: 13px;
+  }
+
+  .side-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; font-family: var(--mono); font-size: 13px; }
+  .side-foot a { color: var(--muted); }
+  .side-foot a:hover { color: var(--text); }
+
+  /* ── 본문 ────────────────────────────────── */
+  main { padding: 96px 0 120px; display: flex; flex-direction: column; gap: 96px; }
+  section { scroll-margin-top: 96px; }
+  .sec-title { margin: 0 0 28px; font-size: 13px; font-weight: 600; letter-spacing: .14em; color: var(--muted); }
+  .prose { margin: 0; font-size: 16px; line-height: 1.75; color: var(--text-soft); max-width: 560px; text-wrap: pretty; }
+  .prose + .prose { margin-top: 18px; }
+  .prose strong { color: var(--text); font-weight: 600; }
+
+  .cards { display: flex; flex-direction: column; gap: 12px; }
+  .card {
+    display: grid; grid-template-columns: 128px 1fr; gap: 20px;
+    padding: 20px; margin: 0 -20px;
+    border-radius: 8px; color: inherit;
+    transition: background-color .25s ease;
+  }
+  a.card:hover { background: var(--card-hover); color: inherit; }
+  .card-meta { font-family: var(--mono); font-size: 12px; color: var(--muted); padding-top: 3px; }
+  .card-meta.tag { color: var(--accent); }
+  .card-title { font-size: 16px; font-weight: 600; color: var(--text); }
+  .card-title .arrow { color: var(--muted); font-weight: 400; display: inline-block; transition: transform .2s ease; }
+  a.card:hover .arrow { transform: translate(2px, -2px); }
+  .card-desc { margin: 8px 0 0; font-size: 14px; line-height: 1.7; color: var(--muted); text-wrap: pretty; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .chip {
+    font-family: var(--mono); font-size: 12px;
+    padding: 4px 11px; border-radius: 999px;
+    background: var(--chip-bg); color: var(--accent);
+  }
+
+  .more { display: inline-block; margin-top: 24px; font-family: var(--mono); font-size: 13px; }
+
+  .plain { margin: 0; padding: 0; }
+  .skills { display: flex; flex-direction: column; gap: 20px; max-width: 560px; }
+  .skill-row { display: grid; grid-template-columns: 128px 1fr; gap: 20px; }
+  .skill-row .card-meta { padding-top: 6px; }
+  .skill-row .chips { margin-top: 0; }
+
+  /* ── 반응형 ──────────────────────────────── */
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; gap: 0; padding: 0 24px; }
+    .side { position: static; height: auto; padding: 64px 0 0; }
+    .nav { display: none; }
+    .side-foot { margin-top: 32px; }
+    main { padding: 64px 0 80px; gap: 64px; }
+    .name { font-size: 36px; }
+    .card, .skill-row { grid-template-columns: 1fr; gap: 6px; }
+    .card { padding: 16px; margin: 0 -16px; }
+    .card-meta, .skill-row .card-meta { padding-top: 0; }
+    .spotlight { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="spotlight" id="spotlight" aria-hidden="true"></div>
+
+<div class="layout">
+  <header class="side">
+    <div>
+      <h1 class="name">이재원</h1>
+      <div class="name-en">Jaewon Lee</div>
+      <h2 class="role">ML 엔지니어 · 삼성전자 MX사업부 Language AI</h2>
+      <p class="tagline">LLM을 실제 제품에 태우는 일을 합니다.</p>
+      <a class="resume-cta" href="/resume/">이력서 1장 보기 · PDF →</a>
+      <nav class="nav" aria-label="섹션">
+        <a href="#about"><span class="line"></span><span class="label">소개</span></a>
+        <a href="#experience"><span class="line"></span><span class="label">경력</span></a>
+        <a href="#projects"><span class="line"></span><span class="label">프로젝트</span></a>
+        <a href="#education"><span class="line"></span><span class="label">학력</span></a>
+        <a href="#skills"><span class="line"></span><span class="label">기술 스택</span></a>
+      </nav>
+    </div>
+    <div class="side-foot">
+      <a href="https://github.com/jwlee3746" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://www.linkedin.com/in/jwlee3746/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="/blog/">Blog</a>
+      <a href="mailto:jwlee3746@naver.com">Email</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="about">
+      <p class="prose">삼성전자 MX사업부 Language AI 팀에서 <strong>Bixby의 LLM 모델 개발</strong>과 <strong>에이전틱 플랫폼 개발</strong>을 하고 있습니다. 모델 튜닝부터 에이전트가 도구를 쓰고 실행하는 구조까지, LLM이 실제 제품 안에서 동작하게 만드는 일이 주된 관심사입니다.</p>
+      <p class="prose">그 전에는 KAIST에서 metric learning과 준지도 학습을 연구했고, 한국어 오픈도메인 QA와 안드로이드 온디바이스 추론 프로젝트를 진행했습니다.</p>
+    </section>
+
+    <section id="experience">
+      <h3 class="sec-title">경력</h3>
+      <div class="cards">
+        <a class="card" href="https://www.linkedin.com/in/jwlee3746/" target="_blank" rel="noopener">
+          <div class="card-meta">2024 — 현재</div>
+          <div>
+            <div class="card-title">ML 엔지니어 · 삼성전자 MX사업부 Language AI</div>
+            <p class="card-desc">Bixby LLM 모델 개발 및 에이전틱 플랫폼 개발. 모델 튜닝, 프롬프트·하네스 설계, 에이전트의 도구 호출·실행 구조 구축.</p>
+            <div class="chips">
+              <span class="chip">Python</span>
+              <span class="chip">LangChain</span>
+              <span class="chip">LangGraph</span>
+              <span class="chip">Langfuse</span>
+            </div>
+          </div>
+        </a>
+        <a class="card" href="https://github.com/jwlee3746" target="_blank" rel="noopener">
+          <div class="card-meta">— 2023</div>
+          <div>
+            <div class="card-title">학부 연구 · KAIST</div>
+            <p class="card-desc">Metric learning과 준지도 학습 연구. 한국어 오픈도메인 QA(KorQuAD), 안드로이드 온디바이스 추론 프로젝트 수행.</p>
+            <div class="chips">
+              <span class="chip">PyTorch</span>
+              <span class="chip">BERT</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section id="projects">
+      <h3 class="sec-title">프로젝트</h3>
+      <div class="cards">
+        <a class="card" href="https://github.com/jwlee3746/jw-agent-playbook" target="_blank" rel="noopener">
+          <div class="card-meta tag">Prompt Eng.</div>
+          <div>
+            <div class="card-title">jw-agent-playbook <span class="arrow">↗</span></div>
+            <p class="card-desc">LLM 에이전트 하네스 프롬프트·전략·세팅 모음.</p>
+          </div>
+        </a>
+        <a class="card" href="https://github.com/jwlee3746/PIRL-korquad-open-cs492h" target="_blank" rel="noopener">
+          <div class="card-meta tag">PyTorch · BERT</div>
+          <div>
+            <div class="card-title">PIRL-korquad-open <span class="arrow">↗</span></div>
+            <p class="card-desc">한국어 오픈도메인 QA (KorQuAD).</p>
+          </div>
+        </a>
+        <a class="card" href="https://github.com/jwlee3746/pytorch_MVM" target="_blank" rel="noopener">
+          <div class="card-meta tag">PyTorch</div>
+          <div>
+            <div class="card-title">pytorch_MVM <span class="arrow">↗</span></div>
+            <p class="card-desc">GAN 기반 adversarial metric learning.</p>
+          </div>
+        </a>
+        <a class="card" href="https://github.com/jwlee3746/KAIST_NAVER_semi_sup_vision" target="_blank" rel="noopener">
+          <div class="card-meta tag">PyTorch</div>
+          <div>
+            <div class="card-title">KAIST_NAVER_semi_sup_vision <span class="arrow">↗</span></div>
+            <p class="card-desc">준지도 이미지 분류 (KAIST–NAVER).</p>
+          </div>
+        </a>
+        <a class="card" href="https://github.com/jwlee3746/CS330-pj4-Mobile-Systems-for-ML" target="_blank" rel="noopener">
+          <div class="card-meta tag">Kotlin</div>
+          <div>
+            <div class="card-title">CS330 Mobile Systems for ML <span class="arrow">↗</span></div>
+            <p class="card-desc">안드로이드 온디바이스 객체·오디오 인식 (MediaPipe).</p>
+          </div>
+        </a>
+      </div>
+      <a class="more" href="https://github.com/jwlee3746?tab=repositories" target="_blank" rel="noopener">GitHub에서 전체 보기 →</a>
+    </section>
+
+    <section id="education">
+      <h3 class="sec-title">학력</h3>
+      <div class="card plain">
+        <div class="card-meta">졸업</div>
+        <div>
+          <div class="card-title">KAIST 전산학부 학사</div>
+          <p class="card-desc">학부 과정 중 metric learning·준지도 학습 연구 참여.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills">
+      <h3 class="sec-title">기술 스택</h3>
+      <div class="skills">
+        <div class="skill-row">
+          <div class="card-meta">언어 · ML</div>
+          <div class="chips">
+            <span class="chip">Python</span>
+            <span class="chip">PyTorch</span>
+            <span class="chip">Kotlin</span>
+          </div>
+        </div>
+        <div class="skill-row">
+          <div class="card-meta">LLM · 에이전트</div>
+          <div class="chips">
+            <span class="chip">LangChain</span>
+            <span class="chip">LangGraph</span>
+            <span class="chip">Langfuse</span>
+            <span class="chip">OpenClaw</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+(function () {
+  // ── 스크롤 스파이 ──────────────────────────
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav a'));
+  var sections = links.map(function (a) {
+    return document.getElementById(a.getAttribute('href').slice(1));
+  });
+  var active = null;
+
+  function onScroll() {
+    var current = sections[0];
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i] && sections[i].getBoundingClientRect().top <= 200) current = sections[i];
+    }
+    if (current === active) return;
+    active = current;
+    links.forEach(function (a, i) {
+      a.classList.toggle('active', sections[i] === current);
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // ── 스포트라이트 ───────────────────────────
+  var spot = document.getElementById('spotlight');
+  if (window.matchMedia('(pointer: fine)').matches) {
+    window.addEventListener('mousemove', function (e) {
+      spot.style.background = 'radial-gradient(600px at ' + e.clientX + 'px ' + e.clientY +
+        'px, var(--spotlight), transparent 80%)';
+    }, { passive: true });
+  }
+})();
+</script>
+</body>
 </html>

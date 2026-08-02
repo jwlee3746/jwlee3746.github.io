@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>이재원 이력서</title>
+<meta name="description" content="이재원 (Jaewon Lee) 이력서 — ML 엔지니어 · 삼성전자 MX사업부 Language AI">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 0.75in; }
+
+  :root {
+    --ink: #1a1d20;
+    --body: #33383d;
+    --dim: #6a7076;
+    --rule: #d9dbdd;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'IBM Plex Sans KR', system-ui, sans-serif;
+    color: var(--ink);
+    background: #f2f2f0;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--ink); text-decoration: none; }
+  a:hover { color: #000; text-decoration: underline; }
+
+  /* 화면에서는 A4 용지처럼, 인쇄에서는 @page 여백이 대신한다 */
+  .sheet {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 24px auto;
+    padding: 0.75in;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .1), 0 12px 32px rgba(0, 0, 0, .09);
+  }
+
+  .toolbar {
+    max-width: 210mm;
+    margin: 24px auto -8px;
+    display: flex; justify-content: flex-end; gap: 10px;
+    font-family: var(--mono); font-size: 12px;
+  }
+  .toolbar a, .toolbar button {
+    font-family: inherit; font-size: inherit;
+    padding: 7px 14px; border-radius: 999px;
+    border: 1px solid #c9ccd0; background: #fff; color: var(--dim);
+    cursor: pointer; text-decoration: none;
+    transition: color .2s ease, border-color .2s ease;
+  }
+  .toolbar a:hover, .toolbar button:hover { color: var(--ink); border-color: var(--dim); text-decoration: none; }
+
+  /* ── 헤더 ─────────────────────────────────── */
+  .head {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    border-bottom: 2px solid var(--ink); padding-bottom: 14px;
+  }
+  h1 { margin: 0; font-size: 26pt; font-weight: 700; letter-spacing: -.02em; }
+  h1 .en { font-size: 11pt; font-weight: 500; color: var(--dim); font-family: var(--mono); }
+  .role { margin-top: 6px; font-size: 11.5pt; font-weight: 500; }
+  .contact { text-align: right; font-family: var(--mono); font-size: 8.5pt; line-height: 1.7; color: #4c545c; }
+
+  .summary { margin: 14px 0 0; font-size: 10.5pt; line-height: 1.65; color: var(--body); text-wrap: pretty; }
+
+  h2 {
+    margin: 26px 0 12px;
+    font-size: 10pt; font-weight: 700; letter-spacing: .14em; color: var(--dim);
+    border-bottom: 1px solid var(--rule); padding-bottom: 6px;
+  }
+
+  .row { display: grid; grid-template-columns: 110px 1fr; gap: 16px; break-inside: avoid; }
+  .row + .row { margin-top: 16px; }
+  .when { font-family: var(--mono); font-size: 8.5pt; color: var(--dim); padding-top: 2px; }
+  .what { font-size: 11pt; font-weight: 600; }
+  ul { margin: 6px 0 0; padding-left: 16px; font-size: 10pt; line-height: 1.6; color: var(--body); }
+  li { orphans: 3; widows: 3; }
+
+  .list { display: flex; flex-direction: column; gap: 12px; }
+  .list .row + .row { margin-top: 0; }
+  .line { font-size: 10pt; line-height: 1.55; }
+  .line b { font-weight: 600; }
+  .edu { font-size: 10.5pt; }
+  .edu .note { color: var(--dim); }
+  .stack { display: grid; grid-template-columns: 110px 1fr; gap: 16px; break-inside: avoid; }
+  .stack div:nth-child(odd) { font-family: var(--mono); font-size: 8.5pt; color: var(--dim); }
+  .stack div:nth-child(even) { font-size: 10pt; }
+
+  /* ── 인쇄 ─────────────────────────────────── */
+  @media print {
+    body { background: #fff; }
+    .toolbar { display: none; }
+    .sheet {
+      width: auto; min-height: 0; margin: 0; padding: 0;
+      box-shadow: none;
+    }
+    a { color: var(--ink) !important; text-decoration: none !important; }
+  }
+
+  /* screen 한정 — 인쇄 시 용지 폭(210mm)에 걸려 1컬럼으로 무너지는 것을 막는다 */
+  @media screen and (max-width: 230mm) {
+    .sheet { width: auto; min-height: 0; margin: 0; padding: 24px 20px 40px; box-shadow: none; }
+    .toolbar { margin: 16px 20px -8px; }
+    .head { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .contact { text-align: left; }
+    .row, .stack { grid-template-columns: 1fr; gap: 4px; }
+    .row + .row { margin-top: 14px; }
+    .list { gap: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <a href="/">← 포트폴리오</a>
+  <a href="/resume/jaewon-lee-resume.pdf" download>PDF 내려받기</a>
+  <button type="button" onclick="window.print()">인쇄</button>
+</div>
+
+<div class="sheet">
+  <div class="head">
+    <div>
+      <h1>이재원 <span class="en">Jaewon Lee</span></h1>
+      <div class="role">ML 엔지니어 · 삼성전자 MX사업부 Language AI</div>
+    </div>
+    <div class="contact">
+      <div>jwlee3746@naver.com</div>
+      <div>github.com/jwlee3746</div>
+      <div>linkedin.com/in/jwlee3746</div>
+    </div>
+  </div>
+
+  <p class="summary">삼성전자 MX사업부 Language AI 팀에서 Bixby의 LLM 모델 개발과 에이전틱 플랫폼 개발을 하고 있습니다. 모델 튜닝부터 에이전트의 도구 호출·실행 구조까지, LLM을 실제 제품에 태우는 일이 주된 관심사입니다. 그 전에는 KAIST에서 metric learning과 준지도 학습을 연구했고, 한국어 오픈도메인 QA와 안드로이드 온디바이스 추론 프로젝트를 진행했습니다.</p>
+
+  <h2>경력</h2>
+  <div class="row">
+    <div class="when">2024 — 현재</div>
+    <div>
+      <div class="what">ML 엔지니어 · 삼성전자 MX사업부 Language AI</div>
+      <ul>
+        <li>Bixby LLM 모델 개발: 모델 튜닝 및 평가 파이프라인 구축</li>
+        <li>에이전틱 플랫폼 개발: 에이전트의 도구 호출·실행 구조 설계 (LangChain · LangGraph · Langfuse)</li>
+        <li>프롬프트·하네스 전략 설계 및 운영</li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="when">— 2023</div>
+    <div>
+      <div class="what">학부 연구 · KAIST</div>
+      <ul>
+        <li>Metric learning · 준지도 학습 연구 (PyTorch)</li>
+        <li>한국어 오픈도메인 QA(KorQuAD), 안드로이드 온디바이스 추론 프로젝트 수행</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>프로젝트</h2>
+  <div class="list">
+    <div class="row">
+      <div class="when">Prompt Eng.</div>
+      <div class="line"><b>jw-agent-playbook</b> — LLM 에이전트 하네스 프롬프트·전략·세팅 모음</div>
+    </div>
+    <div class="row">
+      <div class="when">PyTorch · BERT</div>
+      <div class="line"><b>PIRL-korquad-open</b> — 한국어 오픈도메인 QA (KorQuAD)</div>
+    </div>
+    <div class="row">
+      <div class="when">PyTorch</div>
+      <div class="line"><b>pytorch_MVM</b> — GAN 기반 adversarial metric learning</div>
+    </div>
+    <div class="row">
+      <div class="when">PyTorch</div>
+      <div class="line"><b>KAIST_NAVER_semi_sup_vision</b> — 준지도 이미지 분류 (KAIST–NAVER)</div>
+    </div>
+    <div class="row">
+      <div class="when">Kotlin</div>
+      <div class="line"><b>CS330 Mobile Systems for ML</b> — 안드로이드 온디바이스 객체·오디오 인식 (MediaPipe)</div>
+    </div>
+  </div>
+
+  <h2>학력</h2>
+  <div class="row">
+    <div class="when">졸업</div>
+    <div class="edu"><b>KAIST 전산학부 학사</b> <span class="note">— 학부 과정 중 metric learning·준지도 학습 연구 참여</span></div>
+  </div>
+
+  <h2>기술 스택</h2>
+  <div class="stack">
+    <div>언어 · ML</div>
+    <div>Python · PyTorch · Kotlin</div>
+    <div>LLM · 에이전트</div>
+    <div>LangChain · LangGraph · Langfuse · OpenClaw</div>
+  </div>
+</div>
+
+</body>
+</html>
