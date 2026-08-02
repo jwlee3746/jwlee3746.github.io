@@ -23,14 +23,11 @@
 - **라이트가 기본, 다크는 전환**이다. 색은 `index.html`의 `:root` 토큰 한 곳에서만 정하고, 컴포넌트는 토큰만 참조한다. 다크 값은 `@media (prefers-color-scheme: dark)`와 `:root[data-theme="dark"]` 두 곳에 같이 넣는다 — 버튼 선택이 OS 설정을 양방향으로 이겨야 한다.
 - 저장된 테마는 `<head>`의 인라인 스크립트가 **첫 페인트 전에** 적용한다. 이 스크립트를 CSS 뒤로 옮기면 새로고침마다 화면이 번쩍인다.
 - 상단 하늘 밴드와 구름은 `html::before` / `html::after` 두 개로 그린다. 마크업에 요소를 추가하지 않는다.
-- **블로그 SCSS 는 libsass 로 빌드된다.** GitHub Pages 의 legacy 빌드는 dart-sass 가 아니라 sassc(libsass)를 쓴다. `hsl(188deg 52% 18%)` 같은 공백 구분 표기는 **SassScript 로 평가되는 자리**(변수 대입, 일반 선언의 값)에서 컴파일 에러를 낸다. 커스텀 프로퍼티 값(`--x: hsl(...)`)은 plain CSS 로 통과되므로 그대로 둬도 된다. 로컬 dart-sass 검증만 믿지 말고, 고친 뒤에는 아래로 libsass 를 재현해 확인한다.
+- **블로그 SCSS 는 Ruby Sass 로 빌드된다.** GitHub Pages 의 legacy 빌드는 `jekyll-sass-converter 1.5.2` 를 쓰고, 그 안은 dart-sass 도 libsass 도 아닌 **Ruby Sass 3.x** 다. 로컬 dart-sass 로 통과한 SCSS 가 배포에서 죽은 적이 두 번 있다.
+  - `hsl(188deg 52% 18%)` — 공백 구분 표기를 **SassScript 로 평가되는 자리**(변수 대입, 일반 선언의 값)에서 못 읽는다. 커스텀 프로퍼티 값(`--x: hsl(...)`)은 통과된다.
+  - `--wave: url("data:image/svg+xml,...")` — **커스텀 프로퍼티 값 안의 `url()`** 을 못 읽는다. 데이터 URI 는 SCSS 변수(`$wave`)로 두고 선언에 직접 쓴다.
 
-  ```
-  docker run --rm -v "$PWD":/w -w /w ruby:3.1-slim bash -c \
-    'apt-get update -qq && apt-get install -y -qq build-essential && gem install sassc -v 2.4.0 --no-document -q && \
-     ruby -e "require %q(sassc); src=File.read(%q(assets/css/main.scss)).sub(/\A---.*?---/m,%q()).gsub(/\{\{.*?\}\}/,%q(portfolio)); \
-     puts SassC::Engine.new(src, load_paths: [%q(_sass), %q(_sass/minimal-mistakes)]).render.bytesize"'
-  ```
+  CSS 만 따로 컴파일해 보는 것으로는 이 둘을 못 잡는다. 고친 뒤에는 블로그 레포의 `bash build-check.sh` 로 **사이트 전체 빌드**를 재현해 확인한다(도커만 있으면 됨).
 - 같은 토큰 값이 블로그 스킨(`jwlee3746/blog` 의 `_sass/minimal-mistakes/skins/_portfolio.scss`)에도 들어간다. 한쪽 색을 바꾸면 다른 쪽도 맞춘다.
 - 포트폴리오를 떠나는 링크는 새 탭(`target="_blank" rel="noopener"`). 같은 페이지 앵커와 `mailto:`는 제외.
 
