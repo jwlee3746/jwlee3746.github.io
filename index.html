@@ -10,10 +10,30 @@
 <meta property="og:title" content="이재원 · ML 엔지니어">
 <meta property="og:description" content="삼성전자 MX사업부 Language AI. LLM을 실제 제품에 태우는 일을 합니다.">
 <meta property="og:url" content="https://jwlee3746.github.io/">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://jwlee3746.github.io/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://jwlee3746.github.io/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "이재원",
+  "alternateName": "Jaewon Lee",
+  "url": "https://jwlee3746.github.io/",
+  "jobTitle": "ML 엔지니어",
+  "worksFor": { "@type": "Organization", "name": "삼성전자" },
+  "alumniOf": { "@type": "CollegeOrUniversity", "name": "KAIST" },
+  "sameAs": [
+    "https://github.com/jwlee3746",
+    "https://www.linkedin.com/in/jwlee3746/"
+  ]
+}
+</script>
 <style>
   :root {
     --accent-base: #5eead4;
@@ -27,12 +47,14 @@
     --chip-bg: color-mix(in oklab, var(--accent-base) 13%, transparent);
     --spotlight: color-mix(in oklab, var(--accent-base) 7%, transparent);
     --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    /* Google Fonts가 막힌 환경에서 CJK 폰트로 폴백되도록 OS 기본 한글 폰트를 명시한다 */
+    --sans: 'IBM Plex Sans KR', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif;
   }
   * { box-sizing: border-box; }
   html { background: var(--bg); scroll-behavior: smooth; }
   body {
     margin: 0;
-    font-family: 'IBM Plex Sans KR', system-ui, sans-serif;
+    font-family: var(--sans);
     background: var(--bg);
     color: var(--text);
     -webkit-font-smoothing: antialiased;
@@ -42,6 +64,12 @@
   a:hover { color: var(--text); }
   ::selection { background: var(--accent); color: var(--bg); }
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+  /* 화면에는 안 보이지만 스크린 리더는 읽는 텍스트 */
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+  }
 
   .spotlight {
     position: fixed; inset: 0; pointer-events: none; z-index: 5;
@@ -167,9 +195,10 @@
     <div>
       <h1 class="name">이재원</h1>
       <div class="name-en">Jaewon Lee</div>
-      <h2 class="role">ML 엔지니어 · 삼성전자 MX사업부 Language AI</h2>
+      <!-- 인물 부제이지 섹션 헤딩이 아니므로 h2로 쓰지 않는다 -->
+      <p class="role">ML 엔지니어 · 삼성전자 MX사업부 Language AI</p>
       <p class="tagline">LLM을 실제 제품에 태우는 일을 합니다.</p>
-      <a class="resume-cta" href="/resume/" target="_blank" rel="noopener">이력서 1장 보기 · PDF →</a>
+      <a class="resume-cta" href="/resume/" target="_blank" rel="noopener">이력서 1장 보기 · PDF <span aria-hidden="true">→</span><span class="sr-only"> (새 탭에서 열림)</span></a>
       <nav class="nav" aria-label="섹션">
         <a href="#about"><span class="line"></span><span class="label">소개</span></a>
         <a href="#experience"><span class="line"></span><span class="label">경력</span></a>
@@ -179,21 +208,22 @@
       </nav>
     </div>
     <div class="side-foot">
-      <a href="https://github.com/jwlee3746" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://www.linkedin.com/in/jwlee3746/" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="/blog/" target="_blank" rel="noopener">Blog</a>
+      <a href="https://github.com/jwlee3746" target="_blank" rel="noopener">GitHub<span class="sr-only"> (새 탭에서 열림)</span></a>
+      <a href="https://www.linkedin.com/in/jwlee3746/" target="_blank" rel="noopener">LinkedIn<span class="sr-only"> (새 탭에서 열림)</span></a>
+      <a href="/blog/" target="_blank" rel="noopener">Blog<span class="sr-only"> (새 탭에서 열림)</span></a>
       <a href="mailto:jwlee3746@naver.com">Email</a>
     </div>
   </header>
 
   <main>
-    <section id="about">
+    <section id="about" aria-labelledby="about-h">
+      <h2 class="sr-only" id="about-h">소개</h2>
       <p class="prose">삼성전자 MX사업부 Language AI 팀에서 <strong>Bixby의 LLM 모델 개발</strong>과 <strong>에이전틱 플랫폼 개발</strong>을 하고 있습니다. 모델 튜닝부터 에이전트가 도구를 쓰고 실행하는 구조까지, LLM이 실제 제품 안에서 동작하게 만드는 일이 주된 관심사입니다.</p>
       <p class="prose">그 전에는 KAIST에서 metric learning과 준지도 학습을 연구했고, 한국어 오픈도메인 QA와 안드로이드 온디바이스 추론 프로젝트를 진행했습니다.</p>
     </section>
 
-    <section id="experience">
-      <h3 class="sec-title">경력</h3>
+    <section id="experience" aria-labelledby="experience-h">
+      <h2 class="sec-title" id="experience-h">경력</h2>
       <div class="cards">
         <a class="card" href="https://www.linkedin.com/in/jwlee3746/" target="_blank" rel="noopener">
           <div class="card-meta">2024 — 현재</div>
@@ -222,90 +252,91 @@
       </div>
     </section>
 
-    <section id="projects">
-      <h3 class="sec-title">프로젝트</h3>
+    <section id="projects" aria-labelledby="projects-h">
+      <h2 class="sec-title" id="projects-h">프로젝트</h2>
       <div class="cards">
         <a class="card" href="https://github.com/jwlee3746/jw-agent-playbook" target="_blank" rel="noopener">
           <div class="card-meta tag">Prompt Eng.</div>
           <div>
-            <div class="card-title">jw-agent-playbook <span class="arrow">↗</span></div>
+            <div class="card-title">jw-agent-playbook <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></div>
             <p class="card-desc">LLM 에이전트 하네스 프롬프트·전략·세팅 모음.</p>
           </div>
         </a>
         <a class="card" href="https://github.com/jwlee3746/PIRL-korquad-open-cs492h" target="_blank" rel="noopener">
           <div class="card-meta tag">PyTorch · BERT</div>
           <div>
-            <div class="card-title">PIRL-korquad-open <span class="arrow">↗</span></div>
+            <div class="card-title">PIRL-korquad-open <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></div>
             <p class="card-desc">한국어 오픈도메인 QA (KorQuAD).</p>
           </div>
         </a>
         <a class="card" href="https://github.com/jwlee3746/pytorch_MVM" target="_blank" rel="noopener">
           <div class="card-meta tag">PyTorch</div>
           <div>
-            <div class="card-title">pytorch_MVM <span class="arrow">↗</span></div>
+            <div class="card-title">pytorch_MVM <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></div>
             <p class="card-desc">GAN 기반 adversarial metric learning.</p>
           </div>
         </a>
         <a class="card" href="https://github.com/jwlee3746/KAIST_NAVER_semi_sup_vision" target="_blank" rel="noopener">
           <div class="card-meta tag">PyTorch</div>
           <div>
-            <div class="card-title">KAIST_NAVER_semi_sup_vision <span class="arrow">↗</span></div>
+            <div class="card-title">KAIST_NAVER_semi_sup_vision <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></div>
             <p class="card-desc">준지도 이미지 분류 (KAIST–NAVER).</p>
           </div>
         </a>
         <a class="card" href="https://github.com/jwlee3746/CS330-pj4-Mobile-Systems-for-ML" target="_blank" rel="noopener">
           <div class="card-meta tag">Kotlin</div>
           <div>
-            <div class="card-title">CS330 Mobile Systems for ML <span class="arrow">↗</span></div>
+            <div class="card-title">CS330 Mobile Systems for ML <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></div>
             <p class="card-desc">안드로이드 온디바이스 객체·오디오 인식 (MediaPipe).</p>
           </div>
         </a>
       </div>
-      <a class="more" href="https://github.com/jwlee3746?tab=repositories" target="_blank" rel="noopener">GitHub에서 전체 보기 →</a>
+      <a class="more" href="https://github.com/jwlee3746?tab=repositories" target="_blank" rel="noopener">GitHub에서 전체 보기 <span aria-hidden="true">→</span><span class="sr-only"> (새 탭에서 열림)</span></a>
     </section>
 
-    <!-- 글: 썸네일은 블로그 글의 이미지를 그대로 참조한다.
+    <!-- 글: 썸네일은 블로그 원본을 256x160으로 줄인 축소판이다 (assets/thumbs/).
+         원본 PNG를 그대로 쓰면 392KB를 받아 128px 박스에 넣는 꼴이라 축소판을 따로 둔다.
          새 글을 걸 때 썸네일이 아직 없으면 <div class="thumb"></div>만 두면 되고,
          카드 모양은 그대로 유지된다. -->
-    <section id="writing">
-      <h3 class="sec-title">글</h3>
+    <section id="writing" aria-labelledby="writing-h">
+      <h2 class="sec-title" id="writing-h">글</h2>
       <div class="cards">
         <a class="card" href="/blog/Paper/Attention1/" target="_blank" rel="noopener">
           <div class="thumb">
-            <img src="/blog/assets/images/posts_img/2024-05-19-1/transformer.png" alt="" loading="lazy" onerror="this.remove()">
+            <img src="/assets/thumbs/attention-1.webp" alt="" width="256" height="160" loading="lazy" onerror="this.remove()">
           </div>
           <div>
             <div class="post-cat">논문 리뷰</div>
-            <div class="card-title">Attention Is All You Need [1] — Encoder · Decoder <span class="arrow">↗</span></div>
+            <div class="card-title">Attention Is All You Need [1] — Encoder · Decoder <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></div>
             <p class="card-desc">Transformer의 인코더·디코더 구조를 그림과 코드로 따라가며 정리했습니다.</p>
           </div>
         </a>
         <a class="card" href="/blog/Paper/Attention2/" target="_blank" rel="noopener">
           <div class="thumb">
-            <img src="/blog/assets/images/posts_img/2024-05-20-1/attention1.png" alt="" loading="lazy" onerror="this.remove()">
+            <img src="/assets/thumbs/attention-2.webp" alt="" width="256" height="160" loading="lazy" onerror="this.remove()">
           </div>
           <div>
             <div class="post-cat">논문 리뷰</div>
-            <div class="card-title">Attention Is All You Need [2] — Attention <span class="arrow">↗</span></div>
+            <div class="card-title">Attention Is All You Need [2] — Attention <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></div>
             <p class="card-desc">Self-Attention과 Multi-Head Attention을 병렬성 관점에서 뜯어봤습니다.</p>
           </div>
         </a>
         <a class="card" href="/blog/Paper/Attention3/" target="_blank" rel="noopener">
           <div class="thumb">
-            <img src="/blog/assets/images/posts_img/2024-05-21-1/PEexample.png" alt="" loading="lazy" onerror="this.remove()">
+            <img src="/assets/thumbs/attention-3.webp" alt="" width="256" height="160" loading="lazy" onerror="this.remove()">
           </div>
           <div>
             <div class="post-cat">논문 리뷰</div>
-            <div class="card-title">Attention Is All You Need [3] — Feed-Forward · Positional Encoding <span class="arrow">↗</span></div>
+            <div class="card-title">Attention Is All You Need [3] — Feed-Forward · Positional Encoding <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></div>
             <p class="card-desc">위치 정보를 인코딩하는 방식과 FFN의 역할을 정리했습니다.</p>
           </div>
         </a>
       </div>
-      <a class="more" href="/blog/" target="_blank" rel="noopener">블로그 전체 보기 →</a>
+      <a class="more" href="/blog/" target="_blank" rel="noopener">블로그 전체 보기 <span aria-hidden="true">→</span><span class="sr-only"> (새 탭에서 열림)</span></a>
     </section>
 
-    <section id="education">
-      <h3 class="sec-title">학력</h3>
+    <section id="education" aria-labelledby="education-h">
+      <h2 class="sec-title" id="education-h">학력</h2>
       <div class="card plain">
         <div class="card-meta">졸업</div>
         <div>
@@ -343,7 +374,7 @@
 
   // ── 스포트라이트 ───────────────────────────
   var spot = document.getElementById('spotlight');
-  if (window.matchMedia('(pointer: fine)').matches) {
+  if (spot && window.matchMedia('(pointer: fine)').matches) {
     window.addEventListener('mousemove', function (e) {
       spot.style.background = 'radial-gradient(600px at ' + e.clientX + 'px ' + e.clientY +
         'px, var(--spotlight), transparent 80%)';
