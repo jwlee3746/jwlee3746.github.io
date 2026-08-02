@@ -34,34 +34,110 @@
   ]
 }
 </script>
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('theme');
+      if (t) document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  })();
+</script>
 <style>
+  /* ── 토큰 ─────────────────────────────────
+     라이트가 기본, 다크는 전환. 중립색은 순회색을 피해 전부 청록 쪽으로
+     살짝 기울여 둔다 — 회색이 "고른 값"으로 읽히게 하는 장치다.
+     같은 값이 블로그 스킨(_portfolio.scss)에도 그대로 들어간다. */
   :root {
-    --accent-base: #5eead4;
-    --bg: #0e1116;
-    --text: #e6edf3;
-    --text-soft: #a9b1ba;
-    --muted: #747d87;
-    --border: #22282f;
-    --card-hover: rgba(255, 255, 255, .045);
-    --accent: var(--accent-base);
-    --chip-bg: color-mix(in oklab, var(--accent-base) 13%, transparent);
-    --spotlight: color-mix(in oklab, var(--accent-base) 7%, transparent);
+    --bg:        hsl(0deg 0% 100%);
+    --raised:    hsl(185deg 40% 97%);
+    --line:      hsl(190deg 25% 90%);
+    --text:      hsl(200deg 18% 22%);
+    --ink:       hsl(188deg 52% 18%);   /* 제목 — 검정으로 두지 않는다 */
+    --muted:     hsl(200deg 12% 45%);
+    --accent:    hsl(178deg 84% 26%);   /* 링크·강조 */
+    --hot:       hsl(340deg 72% 42%);   /* 섹션 라벨 — 차가운 지면에 뜨거운 점 하나 */
+    --chip-bg:   hsl(178deg 52% 93%);
+    --card-hover:hsl(178deg 45% 96%);
+    --thumb-bg:  hsl(190deg 35% 95%);
+    --band-1:    hsl(174deg 62% 87%);
+    --band-2:    hsl(182deg 52% 94%);
+    --spot:      transparent;           /* 스포트라이트는 다크에서만 */
+    --thumb-op:  1;
+
     --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
     /* Google Fonts가 막힌 환경에서 CJK 폰트로 폴백되도록 OS 기본 한글 폰트를 명시한다 */
     --sans: 'IBM Plex Sans KR', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif;
   }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:        hsl(215deg 22% 8%);
+      --raised:    hsl(210deg 20% 12%);
+      --line:      hsl(210deg 17% 18%);
+      --text:      hsl(208deg 14% 70%);
+      --ink:       hsl(168deg 55% 85%);
+      --muted:     hsl(207deg 9% 52%);
+      --accent:    hsl(168deg 76% 65%);
+      --hot:       hsl(340deg 85% 72%);
+      --chip-bg:   hsl(170deg 35% 15%);
+      --card-hover:hsl(172deg 30% 13%);
+      --thumb-bg:  hsl(212deg 22% 11%);
+      --band-1:    hsl(184deg 32% 15%);
+      --band-2:    hsl(206deg 24% 10%);
+      --spot:      hsl(168deg 76% 65% / .06);
+      --thumb-op:  .84;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:        hsl(215deg 22% 8%);
+    --raised:    hsl(210deg 20% 12%);
+    --line:      hsl(210deg 17% 18%);
+    --text:      hsl(208deg 14% 70%);
+    --ink:       hsl(168deg 55% 85%);
+    --muted:     hsl(207deg 9% 52%);
+    --accent:    hsl(168deg 76% 65%);
+    --hot:       hsl(340deg 85% 72%);
+    --chip-bg:   hsl(170deg 35% 15%);
+    --card-hover:hsl(172deg 30% 13%);
+    --thumb-bg:  hsl(212deg 22% 11%);
+    --band-1:    hsl(184deg 32% 15%);
+    --band-2:    hsl(206deg 24% 10%);
+    --spot:      hsl(168deg 76% 65% / .06);
+    --thumb-op:  .84;
+  }
+
   * { box-sizing: border-box; }
-  html { background: var(--bg); scroll-behavior: smooth; }
+  html { background: var(--bg); scroll-behavior: smooth; position: relative; }
+
+  /* ── 상단 하늘 밴드 ────────────────────────
+     블로그와 같은 장치. 띠를 깔고 구름으로 잘라 본문에 녹인다.
+     html 의 가상 요소라 마크업을 건드리지 않는다. */
+  html::before {
+    content: ""; position: absolute; z-index: -2;
+    top: 0; left: 0; right: 0; height: 430px;
+    background: linear-gradient(to bottom, var(--band-1), var(--band-2));
+  }
+  html::after {
+    content: ""; position: absolute; z-index: -1;
+    top: 210px; left: 0; right: 0; height: 320px;
+    background:
+      radial-gradient(58% 58% at 24% 58%, var(--bg) 99.5%, transparent 100%),
+      radial-gradient(54% 46% at 77% 66%, var(--bg) 99.5%, transparent 100%),
+      linear-gradient(to bottom, transparent 0 66%, var(--bg) 66%);
+    background-repeat: no-repeat;
+  }
+
   body {
     margin: 0;
     font-family: var(--sans);
-    background: var(--bg);
+    background: transparent;
     color: var(--text);
+    font-size: 17px;
+    line-height: 1.85;
     -webkit-font-smoothing: antialiased;
-    transition: background-color .35s ease, color .35s ease;
   }
   a { color: var(--accent); text-decoration: none; transition: color .25s ease; }
-  a:hover { color: var(--text); }
+  a:hover { color: var(--ink); }
   ::selection { background: var(--accent); color: var(--bg); }
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
 
@@ -92,63 +168,86 @@
     display: flex; flex-direction: column; justify-content: space-between;
     padding: 96px 24px 72px 0;
   }
-  .name { margin: 0; font-size: 44px; font-weight: 700; letter-spacing: -.02em; line-height: 1.15; }
-  .name-en { margin-top: 8px; font-family: var(--mono); font-size: 14px; color: var(--text-soft); }
-  .role { margin: 20px 0 0; font-size: 18px; font-weight: 500; color: var(--text); }
-  .tagline { margin: 14px 0 0; max-width: 320px; font-size: 15px; line-height: 1.65; color: var(--muted); text-wrap: pretty; }
+  .name { margin: 0; font-size: 44px; font-weight: 700; letter-spacing: -.02em; line-height: 1.15; color: var(--ink); }
+  .name-en { margin-top: 8px; font-family: var(--mono); font-size: 14px; color: var(--muted); }
+  .role { margin: 20px 0 0; font-size: 18px; font-weight: 600; color: var(--text); }
+  .tagline { margin: 14px 0 0; max-width: 320px; font-size: 15px; line-height: 1.7; color: var(--muted); text-wrap: pretty; }
 
   .nav { margin-top: 56px; display: flex; flex-direction: column; }
   .nav a { display: flex; align-items: center; gap: 14px; padding: 9px 0; color: var(--muted); }
   .nav .line {
-    display: inline-block; height: 1px; width: 28px; background: var(--muted);
+    display: inline-block; height: 2px; width: 28px; background: var(--line);
+    border-radius: 2px;
     transition: width .25s ease, background-color .25s ease;
   }
-  .nav .label { font-size: 12px; font-weight: 600; letter-spacing: .14em; color: var(--muted); transition: color .25s ease; }
-  .nav a:hover .line, .nav a.active .line { width: 56px; background: var(--text); }
-  .nav a:hover .label, .nav a.active .label { color: var(--text); }
+  .nav .label {
+    font-family: var(--mono); font-size: 12px; font-weight: 600;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
+    transition: color .25s ease;
+  }
+  .nav a:hover .line, .nav a.active .line { width: 56px; background: var(--accent); }
+  .nav a:hover .label, .nav a.active .label { color: var(--ink); }
 
   .resume-cta {
     display: inline-flex; align-items: center; gap: 8px;
-    margin-top: 24px; font-family: var(--mono); font-size: 13px;
+    margin-top: 24px; font-family: var(--mono); font-size: 13px; font-weight: 500;
   }
 
   .side-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; font-family: var(--mono); font-size: 13px; }
   .side-foot a { color: var(--muted); }
-  .side-foot a:hover { color: var(--text); }
+  .side-foot a:hover { color: var(--ink); }
+
+  /* 테마 전환 — 라이트가 기본이고 다크는 고를 수 있게 둔다 */
+  .theme-toggle {
+    font: inherit; font-family: var(--mono); font-size: 13px;
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 5px 12px; border-radius: 999px;
+    border: 1px solid var(--line); background: transparent; color: var(--muted);
+    cursor: pointer;
+    transition: color .25s ease, border-color .25s ease, background-color .25s ease;
+  }
+  .theme-toggle:hover { color: var(--ink); border-color: var(--accent); background: var(--card-hover); }
 
   /* ── 본문 ────────────────────────────────── */
   main { padding: 96px 0 120px; display: flex; flex-direction: column; gap: 96px; }
   section { scroll-margin-top: 96px; }
-  .sec-title { margin: 0 0 28px; font-size: 13px; font-weight: 600; letter-spacing: .14em; color: var(--muted); }
-  .prose { margin: 0; font-size: 16px; line-height: 1.75; color: var(--text-soft); max-width: 560px; text-wrap: pretty; }
+  .sec-title {
+    margin: 0 0 28px;
+    font-family: var(--mono); font-size: 12px; font-weight: 600;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--hot);
+  }
+  .prose { margin: 0; font-size: 17px; line-height: 1.85; color: var(--text); max-width: 580px; text-wrap: pretty; }
   .prose + .prose { margin-top: 18px; }
-  .prose strong { color: var(--text); font-weight: 600; }
+  .prose strong { color: var(--ink); font-weight: 600; }
 
   .cards { display: flex; flex-direction: column; gap: 12px; }
   .card {
     display: grid; grid-template-columns: 128px 1fr; gap: 20px;
     padding: 20px; margin: 0 -20px;
-    border-radius: 8px; color: inherit;
+    border-radius: 12px; color: inherit;
     transition: background-color .25s ease;
   }
   a.card:hover { background: var(--card-hover); color: inherit; }
-  .card-meta { font-family: var(--mono); font-size: 12px; color: var(--muted); padding-top: 3px; }
-  .card-meta.tag { color: var(--accent); }
-  .card-title { font-size: 16px; font-weight: 600; color: var(--text); }
-  .card-title .arrow { color: var(--muted); font-weight: 400; display: inline-block; transition: transform .2s ease; }
+  .card-meta { font-family: var(--mono); font-size: 12px; color: var(--muted); padding-top: 5px; }
+  .card-meta.tag { color: var(--accent); font-weight: 500; }
+  .card-title { font-size: 17px; font-weight: 600; color: var(--ink); line-height: 1.45; }
+  .card-title .arrow { color: var(--accent); font-weight: 400; display: inline-block; transition: transform .2s ease; }
   a.card:hover .arrow { transform: translate(2px, -2px); }
-  .card-desc { margin: 8px 0 0; font-size: 14px; line-height: 1.7; color: var(--muted); text-wrap: pretty; }
-  /* 수치·핵심어만 한 단계 밝게 — 카드 전체가 밝아지면 강조가 사라진다 */
-  .card-desc strong { color: var(--text-soft); font-weight: 600; }
+  .card-desc { margin: 8px 0 0; font-size: 15px; line-height: 1.75; color: var(--muted); text-wrap: pretty; }
+  /* 수치·핵심어만 한 단계 진하게 — 카드 전체가 진해지면 강조가 사라진다 */
+  .card-desc strong { color: var(--text); font-weight: 600; }
 
   .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
   .chip {
-    font-family: var(--mono); font-size: 12px;
-    padding: 4px 11px; border-radius: 999px;
+    font-family: var(--mono); font-size: 12px; font-weight: 600;
+    padding: 4px 12px; border-radius: 999px;
     background: var(--chip-bg); color: var(--accent);
   }
 
-  .more { display: inline-block; margin-top: 24px; font-family: var(--mono); font-size: 13px; }
+  .more {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 24px; font-family: var(--mono); font-size: 13px; font-weight: 500;
+  }
 
   .plain { margin: 0; padding: 0; }
 
@@ -156,19 +255,21 @@
      빈칸처럼 보이지 않는다. 썸네일을 아직 안 넣은 글도 그대로 걸 수 있다. */
   .thumb {
     width: 128px; aspect-ratio: 16 / 10;
-    border-radius: 4px; overflow: hidden;
-    border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden;
+    border: 1px solid var(--line);
     background:
       linear-gradient(135deg, var(--chip-bg), transparent 65%),
-      repeating-linear-gradient(45deg, rgba(255, 255, 255, .022) 0 6px, transparent 6px 12px),
-      #14181e;
+      var(--thumb-bg);
     transition: border-color .25s ease;
   }
-  /* 논문 캡처는 대부분 흰 배경이라 다크 화면에서 튄다. 평소엔 낮춰두고 hover에서 살린다. */
-  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: .82; transition: opacity .25s ease; }
+  /* 논문 캡처는 대부분 흰 배경이라 다크에서 튄다. 다크에서만 톤을 낮춘다. */
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: var(--thumb-op); transition: opacity .25s ease; }
   a.card:hover .thumb { border-color: var(--accent); }
   a.card:hover .thumb img { opacity: 1; }
-  .post-cat { font-family: var(--mono); font-size: 11px; color: var(--accent); margin-bottom: 6px; }
+  .post-cat {
+    font-family: var(--mono); font-size: 11px; font-weight: 600;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--hot); margin-bottom: 6px;
+  }
 
   /* ── 반응형 ──────────────────────────────── */
   @media (max-width: 900px) {
@@ -214,6 +315,10 @@
       <a href="https://www.linkedin.com/in/jwlee3746/" target="_blank" rel="noopener">LinkedIn<span class="sr-only"> (새 탭에서 열림)</span></a>
       <a href="/blog/" target="_blank" rel="noopener">Blog<span class="sr-only"> (새 탭에서 열림)</span></a>
       <a href="mailto:jwlee3746@naver.com">Email</a>
+      <button type="button" class="theme-toggle" id="theme-toggle" aria-pressed="false">
+        <span aria-hidden="true" id="theme-icon">◐</span>
+        <span id="theme-label">다크</span>
+      </button>
     </div>
   </header>
 
@@ -391,8 +496,40 @@
   if (spot && window.matchMedia('(pointer: fine)').matches) {
     window.addEventListener('mousemove', function (e) {
       spot.style.background = 'radial-gradient(600px at ' + e.clientX + 'px ' + e.clientY +
-        'px, var(--spotlight), transparent 80%)';
+        'px, var(--spot), transparent 80%)';
     }, { passive: true });
+  }
+
+  // ── 테마 전환 ──────────────────────────────
+  // 라이트가 기본이고, OS가 다크면 다크로 뜬다. 버튼으로 고르면 그 선택이 이긴다.
+  var root = document.documentElement;
+  var btn = document.getElementById('theme-toggle');
+  var icon = document.getElementById('theme-icon');
+  var label = document.getElementById('theme-label');
+  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function isDark() {
+    return root.dataset.theme ? root.dataset.theme === 'dark' : prefersDark.matches;
+  }
+  function paint() {
+    var dark = isDark();
+    btn.setAttribute('aria-pressed', String(dark));
+    icon.textContent = dark ? '◑' : '◐';
+    label.textContent = dark ? '라이트' : '다크';
+    btn.setAttribute('aria-label', dark ? '라이트 모드로 전환' : '다크 모드로 전환');
+  }
+  if (btn) {
+    btn.addEventListener('click', function () {
+      var next = isDark() ? 'light' : 'dark';
+      root.dataset.theme = next;
+      try { localStorage.setItem('theme', next); } catch (e) {}
+      paint();
+    });
+    // 직접 고른 적이 없으면 OS 설정 변화를 그대로 따라간다
+    prefersDark.addEventListener('change', function () {
+      if (!root.dataset.theme) paint();
+    });
+    paint();
   }
 })();
 </script>
