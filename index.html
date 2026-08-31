@@ -16,7 +16,11 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://jwlee3746.github.io/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Source+Sans+Pro:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7/css/all.min.css">
 <script type="application/ld+json">
 {
@@ -1055,6 +1059,65 @@
     background: transparent;
     color: var(--chirpy-sidebar-active);
   }
+
+  /* 한글의 밀도를 낮추면서 Chirpy의 영문 리듬을 유지한다. */
+  :root {
+    --sans: 'Source Sans Pro', 'Pretendard Variable', Pretendard,
+            'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    --heading: 'Lato', 'Pretendard Variable', Pretendard,
+               'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    --mono: var(--sans);
+  }
+  body {
+    font-size: 15.5px;
+    line-height: 1.72;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+  .sec-title,
+  .card-title { font-family: var(--heading); }
+  .prose {
+    font-size: 15.5px;
+    line-height: 1.75;
+    letter-spacing: -.008em;
+  }
+  .prose + .prose { margin-top: 1rem; }
+  .card-desc {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 14.5px;
+    line-height: 1.65;
+    letter-spacing: -.006em;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+  #experience .card {
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+  }
+  #experience .card > div:nth-child(2) { order: 1; }
+  #experience .card > .card-meta {
+    order: 2;
+    width: 100%;
+    margin-top: .1rem;
+    padding-top: .7rem;
+    border-top: 1px solid var(--chirpy-main-border);
+  }
+  .chips { gap: .4rem; }
+  .role { font-size: .86rem; line-height: 1.5; }
+  .tagline { font-size: .82rem; }
+  .resume-cta {
+    width: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font-size: .78rem;
+  }
+
+  @media screen and (max-width: 849px) {
+    .resume-cta { width: auto; padding: 0; }
+  }
 </style>
 </head>
 <body>
@@ -1105,8 +1168,8 @@
   <main>
     <section id="about" aria-labelledby="about-h">
       <h2 class="sr-only" id="about-h">소개</h2>
-      <p class="prose">삼성전자 MX사업부 Language AI 팀에서 <strong>Bixby의 LLM 모델 개발</strong>과 <strong>에이전틱 플랫폼 개발</strong>을 하고 있습니다. 모델 튜닝뿐 아니라 표준화된 테스트 계약, multi-step replay, deterministic scoring을 갖춘 평가 인프라를 만들고, 에이전트의 안정적인 도구 실행과 실행 흐름 관측까지 다룹니다.</p>
-      <p class="prose">그 전에는 산학 연계 인턴으로 AI 학습용 데이터 진단·개선 과제를 연구 개발했고, KAIST에서 metric learning과 준지도 학습을 연구하며 한국어 오픈도메인 QA와 안드로이드 온디바이스 추론 프로젝트를 진행했습니다.</p>
+      <p class="prose">삼성전자 MX사업부 Language AI 팀에서 <strong>Bixby의 LLM 모델</strong>과 <strong>에이전틱 플랫폼</strong>을 개발합니다. 표준화된 테스트 계약, multi-step replay와 deterministic scoring을 기반으로 재현 가능한 평가·관측 체계를 설계합니다.</p>
+      <p class="prose">이전에는 산학 연계 인턴으로 AI 학습용 데이터 진단·개선을 연구했고, KAIST에서 metric learning과 준지도 학습을 바탕으로 오픈도메인 QA와 온디바이스 추론 프로젝트를 수행했습니다.</p>
     </section>
 
     <section id="experience" aria-labelledby="experience-h">
@@ -1116,14 +1179,11 @@
           <div class="card-meta">2024.07 — 현재</div>
           <div>
             <div class="card-title">ML 엔지니어 · 삼성전자 MX사업부 Language AI</div>
-            <p class="card-desc">Bixby LLM·에이전트 평가 서비스를 설계·구축했습니다. 평가 자산의 계약과 검증, request projection, multi-step 실행, deterministic scoring, 결과 기록을 명시적인 계층으로 나눠 재현 가능한 흐름으로 통합합니다.</p>
+            <p class="card-desc">Bixby LLM·에이전트 평가 서비스를 설계·구축했습니다. 평가 계약과 CI 검증, multi-step replay, deterministic scoring과 실행 기록을 재현 가능한 하나의 흐름으로 통합했습니다.</p>
             <div class="chips">
               <span class="chip">Python</span>
               <span class="chip">TypeScript</span>
-              <span class="chip">JSON Schema</span>
-              <span class="chip">CI/CD</span>
-              <span class="chip">Langfuse</span>
-              <span class="chip">OpenTelemetry</span>
+              <span class="chip">Observability</span>
             </div>
           </div>
         </a>
