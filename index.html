@@ -1128,15 +1128,17 @@
 
   /* 검색 입력: 현재 화면은 유지하고 submit할 때만 블로그 검색으로 이동한다. */
   .topbar {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(200px, 260px) minmax(0, 1fr);
+    --site-topbar-edge: clamp(24px, 4vw, 64px);
+    padding-left: var(--site-topbar-edge);
+    padding-right: var(--site-topbar-edge);
+    display: flex;
     align-items: center;
   }
-  .breadcrumb { grid-column: 1; }
   .site-search {
-    grid-column: 2;
-    width: 100%;
-    max-width: 260px;
+    position: absolute;
+    right: var(--site-topbar-edge);
+    width: 200px;
+    max-width: 200px;
     padding: 0 .55rem;
     display: flex;
     align-items: center;
@@ -1177,10 +1179,14 @@
   .nav .nav-categories { margin-top: .2rem; }
   .panel-tags a { display: inline-block; }
 
+  @media screen and (min-width: 1410px) {
+    .site-search { right: calc((100% - 1014px) / 2); }
+  }
+
   @media screen and (max-width: 849px) {
-    .topbar { grid-template-columns: 2rem minmax(0, 1fr); gap: .75rem; }
+    .topbar { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: .75rem; }
     .topbar-title { display: none; }
-    .site-search { grid-column: 2; width: min(280px, 100%); max-width: none; justify-self: end; }
+    .site-search { position: static; grid-column: 2; width: min(280px, 100%); max-width: none; justify-self: end; }
   }
 
   /* 현업 프로젝트는 제목보다 성과와 근거가 먼저 읽히도록 구성한다. */
@@ -1471,13 +1477,14 @@
             <a href="#writing">POSTS</a>
           </div>
         </div>
-        <a class="nav-parent nav-categories" href="/blog/categories/"><i class="fa-fw fas fa-stream" aria-hidden="true"></i><span class="label">CATEGORIES</span></a>
+        <a class="nav-parent nav-categories" href="/blog/"><i class="fa-fw fas fa-stream" aria-hidden="true"></i><span class="label">POSTS BY CATEGORY</span></a>
+        <a class="nav-parent nav-posts" href="/blog/posts/"><i class="fa-fw fas fa-pen-nib" aria-hidden="true"></i><span class="label">POSTS</span></a>
       </nav>
     </div>
     <div class="side-foot">
       <a href="https://github.com/jwlee3746" target="_blank" rel="noopener">GitHub<span class="sr-only"> (새 탭에서 열림)</span></a>
       <a href="https://www.linkedin.com/in/jwlee3746/" target="_blank" rel="noopener">LinkedIn<span class="sr-only"> (새 탭에서 열림)</span></a>
-      <a href="/blog/" target="_blank" rel="noopener">Posts<span class="sr-only"> (새 탭에서 열림)</span></a>
+      <a href="/blog/posts/" target="_blank" rel="noopener">Posts<span class="sr-only"> (새 탭에서 열림)</span></a>
       <a href="mailto:jwlee3746@naver.com">Email</a>
     </div>
   </header>
@@ -1560,6 +1567,10 @@
               <li><strong>안정성·관측성</strong> — 실행 이벤트 정규화, 비정상 응답 방어, URL·이미지 데이터 마스킹과 도구 호출 로깅을 적용했습니다.</li>
               <li><strong>실행 환경</strong> — Docker Compose 기반 서버 실행·배포 구성과 Agent Skill 정의 주입 구조를 구축했습니다.</li>
             </ul>
+            <div class="project-links">
+              <a href="/blog/Agent/openclaw-architecture-research/" target="_blank" rel="noopener">구조 리서치 보기 <span aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></a>
+              <a href="/blog/Agent/openclaw-component-application/" target="_blank" rel="noopener">컴포넌트 적용기 보기 <span aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></a>
+            </div>
           </div>
         </article>
         <article class="project-row">
