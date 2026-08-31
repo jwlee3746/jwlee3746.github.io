@@ -1118,6 +1118,166 @@
   @media screen and (max-width: 849px) {
     .resume-cta { width: auto; padding: 0; }
   }
+
+  /* Chirpy 검색 컨트롤과 결과 레이어 */
+  .site-search {
+    width: 100%;
+    max-width: 200px;
+    padding: 0 .55rem;
+    display: flex;
+    align-items: center;
+    gap: .25rem;
+    border: 1px solid var(--chirpy-btn-border);
+    border-radius: 1rem;
+    background: var(--chirpy-main-bg);
+  }
+  .site-search i {
+    color: var(--chirpy-muted);
+    font-size: .9rem;
+  }
+  .site-search input {
+    width: 100%;
+    height: 1.9rem;
+    padding: .18rem .3rem;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--chirpy-text);
+    font-family: var(--sans);
+    font-size: .95rem;
+  }
+  .site-search input::placeholder { color: var(--chirpy-muted); opacity: 1; }
+  .site-search:focus-within { border-color: var(--chirpy-muted); }
+  .search-trigger,
+  .search-cancel {
+    display: none;
+    border: 0;
+    background: transparent;
+    color: var(--chirpy-link);
+    font-family: var(--sans);
+  }
+  .search-layer {
+    position: fixed;
+    inset: 3rem 0 0 260px;
+    z-index: 19;
+    visibility: hidden;
+    overflow-y: auto;
+    background: var(--chirpy-main-bg);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease, visibility .18s ease;
+  }
+  body.search-open { overflow: hidden; }
+  body.search-open .search-layer {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  body.search-open .search-cancel { display: inline-block; }
+  .search-content {
+    width: min(760px, calc(100% - 3rem));
+    margin: 0 auto;
+    padding: 3rem 0 5rem;
+  }
+  .search-hints h2 {
+    margin: 0 0 1.5rem;
+    color: var(--chirpy-label);
+    font-family: var(--heading);
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  .search-category-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem 1.1rem;
+  }
+  .search-category-list a,
+  .panel-tags a {
+    padding: .28rem .55rem;
+    border: 1px solid var(--chirpy-btn-border);
+    border-radius: .8rem;
+    color: var(--chirpy-muted);
+    font-size: .85rem;
+    line-height: 1.05rem;
+  }
+  .search-category-list a:hover,
+  .panel-tags a:hover {
+    border-color: var(--chirpy-muted);
+    color: var(--chirpy-text);
+  }
+  .search-results { width: 100%; }
+  .search-result {
+    display: block;
+    padding: 1.15rem .25rem;
+    border-bottom: 1px solid var(--chirpy-main-border);
+    color: inherit;
+  }
+  .search-result:hover { color: inherit; }
+  .search-result h3 {
+    margin: 0;
+    color: var(--chirpy-heading);
+    font-family: var(--heading);
+    font-size: 1.25rem;
+    font-weight: 400;
+  }
+  .search-result-meta {
+    margin-top: .3rem;
+    color: var(--chirpy-link);
+    font-size: .75rem;
+    text-transform: uppercase;
+  }
+  .search-result p {
+    margin: .45rem 0 0;
+    display: -webkit-box;
+    overflow: hidden;
+    color: var(--chirpy-muted);
+    font-size: .9rem;
+    line-height: 1.55;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  .search-empty {
+    margin: 4rem 0 0;
+    color: var(--chirpy-muted);
+    text-align: center;
+  }
+  .nav .nav-categories { margin-top: .2rem; }
+  .panel-tags a { display: inline-block; }
+
+  @media screen and (min-width: 1650px) {
+    .search-layer { left: 300px; }
+  }
+
+  @media screen and (max-width: 849px) {
+    .site-search { display: none; }
+    .search-trigger {
+      width: 2rem;
+      height: 2rem;
+      padding: 0;
+      display: inline-grid;
+      place-items: center;
+      color: var(--chirpy-muted);
+      font-size: 1rem;
+    }
+    .search-layer { left: 0; }
+    body.search-open .sidebar-trigger,
+    body.search-open .topbar-title,
+    body.search-open .search-trigger { display: none; }
+    body.search-open .site-search {
+      max-width: none;
+      display: flex;
+      flex: 1 1 auto;
+    }
+    body.search-open .search-cancel {
+      flex: 0 0 auto;
+      padding: .35rem 0 .35rem .75rem;
+      font-size: .9rem;
+    }
+    .search-content {
+      width: calc(100% - 2rem);
+      padding-top: 2.25rem;
+    }
+  }
 </style>
 </head>
 <body>
@@ -1144,6 +1304,7 @@
             <a href="#education">EDUCATION</a>
           </div>
         </div>
+        <a class="nav-parent nav-categories" href="/blog/categories/" target="_blank" rel="noopener"><i class="fa-fw fas fa-stream" aria-hidden="true"></i><span class="label">CATEGORIES</span><span class="sr-only"> (새 탭에서 열림)</span></a>
       </nav>
     </div>
     <div class="side-foot">
@@ -1161,8 +1322,33 @@
       </button>
       <span class="breadcrumb"><span class="topbar-muted">Portfolio</span><span class="topbar-sep">/</span>Home</span>
       <span class="topbar-title">Jaewon Lee</span>
-      <a class="topbar-action" href="/resume/" target="_blank" rel="noopener"><i class="far fa-file-lines" aria-hidden="true"></i> Resume</a>
+      <search class="site-search" role="search">
+        <i class="fas fa-search" aria-hidden="true"></i>
+        <input id="search-input" type="search" autocomplete="off" placeholder="Search..." aria-label="포트폴리오와 카테고리 검색">
+      </search>
+      <button type="button" class="search-trigger" id="search-trigger" aria-label="검색 열기" aria-expanded="false"><i class="fas fa-search" aria-hidden="true"></i></button>
+      <button type="button" class="search-cancel" id="search-cancel">Cancel</button>
     </div>
+
+  <div class="search-layer" id="search-layer" aria-hidden="true">
+    <div class="search-content">
+      <section class="search-hints" id="search-hints" aria-labelledby="search-categories-h">
+        <h2 id="search-categories-h">Categories</h2>
+        <div class="search-category-list">
+          <a href="/blog/categories/Agent/" target="_blank" rel="noopener">Agent</a>
+          <a href="/blog/categories/Project/" target="_blank" rel="noopener">Project</a>
+          <a href="/blog/categories/Paper/" target="_blank" rel="noopener">Paper</a>
+          <a href="/blog/categories/Machine%20Learning/" target="_blank" rel="noopener">Machine Learning</a>
+          <a href="/blog/categories/NLP/" target="_blank" rel="noopener">NLP</a>
+          <a href="/blog/categories/Computer%20Vision/" target="_blank" rel="noopener">Computer Vision</a>
+          <a href="/blog/categories/Generative%20Model/" target="_blank" rel="noopener">Generative Model</a>
+          <a href="/blog/categories/MLOps/" target="_blank" rel="noopener">MLOps</a>
+          <a href="/blog/categories/Algorithm/" target="_blank" rel="noopener">Algorithm</a>
+        </div>
+      </section>
+      <div class="search-results" id="search-results" aria-live="polite"></div>
+    </div>
+  </div>
 
   <div class="content-grid">
   <main>
@@ -1319,13 +1505,13 @@
       </ul>
     </section>
     <section>
-      <h2>Focus</h2>
+      <h2>Categories</h2>
       <div class="panel-tags">
-        <span>LLM</span>
-        <span>Agents</span>
-        <span>Evaluation</span>
-        <span>Observability</span>
-        <span>MLOps</span>
+        <a href="/blog/categories/Agent/" target="_blank" rel="noopener">Agent</a>
+        <a href="/blog/categories/Project/" target="_blank" rel="noopener">Project</a>
+        <a href="/blog/categories/Paper/" target="_blank" rel="noopener">Paper</a>
+        <a href="/blog/categories/Machine%20Learning/" target="_blank" rel="noopener">Machine Learning</a>
+        <a href="/blog/categories/MLOps/" target="_blank" rel="noopener">MLOps</a>
       </div>
     </section>
   </aside>
@@ -1375,9 +1561,140 @@
       trigger.setAttribute('aria-expanded', String(open));
     });
     mask.addEventListener('click', closeSidebar);
-    links.forEach(function (link) { link.addEventListener('click', closeSidebar); });
+    Array.prototype.forEach.call(document.querySelectorAll('.nav a'), function (link) {
+      link.addEventListener('click', closeSidebar);
+    });
     window.addEventListener('resize', function () {
       if (window.innerWidth >= 850) closeSidebar();
+    });
+  }
+
+  // ── 포트폴리오·카테고리 검색 ──────────────
+  var searchInput = document.getElementById('search-input');
+  var searchTrigger = document.getElementById('search-trigger');
+  var searchCancel = document.getElementById('search-cancel');
+  var searchLayer = document.getElementById('search-layer');
+  var searchHints = document.getElementById('search-hints');
+  var searchResults = document.getElementById('search-results');
+  var searchItems = [];
+
+  function cleanText(value) {
+    return (value || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function visibleText(element) {
+    var clone = element.cloneNode(true);
+    Array.prototype.forEach.call(clone.querySelectorAll('.sr-only, [aria-hidden="true"]'), function (hidden) {
+      hidden.remove();
+    });
+    return cleanText(clone.textContent);
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('main a.card[href]'), function (card) {
+    var title = card.querySelector('.card-title');
+    var description = card.querySelector('.card-desc');
+    var section = card.closest('section');
+    var sectionTitle = section && section.querySelector('.sec-title');
+    if (!title) return;
+    searchItems.push({
+      title: visibleText(title),
+      description: description ? cleanText(description.textContent) : '',
+      type: sectionTitle ? cleanText(sectionTitle.textContent) : 'Portfolio',
+      url: card.getAttribute('href'),
+      external: card.getAttribute('target') === '_blank'
+    });
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('.search-category-list a'), function (category) {
+    searchItems.push({
+      title: cleanText(category.textContent),
+      description: '블로그 카테고리의 전체 글 보기',
+      type: 'Category',
+      url: category.getAttribute('href'),
+      external: true
+    });
+  });
+
+  function openSearch() {
+    closeSidebar();
+    document.body.classList.add('search-open');
+    searchLayer.setAttribute('aria-hidden', 'false');
+    searchTrigger.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeSearch() {
+    document.body.classList.remove('search-open');
+    searchLayer.setAttribute('aria-hidden', 'true');
+    searchTrigger.setAttribute('aria-expanded', 'false');
+    searchInput.value = '';
+    searchHints.hidden = false;
+    searchResults.replaceChildren();
+    searchInput.blur();
+  }
+
+  function renderSearchResults() {
+    var query = cleanText(searchInput.value).toLocaleLowerCase();
+    searchResults.replaceChildren();
+    searchHints.hidden = query.length > 0;
+    if (!query) return;
+
+    var matches = searchItems.filter(function (item) {
+      return (item.title + ' ' + item.description + ' ' + item.type)
+        .toLocaleLowerCase().indexOf(query) !== -1;
+    }).slice(0, 12);
+
+    if (!matches.length) {
+      var empty = document.createElement('p');
+      empty.className = 'search-empty';
+      empty.textContent = '검색 결과가 없습니다.';
+      searchResults.appendChild(empty);
+      return;
+    }
+
+    matches.forEach(function (item) {
+      var result = document.createElement('a');
+      result.className = 'search-result';
+      result.href = item.url;
+      if (item.external) {
+        result.target = '_blank';
+        result.rel = 'noopener';
+      } else {
+        result.addEventListener('click', closeSearch);
+      }
+
+      var title = document.createElement('h3');
+      title.textContent = item.title;
+      var meta = document.createElement('div');
+      meta.className = 'search-result-meta';
+      meta.textContent = item.type;
+      result.appendChild(title);
+      result.appendChild(meta);
+
+      if (item.description) {
+        var description = document.createElement('p');
+        description.textContent = item.description;
+        result.appendChild(description);
+      }
+      searchResults.appendChild(result);
+    });
+  }
+
+  if (searchInput && searchTrigger && searchCancel && searchLayer) {
+    searchInput.addEventListener('focus', openSearch);
+    searchInput.addEventListener('input', renderSearchResults);
+    searchInput.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter') {
+        var firstResult = searchResults.querySelector('.search-result');
+        if (firstResult) firstResult.click();
+      }
+    });
+    searchTrigger.addEventListener('click', function () {
+      openSearch();
+      window.setTimeout(function () { searchInput.focus(); }, 0);
+    });
+    searchCancel.addEventListener('click', closeSearch);
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && document.body.classList.contains('search-open')) closeSearch();
     });
   }
 })();
