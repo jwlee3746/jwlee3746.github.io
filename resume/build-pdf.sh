@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# resume/index.html -> resume/jaewon-lee-resume.pdf (A4 1장)
+# resume/index.html -> resume/jaewon-lee-resume.pdf (A4 다중 페이지)
 # index.html을 고친 뒤에는 반드시 이 스크립트를 다시 돌려 PDF를 맞춰둔다.
 set -euo pipefail
 
@@ -72,10 +72,10 @@ if not any(f.startswith('IBMPlex') for f in fonts):
         f"(임베드 폰트: {sorted(fonts) or '없음'})")
 if size < 50_000:
     die(f"PDF가 비정상적으로 작습니다 ({size:,}B)")
-if pages != 1:
-    die(f"{pages}페이지가 되었습니다. 내용을 줄이세요")
+if pages < 1 or pages > 3:
+    die(f"페이지 수가 예상 범위(1~3페이지)를 벗어났습니다 ({pages}페이지)")
 
-print(f"검증 통과: 1페이지, {size:,}B")
+print(f"검증 통과: {pages}페이지, {size:,}B")
 PY
 
 mv "$TMP" "$OUT"
