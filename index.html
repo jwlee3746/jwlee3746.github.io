@@ -897,9 +897,16 @@
     padding: 2.5rem 0 5rem;
   }
   .panel {
+    position: sticky;
+    top: 3rem;
+    align-self: start;
+    max-height: calc(100vh - 3rem);
+    overflow-y: auto;
     padding-top: 3rem;
     color: var(--chirpy-muted);
+    scrollbar-width: none;
   }
+  .panel::-webkit-scrollbar { display: none; }
   .panel section {
     padding-left: 1rem;
     border-left: 1px solid var(--chirpy-main-border);
@@ -1231,6 +1238,214 @@
     .project-card { grid-template-columns: 1fr; }
     .project-impact { font-size: .96rem; }
   }
+
+  /* ── Open editorial home ────────────────────────────────
+     About은 열린 본문, 경력은 Archives형 타임라인,
+     Projects와 Posts는 카드 대신 전체 너비의 행으로 읽힌다. */
+  main { gap: 5.75rem; }
+  #about {
+    padding: .25rem 0 .75rem;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  #about .sec-title {
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+  #about .prose {
+    max-width: 710px;
+    font-size: 1.04rem;
+    line-height: 1.9;
+  }
+  #about .prose + .prose { margin-top: 2rem; }
+
+  .timeline {
+    position: relative;
+    padding-top: .2rem;
+  }
+  .timeline::before {
+    content: "";
+    position: absolute;
+    top: .75rem;
+    bottom: .75rem;
+    left: 160px;
+    width: 1px;
+    background: color-mix(in srgb, var(--chirpy-muted) 58%, transparent);
+  }
+  .timeline-entry {
+    position: relative;
+    display: grid;
+    grid-template-columns: 136px minmax(0, 1fr);
+    gap: 56px;
+    padding: 0 0 3.25rem;
+  }
+  .timeline-entry:last-child { padding-bottom: 0; }
+  .timeline-entry::before {
+    content: "";
+    position: absolute;
+    top: .38rem;
+    left: 154px;
+    width: 11px;
+    height: 11px;
+    border: 2px solid var(--chirpy-text);
+    border-radius: 50%;
+    background: var(--chirpy-main-bg);
+  }
+  .timeline-date {
+    color: var(--chirpy-text);
+    font-size: .93rem;
+    line-height: 1.45;
+    white-space: nowrap;
+  }
+  .timeline-title {
+    margin: 0;
+    color: var(--chirpy-link);
+    font-family: var(--heading);
+    font-size: 1.12rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .timeline-title a { color: inherit; }
+  .timeline-kind {
+    margin-left: .65rem;
+    color: var(--chirpy-muted);
+    font-family: var(--sans);
+    font-size: .82rem;
+    font-weight: 400;
+  }
+  .timeline-desc {
+    max-width: 540px;
+    margin: .65rem 0 0;
+    color: var(--chirpy-text);
+    font-size: .93rem;
+    line-height: 1.72;
+  }
+
+  .project-list {
+    border-top: 1px solid var(--chirpy-main-border);
+  }
+  .project-row {
+    display: grid;
+    grid-template-columns: 146px minmax(0, 1fr);
+    gap: 38px;
+    padding: 2rem 0 2.15rem;
+    border-bottom: 1px solid var(--chirpy-main-border);
+  }
+  .project-meta {
+    color: var(--chirpy-muted);
+    font-size: .82rem;
+    line-height: 1.65;
+  }
+  .project-meta strong {
+    display: block;
+    color: var(--chirpy-text);
+    font-weight: 400;
+  }
+  .project-title {
+    margin: 0;
+    color: var(--chirpy-heading);
+    font-family: var(--heading);
+    font-size: 1.2rem;
+    font-weight: 400;
+    line-height: 1.35;
+  }
+  .project-impact { margin-top: .6rem; font-size: .94rem; }
+  .project-row .project-points { margin-top: 1rem; }
+  .project-row .project-points li { padding-left: 1.05rem; }
+  .project-row .project-links {
+    margin-top: 1.1rem;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .post-list {
+    border-top: 1px solid var(--chirpy-main-border);
+  }
+  .post-row {
+    display: grid;
+    grid-template-columns: 128px minmax(0, 1fr);
+    gap: 24px;
+    padding: .85rem 0;
+    border-bottom: 1px solid var(--chirpy-main-border);
+    color: inherit;
+  }
+  .post-row:hover { color: inherit; }
+  .post-thumb {
+    width: 128px;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border: 1px solid var(--chirpy-main-border);
+    border-radius: 7px;
+    background: var(--chirpy-tag-bg);
+  }
+  .post-thumb img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    opacity: .82;
+    transition: opacity .2s ease;
+  }
+  .post-row:hover .post-thumb img { opacity: 1; }
+  .post-row .post-cat {
+    margin-bottom: .2rem;
+    font-size: .74rem;
+    letter-spacing: .02em;
+    text-transform: none;
+  }
+  .post-title {
+    color: var(--chirpy-heading);
+    font-family: var(--heading);
+    font-size: 1.08rem;
+    line-height: 1.35;
+  }
+  .post-title .arrow {
+    display: inline-block;
+    color: var(--chirpy-link);
+    transition: transform .2s ease;
+  }
+  .post-row:hover .post-title .arrow { transform: translate(2px, -2px); }
+  .post-row .card-desc {
+    margin-top: .25rem;
+    -webkit-line-clamp: 2;
+  }
+
+  @media screen and (max-width: 620px) {
+    main { gap: 4.5rem; }
+    #about { padding-top: 0; }
+    #about .sec-title { margin-bottom: 1.5rem; font-size: 1.8rem; }
+    #about .prose { font-size: 1rem; line-height: 1.82; }
+    #about .prose + .prose { margin-top: 1.5rem; }
+    .timeline::before { left: 5px; }
+    .timeline-entry {
+      display: block;
+      padding: 0 0 2.75rem 31px;
+    }
+    .timeline-entry::before { left: 0; }
+    .timeline-date {
+      margin-bottom: .42rem;
+      color: var(--chirpy-muted);
+      font-size: .82rem;
+    }
+    .timeline-title { font-size: 1.05rem; }
+    .timeline-kind { display: block; margin: .25rem 0 0; }
+    .project-row {
+      grid-template-columns: 1fr;
+      gap: .7rem;
+      padding: 1.65rem 0 1.8rem;
+    }
+    .project-meta { font-size: .78rem; }
+    .post-row {
+      grid-template-columns: 96px minmax(0, 1fr);
+      gap: 16px;
+    }
+    .post-thumb { width: 96px; }
+    .post-title { font-size: 1rem; }
+    .post-row .card-desc { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -1254,7 +1469,6 @@
             <a href="#experience">EXPERIENCE</a>
             <a href="#projects">PROJECTS</a>
             <a href="#writing">POSTS</a>
-            <a href="#education">EDUCATION</a>
           </div>
         </div>
         <a class="nav-parent nav-categories" href="/blog/categories/"><i class="fa-fw fas fa-stream" aria-hidden="true"></i><span class="label">CATEGORIES</span></a>
@@ -1284,59 +1498,52 @@
   <div class="content-grid">
   <main>
     <section id="about" aria-labelledby="about-h">
-      <h2 class="sr-only" id="about-h">소개</h2>
+      <h2 class="sec-title" id="about-h">About</h2>
       <p class="prose">삼성전자 MX사업부 Language AI 팀에서 <strong>Bixby의 LLM 모델</strong>과 <strong>에이전틱 플랫폼</strong>을 개발합니다. 버전화된 평가 계약, multi-step 실행과 deterministic scoring을 설계하고, OpenTelemetry trace provenance를 포함하는 재현 가능한 평가·관측 체계를 구축합니다.</p>
       <p class="prose">이전에는 산학 연계 인턴으로 AI 학습용 데이터 진단·개선을 연구했고, KAIST에서 metric learning과 준지도 학습을 바탕으로 오픈도메인 QA와 온디바이스 추론 프로젝트를 수행했습니다.</p>
     </section>
 
     <section id="experience" aria-labelledby="experience-h">
       <h2 class="sec-title" id="experience-h">Experience</h2>
-      <div class="cards">
-        <a class="card" href="https://www.linkedin.com/in/jwlee3746/" target="_blank" rel="noopener">
-          <div class="card-meta">2024.07 — 현재</div>
+      <div class="timeline">
+        <article class="timeline-entry">
+          <div class="timeline-date">2024.07 — 현재</div>
           <div>
-            <div class="card-title">ML 엔지니어 · 삼성전자 MX사업부 Language AI</div>
-            <p class="card-desc">Bixby LLM·에이전트 평가 서비스를 설계·구축했습니다. 평가 계약과 CI 검증, multi-step replay, deterministic scoring, checkpoint와 trace provenance를 재현 가능한 하나의 흐름으로 구조화했습니다.</p>
-            <div class="chips">
-              <span class="chip">Evaluation Architecture</span>
-              <span class="chip">LLM Agents</span>
-              <span class="chip">Observability</span>
-            </div>
+            <h3 class="timeline-title"><a href="https://www.linkedin.com/in/jwlee3746/" target="_blank" rel="noopener">ML 엔지니어 · 삼성전자 MX사업부 Language AI <span aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></a></h3>
+            <p class="timeline-desc">Bixby LLM·에이전트 평가 서비스를 설계·구축했습니다. 평가 계약과 CI 검증, multi-step replay, deterministic scoring, checkpoint와 trace provenance를 재현 가능한 하나의 흐름으로 구조화했습니다.</p>
           </div>
-        </a>
-        <a class="card" href="/blog/Project/mvm-plus/" target="_blank" rel="noopener">
-          <div class="card-meta">2022.05 — 2023.02</div>
+        </article>
+        <article class="timeline-entry">
+          <div class="timeline-date">2022.05 — 2023.02</div>
           <div>
-            <div class="card-title">학부 산학 연계 인턴 <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></div>
-            <p class="card-desc">AI 학습용 데이터를 진단·개선하는 '데이터 클리닉' 과제에 참여해, metric learning 기반 생성 모델 MVM+를 설계했습니다.</p>
-            <div class="chips">
-              <span class="chip">PyTorch</span>
-              <span class="chip">GAN</span>
-              <span class="chip">Metric Learning</span>
-            </div>
+            <h3 class="timeline-title"><a href="/blog/Project/mvm-plus/" target="_blank" rel="noopener">학부 산학 연계 인턴 <span aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></a></h3>
+            <p class="timeline-desc">AI 학습용 데이터를 진단·개선하는 '데이터 클리닉' 과제에 참여해, metric learning 기반 생성 모델 MVM+를 설계했습니다.</p>
           </div>
-        </a>
-        <a class="card" href="https://github.com/jwlee3746" target="_blank" rel="noopener">
-          <div class="card-meta">2020 — 2023</div>
+        </article>
+        <article class="timeline-entry">
+          <div class="timeline-date">2020 — 2023</div>
           <div>
-            <div class="card-title">학부 연구 · KAIST</div>
-            <p class="card-desc">Metric learning과 준지도 학습 연구. 네이버 검색 스니펫 기반 오픈도메인 QA, 안드로이드 온디바이스 추론 프로젝트 수행.</p>
-            <div class="chips">
-              <span class="chip">PyTorch</span>
-              <span class="chip">BERT</span>
-            </div>
+            <h3 class="timeline-title"><a href="https://github.com/jwlee3746" target="_blank" rel="noopener">학부 연구 · KAIST <span aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></a></h3>
+            <p class="timeline-desc">Metric learning과 준지도 학습 연구. 네이버 검색 스니펫 기반 오픈도메인 QA, 안드로이드 온디바이스 추론 프로젝트를 수행했습니다.</p>
           </div>
-        </a>
+        </article>
+        <article class="timeline-entry" id="education">
+          <div class="timeline-date">2017.03 — 2024.02</div>
+          <div>
+            <h3 class="timeline-title">KAIST 전산학부 학사 <span class="timeline-kind">Education</span></h3>
+            <p class="timeline-desc">학부 과정 중 metric learning·준지도 학습 연구 참여.</p>
+          </div>
+        </article>
       </div>
     </section>
 
     <section id="projects" aria-labelledby="projects-h">
       <h2 class="sec-title" id="projects-h">Projects</h2>
-      <div class="cards">
-        <article class="card project-card">
-          <div class="card-meta tag">2024.07 — 현재<br>Evaluation Platform</div>
+      <div class="project-list">
+        <article class="project-row">
+          <div class="project-meta"><strong>2024.07 — 현재</strong>Evaluation Platform</div>
           <div>
-            <h3 class="card-title">Bixby LLM·에이전트 평가 서비스</h3>
+            <h3 class="project-title">Bixby LLM·에이전트 평가 서비스</h3>
             <p class="project-impact">평가 자산을 계약–검증–실행–채점–리포트로 분리해, 모델 판단을 반복 비교할 수 있는 워크플로로 만들었습니다.</p>
             <ul class="project-points">
               <li><strong>계약·검증</strong> — JSON Schema 기반 TC 계약을 정의하고 CI gate와 실행 전 preflight가 같은 검증 경계를 공유하도록 설계했습니다.</li>
@@ -1349,10 +1556,10 @@
             </div>
           </div>
         </article>
-        <article class="card project-card">
-          <div class="card-meta tag">2024.07 — 현재<br>Agentic Platform</div>
+        <article class="project-row">
+          <div class="project-meta"><strong>2024.07 — 현재</strong>Agentic Platform</div>
           <div>
-            <h3 class="card-title">제품 에이전트 도구 실행·관측 플랫폼</h3>
+            <h3 class="project-title">제품 에이전트 도구 실행·관측 플랫폼</h3>
             <p class="project-impact">서로 다른 모델 제공자와 도구 실행을 공통 계층으로 묶고, 요청부터 실행 결과까지 추적 가능한 제품 기반을 구축했습니다.</p>
             <ul class="project-points">
               <li><strong>실행 구조</strong> — 에이전트의 요청 해석과 도구 호출 흐름을 설계하고, 미들웨어로 실행 정책과 예외 처리를 공통화했습니다.</li>
@@ -1368,56 +1575,42 @@
       </div>
     </section>
 
-    <!-- 글: 썸네일은 블로그 원본을 256x160으로 줄인 축소판이다 (assets/thumbs/).
-         원본 PNG를 그대로 쓰면 392KB를 받아 128px 박스에 넣는 꼴이라 축소판을 따로 둔다.
-         새 글을 걸 때 썸네일이 아직 없으면 <div class="thumb"></div>만 두면 되고,
-         카드 모양은 그대로 유지된다. -->
+    <!-- 글 썸네일은 블로그 원본의 256x160 축소판을 사용한다. -->
     <section id="writing" aria-labelledby="writing-h">
       <h2 class="sec-title" id="writing-h">Posts</h2>
-      <div class="cards">
-        <a class="card" href="/blog/Paper/Attention1/" target="_blank" rel="noopener">
-          <div class="thumb">
+      <div class="post-list">
+        <a class="post-row" href="/blog/Paper/Attention1/" target="_blank" rel="noopener">
+          <div class="post-thumb">
             <img src="/assets/thumbs/attention-1.webp" alt="" width="256" height="160" loading="lazy" onerror="this.remove()">
           </div>
           <div>
             <div class="post-cat">논문 리뷰</div>
-            <div class="card-title">Attention Is All You Need [1] — Encoder · Decoder <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></div>
+            <div class="post-title">Attention Is All You Need [1] — Encoder · Decoder <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></div>
             <p class="card-desc">Transformer의 인코더·디코더 구조를 그림과 코드로 따라가며 정리했습니다.</p>
           </div>
         </a>
-        <a class="card" href="/blog/Paper/Attention2/" target="_blank" rel="noopener">
-          <div class="thumb">
+        <a class="post-row" href="/blog/Paper/Attention2/" target="_blank" rel="noopener">
+          <div class="post-thumb">
             <img src="/assets/thumbs/attention-2.webp" alt="" width="256" height="160" loading="lazy" onerror="this.remove()">
           </div>
           <div>
             <div class="post-cat">논문 리뷰</div>
-            <div class="card-title">Attention Is All You Need [2] — Attention <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></div>
+            <div class="post-title">Attention Is All You Need [2] — Attention <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></div>
             <p class="card-desc">Self-Attention과 Multi-Head Attention을 병렬성 관점에서 뜯어봤습니다.</p>
           </div>
         </a>
-        <a class="card" href="/blog/Paper/Attention3/" target="_blank" rel="noopener">
-          <div class="thumb">
+        <a class="post-row" href="/blog/Paper/Attention3/" target="_blank" rel="noopener">
+          <div class="post-thumb">
             <img src="/assets/thumbs/attention-3.webp" alt="" width="256" height="160" loading="lazy" onerror="this.remove()">
           </div>
           <div>
             <div class="post-cat">논문 리뷰</div>
-            <div class="card-title">Attention Is All You Need [3] — Feed-Forward · Positional Encoding <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></div>
+            <div class="post-title">Attention Is All You Need [3] — Feed-Forward · Positional Encoding <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></div>
             <p class="card-desc">위치 정보를 인코딩하는 방식과 FFN의 역할을 정리했습니다.</p>
           </div>
         </a>
       </div>
       <a class="more" href="/blog/" target="_blank" rel="noopener">블로그 전체 보기 <span aria-hidden="true">→</span><span class="sr-only"> (새 탭에서 열림)</span></a>
-    </section>
-
-    <section id="education" aria-labelledby="education-h">
-      <h2 class="sec-title" id="education-h">Education</h2>
-      <div class="card plain">
-        <div class="card-meta">2017.03 — 2024.02</div>
-        <div>
-          <div class="card-title">KAIST 전산학부 학사</div>
-          <p class="card-desc">학부 과정 중 metric learning·준지도 학습 연구 참여.</p>
-        </div>
-      </div>
     </section>
 
   </main>
