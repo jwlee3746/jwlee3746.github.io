@@ -300,6 +300,266 @@
     html { scroll-behavior: auto; }
     * { transition: none !important; }
   }
+
+  /* ── Chirpy-inspired portfolio shell ─────────────────────
+     레퍼런스의 정보 구조(고정 사이드바, 얇은 상단 바, 카드형 본문)를
+     가져오되 포트폴리오의 청록 토큰과 콘텐츠 밀도는 그대로 유지한다. */
+  html::before,
+  html::after { display: none; }
+
+  body {
+    background: var(--bg);
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  .layout {
+    max-width: none;
+    min-height: 100vh;
+    padding: 0;
+    grid-template-columns: 292px minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .side {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    height: 100vh;
+    padding: 54px 30px 30px;
+    border-right: 1px solid var(--line);
+    background: var(--raised);
+  }
+
+  .profile-mark {
+    width: 76px;
+    height: 76px;
+    margin-bottom: 24px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 34% 28%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 38%),
+      var(--bg);
+    color: var(--accent);
+    box-shadow: 0 10px 28px color-mix(in srgb, var(--ink) 8%, transparent);
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -.04em;
+  }
+
+  .name {
+    font-size: 31px;
+    letter-spacing: -.035em;
+  }
+  .name-en { margin-top: 3px; font-size: 12px; }
+  .role { margin-top: 18px; font-size: 14px; line-height: 1.55; }
+  .tagline { margin-top: 9px; font-size: 13px; line-height: 1.6; }
+
+  .resume-cta {
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 22px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: var(--bg);
+    font-size: 11px;
+  }
+  .resume-cta:hover { border-color: var(--accent); }
+
+  .nav {
+    margin-top: 34px;
+    gap: 4px;
+  }
+  .nav a {
+    gap: 13px;
+    margin: 0 -12px;
+    padding: 10px 12px;
+    border-radius: 9px;
+  }
+  .nav a:hover,
+  .nav a.active {
+    color: var(--ink);
+    background: var(--card-hover);
+  }
+  .nav-icon {
+    width: 24px;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .04em;
+  }
+  .nav a:hover .nav-icon,
+  .nav a.active .nav-icon { color: var(--accent); }
+  .nav .label { font-size: 11px; letter-spacing: .1em; }
+
+  .side-foot {
+    gap: 14px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 11px;
+  }
+
+  .content-shell { min-width: 0; }
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 8;
+    height: 64px;
+    padding: 0 clamp(28px, 5vw, 72px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+  .topbar-muted { color: var(--muted); }
+  .topbar-sep { margin: 0 9px; color: var(--line); }
+  .topbar-status { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); }
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 13%, transparent);
+  }
+
+  main {
+    width: min(860px, calc(100% - 72px));
+    margin: 0 auto;
+    padding: 52px 0 88px;
+    gap: 72px;
+  }
+  section { scroll-margin-top: 92px; }
+
+  #about {
+    padding: 30px 32px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--raised);
+    box-shadow: 0 8px 28px color-mix(in srgb, var(--ink) 4%, transparent);
+  }
+  .prose { max-width: none; font-size: 16px; line-height: 1.82; }
+
+  .sec-title {
+    margin-bottom: 18px;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: -.025em;
+    text-transform: none;
+  }
+  .sec-title::after {
+    content: "";
+    display: block;
+    width: 34px;
+    height: 2px;
+    margin-top: 10px;
+    border-radius: 2px;
+    background: var(--accent);
+  }
+
+  .cards { gap: 15px; }
+  .card {
+    grid-template-columns: 132px minmax(0, 1fr);
+    gap: 22px;
+    margin: 0;
+    padding: 23px 24px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--raised);
+    box-shadow: 0 5px 18px color-mix(in srgb, var(--ink) 3%, transparent);
+    transition: transform .2s ease, border-color .2s ease, background-color .2s ease, box-shadow .2s ease;
+  }
+  a.card:hover {
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+    background: var(--card-hover);
+    box-shadow: 0 10px 24px color-mix(in srgb, var(--ink) 7%, transparent);
+    transform: translateY(-2px);
+  }
+  .card-meta { padding-top: 3px; font-size: 11px; line-height: 1.6; }
+  .card-title { font-size: 17px; }
+  .card-desc { margin-top: 7px; font-size: 14px; line-height: 1.7; }
+  .chips { gap: 6px; margin-top: 13px; }
+  .chip { padding: 3px 9px; font-size: 10px; }
+  .thumb { width: 132px; border-radius: 9px; }
+  .more { margin-top: 20px; font-size: 12px; }
+
+  .page-footer {
+    width: min(860px, calc(100% - 72px));
+    margin: 0 auto;
+    padding: 24px 0 30px;
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 10px;
+  }
+
+  @media screen and (max-width: 900px) {
+    .layout { display: block; }
+    .side {
+      position: relative;
+      height: auto;
+      padding: 30px 24px 0;
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .profile-mark { width: 58px; height: 58px; margin-bottom: 18px; font-size: 17px; }
+    .name { font-size: 28px; }
+    .role { max-width: 480px; }
+    .tagline { max-width: none; }
+    .resume-cta { width: auto; gap: 22px; }
+    .nav {
+      margin: 26px -24px 0;
+      padding: 8px 24px;
+      display: flex;
+      flex-direction: row;
+      overflow-x: auto;
+      border-top: 1px solid var(--line);
+      scrollbar-width: none;
+    }
+    .nav::-webkit-scrollbar { display: none; }
+    .nav a { flex: 0 0 auto; margin: 0; padding: 8px 12px; }
+    .nav-icon { display: none; }
+    .side-foot { margin-top: 24px; padding: 18px 0 22px; }
+    .topbar { height: 56px; padding: 0 24px; }
+    main { width: auto; margin: 0 24px; padding: 40px 0 68px; gap: 56px; }
+    .card { grid-template-columns: 132px minmax(0, 1fr); gap: 18px; padding: 20px; }
+    .page-footer { width: auto; margin: 0 24px; }
+  }
+
+  @media screen and (max-width: 620px) {
+    .theme-toggle { top: 12px; right: 12px; }
+    .side { padding: 20px 18px 0; }
+    .profile-mark { width: 46px; height: 46px; margin-bottom: 12px; font-size: 14px; }
+    .name { font-size: 24px; }
+    .name-en { margin-top: 1px; font-size: 11px; }
+    .role { margin-top: 11px; padding-right: 36px; font-size: 12px; }
+    .tagline { display: none; }
+    .resume-cta { margin-top: 14px; padding: 8px 10px; }
+    .nav { margin: 18px -18px 0; padding: 6px 10px; }
+    .nav a { padding: 7px 10px; }
+    .side-foot { margin-top: 14px; padding: 13px 0 15px; }
+    .topbar-status { display: none; }
+    main { margin: 0 18px; }
+    #about { padding: 23px 21px; }
+    .prose { font-size: 15px; }
+    .card { grid-template-columns: 1fr; gap: 8px; padding: 20px; }
+    .thumb { width: 100%; max-width: none; }
+    .page-footer { margin: 0 18px; flex-direction: column; gap: 5px; }
+  }
 </style>
 </head>
 <body>
@@ -317,6 +577,7 @@
 <div class="layout">
   <header class="side">
     <div>
+      <div class="profile-mark" aria-hidden="true">JL</div>
       <h1 class="name">이재원</h1>
       <div class="name-en">Jaewon Lee</div>
       <!-- 인물 부제이지 섹션 헤딩이 아니므로 h2로 쓰지 않는다 -->
@@ -324,20 +585,26 @@
       <p class="tagline">LLM을 실제 제품에 태우는 일을 합니다.</p>
       <a class="resume-cta" href="/resume/" target="_blank" rel="noopener">이력서 1장 보기 · PDF <span aria-hidden="true">→</span><span class="sr-only"> (새 탭에서 열림)</span></a>
       <nav class="nav" aria-label="섹션">
-        <a href="#about"><span class="line"></span><span class="label">소개</span></a>
-        <a href="#experience"><span class="line"></span><span class="label">경력</span></a>
-        <a href="#projects"><span class="line"></span><span class="label">프로젝트</span></a>
-        <a href="#writing"><span class="line"></span><span class="label">글</span></a>
-        <a href="#education"><span class="line"></span><span class="label">학력</span></a>
+        <a href="#about"><span class="nav-icon" aria-hidden="true">01</span><span class="label">소개</span></a>
+        <a href="#experience"><span class="nav-icon" aria-hidden="true">02</span><span class="label">경력</span></a>
+        <a href="#projects"><span class="nav-icon" aria-hidden="true">03</span><span class="label">프로젝트</span></a>
+        <a href="#writing"><span class="nav-icon" aria-hidden="true">04</span><span class="label">글</span></a>
+        <a href="#education"><span class="nav-icon" aria-hidden="true">05</span><span class="label">학력</span></a>
       </nav>
     </div>
     <div class="side-foot">
       <a href="https://github.com/jwlee3746" target="_blank" rel="noopener">GitHub<span class="sr-only"> (새 탭에서 열림)</span></a>
       <a href="https://www.linkedin.com/in/jwlee3746/" target="_blank" rel="noopener">LinkedIn<span class="sr-only"> (새 탭에서 열림)</span></a>
-      <a href="/blog/" target="_blank" rel="noopener">Blog<span class="sr-only"> (새 탭에서 열림)</span></a>
+      <a href="/blog/" target="_blank" rel="noopener">Posts<span class="sr-only"> (새 탭에서 열림)</span></a>
       <a href="mailto:jwlee3746@naver.com">Email</a>
     </div>
   </header>
+
+  <div class="content-shell">
+    <div class="topbar" aria-label="현재 페이지">
+      <span><span class="topbar-muted">Portfolio</span><span class="topbar-sep">/</span>Home</span>
+      <span class="topbar-status"><span class="status-dot" aria-hidden="true"></span>ML Engineer</span>
+    </div>
 
   <main>
     <section id="about" aria-labelledby="about-h">
@@ -485,6 +752,11 @@
     </section>
 
   </main>
+  <footer class="page-footer">
+    <span>© 2026 Jaewon Lee</span>
+    <span>Built for clarity, kept intentionally simple.</span>
+  </footer>
+  </div>
 </div>
 
 <script>
