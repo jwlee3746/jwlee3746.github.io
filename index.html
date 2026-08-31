@@ -16,10 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://jwlee3746.github.io/og-image.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
-<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Source+Sans+Pro:wght@400;600;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7/css/all.min.css">
 <script type="application/ld+json">
 {
@@ -552,8 +549,9 @@
                           rgb(211 209 209 / 15%) 0 0 0 1px;
     --chirpy-btn-border: #e9ecef;
     --chirpy-tag-bg: #f8f9fa;
-    --sans: 'Source Sans Pro', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-    --mono: 'Lato', 'Source Sans Pro', sans-serif;
+    --sans: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', Pretendard,
+            'Malgun Gothic', 'Segoe UI', Roboto, sans-serif;
+    --mono: var(--sans);
   }
 
   @media (prefers-color-scheme: dark) {
@@ -734,7 +732,7 @@
   .sec-title {
     margin-bottom: 1.25rem;
     color: var(--chirpy-heading);
-    font-family: 'Lato', var(--sans);
+    font-family: var(--sans);
     font-size: 1.54rem;
     font-weight: 400;
     letter-spacing: 0;
@@ -754,14 +752,14 @@
   }
   .card-meta {
     color: var(--chirpy-muted);
-    font-family: 'Lato', var(--sans);
+    font-family: var(--sans);
     font-size: .85rem;
   }
   .card-meta.tag,
   .post-cat { color: var(--chirpy-muted); }
   .card-title {
     color: var(--chirpy-heading);
-    font-family: 'Lato', var(--sans);
+    font-family: var(--sans);
     font-size: 1.25rem;
     font-weight: 400;
     line-height: 1.2;
@@ -1024,6 +1022,39 @@
     main { margin: 0; }
     .page-footer { margin-left: 1rem; margin-right: 1rem; }
   }
+
+  /* HOME 안에서 현재 단일 페이지의 섹션을 목차처럼 펼친다. */
+  .nav-group { width: 100%; }
+  .nav .nav-parent[aria-current="page"] {
+    color: var(--chirpy-sidebar-active);
+    background: var(--chirpy-sidebar-hover);
+  }
+  .nav-sub {
+    margin: .4rem 0 .8rem 49px;
+    padding-left: 17px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-left: 1px solid var(--chirpy-sidebar-border);
+  }
+  .nav .nav-sub a {
+    width: auto;
+    margin: 0;
+    padding: .28rem 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--chirpy-sidebar-muted);
+    font-family: var(--sans);
+    font-size: .7rem;
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: .055em;
+  }
+  .nav .nav-sub a:hover,
+  .nav .nav-sub a.active {
+    background: transparent;
+    color: var(--chirpy-sidebar-active);
+  }
 </style>
 </head>
 <body>
@@ -1040,11 +1071,16 @@
       <p class="tagline">LLM을 실제 제품에 태우는 일을 합니다.</p>
       <a class="resume-cta" href="/resume/" target="_blank" rel="noopener">이력서 1장 보기 · PDF <span aria-hidden="true">→</span><span class="sr-only"> (새 탭에서 열림)</span></a>
       <nav class="nav" aria-label="섹션">
-        <a href="#about"><i class="fa-fw fas fa-home" aria-hidden="true"></i><span class="label">HOME</span></a>
-        <a href="#experience"><i class="fa-fw fas fa-briefcase" aria-hidden="true"></i><span class="label">EXPERIENCE</span></a>
-        <a href="#projects"><i class="fa-fw fas fa-folder-open" aria-hidden="true"></i><span class="label">PROJECTS</span></a>
-        <a href="#writing"><i class="fa-fw fas fa-pen" aria-hidden="true"></i><span class="label">POSTS</span></a>
-        <a href="#education"><i class="fa-fw fas fa-graduation-cap" aria-hidden="true"></i><span class="label">EDUCATION</span></a>
+        <div class="nav-group">
+          <a class="nav-parent" href="#about" aria-current="page"><i class="fa-fw fas fa-home" aria-hidden="true"></i><span class="label">HOME</span></a>
+          <div class="nav-sub" aria-label="Home 하위 섹션">
+            <a href="#about">HOME</a>
+            <a href="#experience">EXPERIENCE</a>
+            <a href="#projects">PROJECTS</a>
+            <a href="#writing">POSTS</a>
+            <a href="#education">EDUCATION</a>
+          </div>
+        </div>
       </nav>
     </div>
     <div class="side-foot">
@@ -1245,7 +1281,7 @@
 <script>
 (function () {
   // ── 스크롤 스파이 ──────────────────────────
-  var links = Array.prototype.slice.call(document.querySelectorAll('.nav a'));
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav-sub a'));
   var sections = links.map(function (a) {
     return document.getElementById(a.getAttribute('href').slice(1));
   });
