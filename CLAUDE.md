@@ -20,9 +20,9 @@
 - `resume/index.html`을 고치면 `bash resume/build-pdf.sh`로 PDF를 다시 뽑는다. pre-commit 훅이 설치돼 있으면 자동으로 처리된다.
 - 이력서는 **A4 1장을 넘기지 않는다.** 빌드 스크립트가 페이지 수를 검증한다.
 - 인쇄에 영향을 주는 미디어쿼리는 `@media screen and (...)`으로 한정한다. 용지 폭(210mm)에 걸려 인쇄가 1컬럼으로 무너진 적이 있다.
-- **라이트가 기본, 다크는 전환**이다. 색은 `index.html`의 `:root` 토큰 한 곳에서만 정하고, 컴포넌트는 토큰만 참조한다. 다크 값은 `@media (prefers-color-scheme: dark)`와 `:root[data-theme="dark"]` 두 곳에 같이 넣는다 — 버튼 선택이 OS 설정을 양방향으로 이겨야 한다.
-- 저장된 테마는 `<head>`의 인라인 스크립트가 **첫 페인트 전에** 적용한다. 이 스크립트를 CSS 뒤로 옮기면 새로고침마다 화면이 번쩍인다.
-- 상단 하늘 밴드와 구름은 `html::before` / `html::after` 두 개로 그린다. 마크업에 요소를 추가하지 않는다.
+- 포트폴리오는 **다크 모드 전용**이다. `<html data-theme="dark">`를 유지하며 테마 전환 버튼이나 저장 스크립트를 다시 추가하지 않는다.
+- 레이아웃은 Chirpy 구조를 따른다: 260px 고정 사이드바, 중앙 콘텐츠 피드, 데스크톱 우측 보조 패널. 850px 미만에서는 사이드바를 오프캔버스로 전환한다.
+- 프로필 사진은 GitHub 공개 프로필에서 받은 `assets/avatar.jpg`를 사용한다.
 - **블로그 SCSS 는 Ruby Sass 로 빌드된다.** GitHub Pages 의 legacy 빌드는 `jekyll-sass-converter 1.5.2` 를 쓰고, 그 안은 dart-sass 도 libsass 도 아닌 **Ruby Sass 3.x** 다. 로컬 dart-sass 로 통과한 SCSS 가 배포에서 죽은 적이 두 번 있다.
   - `hsl(188deg 52% 18%)` — 공백 구분 표기를 **SassScript 로 평가되는 자리**(변수 대입, 일반 선언의 값)에서 못 읽는다. 커스텀 프로퍼티 값(`--x: hsl(...)`)은 통과된다.
   - `--wave: url("data:image/svg+xml,...")` — **커스텀 프로퍼티 값 안의 `url()`** 을 못 읽는다. 데이터 URI 는 SCSS 변수(`$wave`)로 두고 선언에 직접 쓴다.
