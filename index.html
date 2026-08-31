@@ -1549,12 +1549,26 @@
           </div>
         </article>
         <article class="project-row">
+          <div class="project-meta"><strong>2026.03 — 2026.07</strong>Server-side Agent PoC</div>
+          <div>
+            <h3 class="project-title">OpenClaw 기반 서버형 Bixby 에이전트 PoC</h3>
+            <p class="project-impact">디바이스 어시스턴트 기능을 서버형 에이전트 실행 구조에 연결하고, 요청 라우팅부터 도구 실행·후속 대화까지 end-to-end로 검증했습니다.</p>
+            <ul class="project-points">
+              <li><strong>Agent 라우팅</strong> — Skill 정의를 바탕으로 요청에 적합한 Agent를 선택하고 실행 query를 구성하는 흐름을 설계했습니다.</li>
+              <li><strong>도구 연동</strong> — Bixby 기능을 OpenClaw tool interface로 연결하고 세션 문맥을 유지하는 요청·응답 파이프라인을 구현했습니다.</li>
+              <li><strong>멀티턴 처리</strong> — 확인과 값 선택이 필요한 대화에서 이전 요청을 참조해 실행을 이어가는 흐름을 구현했습니다.</li>
+              <li><strong>안정성·관측성</strong> — 실행 이벤트 정규화, 비정상 응답 방어, URL·이미지 데이터 마스킹과 도구 호출 로깅을 적용했습니다.</li>
+              <li><strong>실행 환경</strong> — Docker Compose 기반 서버 실행·배포 구성과 Agent Skill 정의 주입 구조를 구축했습니다.</li>
+            </ul>
+          </div>
+        </article>
+        <article class="project-row">
           <div class="project-meta"><strong>2024.07 — 현재</strong>Agentic Platform</div>
           <div>
             <h3 class="project-title">제품 에이전트 도구 실행·관측 플랫폼</h3>
             <p class="project-impact">서로 다른 모델 제공자와 도구 실행을 공통 계층으로 묶고, 요청부터 실행 결과까지 추적 가능한 제품 기반을 구축했습니다.</p>
             <ul class="project-points">
-              <li><strong>서버형 PoC</strong> — OpenClaw 기반 Bixby 에이전트에서 Skill 기반 라우팅, 도구 호출과 멀티턴 확인·선택 흐름을 설계·구현했습니다.</li>
+              <li><strong>실행 구조</strong> — 에이전트의 요청 해석과 도구 호출 흐름을 설계하고, 미들웨어로 실행 정책과 예외 처리를 공통화했습니다.</li>
               <li><strong>Provider 호환</strong> — 모델 제공자별 차이를 공통 설정과 adapter 경계로 분리해 제품 코드의 결합도를 낮췄습니다.</li>
               <li><strong>관측·운영</strong> — Langfuse와 OpenTelemetry를 연결해 요청·모델 판단·도구 실행을 다시 확인할 수 있게 하고, 프롬프트·하네스 전략을 함께 운영했습니다.</li>
             </ul>
