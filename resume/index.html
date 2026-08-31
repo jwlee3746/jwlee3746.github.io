@@ -99,6 +99,9 @@
   .list .row + .row { margin-top: 0; }
   .line { font-size: 10pt; line-height: 1.55; }
   .line b { font-weight: 600; }
+  .project-impact { margin: 3px 0 0; font-size: 10pt; line-height: 1.5; color: var(--body); }
+  .project-points { margin-top: 4px; }
+  .project-points li + li { margin-top: 2px; }
   .edu { font-size: 10.5pt; }
   .edu .note { color: var(--dim); }
   .stack { display: grid; grid-template-columns: 110px 1fr; gap: 16px; break-inside: avoid; }
@@ -157,10 +160,8 @@
     <div>
       <div class="what">ML 엔지니어 · 삼성전자 MX사업부 Language AI</div>
       <ul>
-        <li>Bixby LLM·에이전트 평가 서비스 설계·구축, 계약–검증–실행–채점–리포트 계층화</li>
-        <li>대규모 한국어 TC 표준화, JSON Schema·CI·multi-step replay·deterministic scoring 통합</li>
-        <li>checkpoint/resume·실행 예산·provenance artifact로 장시간 평가의 재현성 확보</li>
-        <li>도구 실행 미들웨어·provider 공통 설정과 Langfuse·OpenTelemetry 관측 체계 구축</li>
+        <li>Bixby LLM 모델 튜닝·평가와 에이전틱 플랫폼 개발</li>
+        <li>제품 에이전트의 평가·도구 실행·관측 체계를 설계하고 운영</li>
       </ul>
     </div>
   </div>
@@ -186,16 +187,26 @@
   <h2>선별 프로젝트</h2>
   <div class="list">
     <div class="row">
-      <div class="when">LLM Eval.</div>
-      <div class="line"><b><a href="https://jwlee3746.github.io/blog/Agent/reproducible-agent-evaluation/" target="_blank" rel="noopener">LLM 에이전트 평가 파이프라인</a></b> — schema·CI 검증, multi-step replay와 실행 복구 설계</div>
+      <div class="when">2024.07 — 현재<br>Evaluation</div>
+      <div>
+        <div class="line"><b><a href="https://jwlee3746.github.io/blog/Agent/reproducible-agent-evaluation/" target="_blank" rel="noopener">Bixby LLM·에이전트 평가 서비스</a></b></div>
+        <p class="project-impact">모델 판단을 반복 비교할 수 있도록 평가 계약–검증–실행–채점–리포트 워크플로 구축</p>
+        <ul class="project-points">
+          <li>JSON Schema TC 계약, CI·preflight 공통 검증, multi-step replay와 deterministic scoring 구현</li>
+          <li>checkpoint/resume·실행 예산과 데이터·모델·runtime·채점 provenance artifact 설계</li>
+        </ul>
+      </div>
     </div>
     <div class="row">
-      <div class="when">PyTorch</div>
-      <div class="line"><b><a href="https://jwlee3746.github.io/blog/Project/mvm-plus/" target="_blank" rel="noopener">MVM+</a></b> — GAN 기반 매니폴드 매칭 생성 모델, Average Hausdorff loss 고안</div>
-    </div>
-    <div class="row">
-      <div class="when">PyTorch · BERT</div>
-      <div class="line"><b>KAIST × 네이버 산학 협력</b> — <a href="https://jwlee3746.github.io/blog/Project/naver-shopping-semisup/" target="_blank" rel="noopener">쇼핑 이미지 준지도 분류</a> top-1 56 → 69% · <a href="https://jwlee3746.github.io/blog/Project/naver-snippet-qa/" target="_blank" rel="noopener">검색 스니펫 기반 QA</a> 90% unanswerable 불균형 보완</div>
+      <div class="when">2024.07 — 현재<br>Agentic Platform</div>
+      <div>
+        <div class="line"><b><a href="https://github.com/jwlee3746/jw-agent-playbook" target="_blank" rel="noopener">제품 에이전트 도구 실행·관측 플랫폼</a></b></div>
+        <p class="project-impact">모델 제공자와 도구 실행을 공통화하고 요청부터 실행 결과까지 추적 가능한 제품 기반 구축</p>
+        <ul class="project-points">
+          <li>에이전트 도구 호출 흐름과 미들웨어 기반 실행 정책·예외 처리 설계</li>
+          <li>provider 공통 설정·adapter와 Langfuse·OpenTelemetry 관측 체계 구축</li>
+        </ul>
+      </div>
     </div>
   </div>
 

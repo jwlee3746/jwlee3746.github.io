@@ -1278,6 +1278,62 @@
       padding-top: 2.25rem;
     }
   }
+
+  /* 현업 프로젝트는 제목보다 성과와 근거가 먼저 읽히도록 구성한다. */
+  .project-card .card-meta {
+    color: var(--chirpy-muted);
+    line-height: 1.55;
+  }
+  .project-impact {
+    margin: .65rem 0 0;
+    color: var(--chirpy-heading);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.55;
+  }
+  .project-points {
+    margin: .85rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .project-points li {
+    position: relative;
+    margin-top: .5rem;
+    padding-left: .9rem;
+    color: var(--chirpy-text);
+    font-size: .9rem;
+    line-height: 1.62;
+  }
+  .project-points li:first-child { margin-top: 0; }
+  .project-points li::before {
+    content: "";
+    position: absolute;
+    top: .7em;
+    left: 0;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--chirpy-link);
+  }
+  .project-points strong {
+    color: var(--chirpy-heading);
+    font-weight: 600;
+  }
+  .project-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .65rem 1rem;
+    margin-top: 1rem;
+    padding-top: .8rem;
+    border-top: 1px solid var(--chirpy-main-border);
+    font-size: .84rem;
+  }
+  .project-links a { font-weight: 600; }
+
+  @media screen and (max-width: 620px) {
+    .project-card { grid-template-columns: 1fr; }
+    .project-impact { font-size: .96rem; }
+  }
 </style>
 </head>
 <body>
@@ -1402,43 +1458,39 @@
     <section id="projects" aria-labelledby="projects-h">
       <h2 class="sec-title" id="projects-h">Projects</h2>
       <div class="cards">
-        <a class="card" href="/blog/Agent/reproducible-agent-evaluation/" target="_blank" rel="noopener">
-          <div class="card-meta tag">Evaluation Architecture</div>
+        <article class="card project-card">
+          <div class="card-meta tag">2024.07 — 현재<br>Evaluation Platform</div>
           <div>
-            <div class="card-title">재현 가능한 LLM 에이전트 평가 파이프라인 <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></div>
-            <p class="card-desc">Trace-to-eval 데이터 흐름, 고정 TC와 simulator의 trade-off, 최신 harness의 공통 구조를 기존 구현 경험과 함께 검토한 설계 시리즈.</p>
+            <h3 class="card-title">Bixby LLM·에이전트 평가 서비스</h3>
+            <p class="project-impact">평가 자산을 계약–검증–실행–채점–리포트로 분리해, 모델 판단을 반복 비교할 수 있는 워크플로로 만들었습니다.</p>
+            <ul class="project-points">
+              <li><strong>계약·검증</strong> — JSON Schema 기반 TC 계약을 정의하고 CI gate와 실행 전 preflight가 같은 검증 경계를 공유하도록 설계했습니다.</li>
+              <li><strong>Multi-step 평가</strong> — request projection과 expected path를 분리해 정답 누출을 막고, alternative path와 deterministic scoring을 구현했습니다.</li>
+              <li><strong>재현성</strong> — checkpoint/resume, 실행 예산, 데이터·모델·runtime·채점 기준의 revision과 trace provenance를 결과 artifact에 남겼습니다.</li>
+            </ul>
+            <div class="project-links">
+              <a href="/blog/Agent/reproducible-agent-evaluation/" target="_blank" rel="noopener">설계 시리즈 보기 <span aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></a>
+              <a href="/blog/Agent/device-assistant-evaluation/" target="_blank" rel="noopener">디바이스 평가 회고 <span aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></a>
+            </div>
           </div>
-        </a>
-        <a class="card" href="https://github.com/jwlee3746/jw-agent-playbook" target="_blank" rel="noopener">
-          <div class="card-meta tag">Prompt Eng.</div>
+        </article>
+        <article class="card project-card">
+          <div class="card-meta tag">2024.07 — 현재<br>Agentic Platform</div>
           <div>
-            <div class="card-title">jw-agent-playbook <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></div>
-            <p class="card-desc">LLM 에이전트 하네스 프롬프트·전략·세팅 모음.</p>
+            <h3 class="card-title">제품 에이전트 도구 실행·관측 플랫폼</h3>
+            <p class="project-impact">서로 다른 모델 제공자와 도구 실행을 공통 계층으로 묶고, 요청부터 실행 결과까지 추적 가능한 제품 기반을 구축했습니다.</p>
+            <ul class="project-points">
+              <li><strong>실행 구조</strong> — 에이전트의 요청 해석과 도구 호출 흐름을 설계하고, 미들웨어로 실행 정책과 예외 처리를 공통화했습니다.</li>
+              <li><strong>Provider 호환</strong> — 모델 제공자별 차이를 공통 설정과 adapter 경계로 분리해 제품 코드의 결합도를 낮췄습니다.</li>
+              <li><strong>관측·운영</strong> — Langfuse와 OpenTelemetry를 연결해 요청·모델 판단·도구 실행을 다시 확인할 수 있게 하고, 프롬프트·하네스 전략을 함께 운영했습니다.</li>
+            </ul>
+            <div class="project-links">
+              <a href="https://github.com/jwlee3746/jw-agent-playbook" target="_blank" rel="noopener">공개 플레이북 보기 <span aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></a>
+              <a href="/blog/Agent/trace-to-eval-data-flywheel/" target="_blank" rel="noopener">관측 설계 글 보기 <span aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></a>
+            </div>
           </div>
-        </a>
-        <a class="card" href="/blog/Project/naver-snippet-qa/" target="_blank" rel="noopener">
-          <div class="card-meta tag">PyTorch · BERT</div>
-          <div>
-            <div class="card-title">네이버 스니펫 오픈도메인 QA <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></div>
-            <p class="card-desc">불완전한 검색 스니펫에서 답을 찾는 QA 모델. 학습 데이터의 90%가 unanswerable인 불균형을 KorQuAD 6만 pair 증강으로 보완하고, KoELECTRA 앙상블로 마무리했습니다.</p>
-          </div>
-        </a>
-        <a class="card" href="/blog/Project/mvm-plus/" target="_blank" rel="noopener">
-          <div class="card-meta tag">PyTorch</div>
-          <div>
-            <div class="card-title">MVM+ · 생성 모델에 metric 심기 <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></div>
-            <p class="card-desc">GAN 기반 매니폴드 매칭 생성 모델. 중심·크기만 맞추던 기존 손실을 <strong>Average Hausdorff loss</strong>로 바꾸고, triplet loss를 cosine similarity loss로 교체했습니다.</p>
-          </div>
-        </a>
-        <a class="card" href="/blog/Project/naver-shopping-semisup/" target="_blank" rel="noopener">
-          <div class="card-meta tag">PyTorch</div>
-          <div>
-            <div class="card-title">네이버 쇼핑 이미지 준지도 분류 <span class="arrow" aria-hidden="true">↗</span><span class="sr-only"> (새 탭에서 열림)</span></div>
-            <p class="card-desc">흔들리고 잘린 실사용자 사진을 레이블 없이 학습. RandAugment와 변형 MixMatch로 <strong>top-1 56 → 69%, top-5 78 → 86%</strong>.</p>
-          </div>
-        </a>
+        </article>
       </div>
-      <a class="more" href="https://github.com/jwlee3746?tab=repositories" target="_blank" rel="noopener">GitHub에서 전체 보기 <span aria-hidden="true">→</span><span class="sr-only"> (새 탭에서 열림)</span></a>
     </section>
 
     <!-- 글: 썸네일은 블로그 원본을 256x160으로 줄인 축소판이다 (assets/thumbs/).
@@ -1499,9 +1551,9 @@
       <h2>Featured</h2>
       <ul>
         <li><a href="/blog/Agent/reproducible-agent-evaluation/" target="_blank" rel="noopener">Agent evaluation pipeline</a></li>
+        <li><a href="/blog/Agent/device-assistant-evaluation/" target="_blank" rel="noopener">Device assistant evaluation</a></li>
+        <li><a href="/blog/Agent/trace-to-eval-data-flywheel/" target="_blank" rel="noopener">Trace-to-eval data flywheel</a></li>
         <li><a href="https://github.com/jwlee3746/jw-agent-playbook" target="_blank" rel="noopener">jw-agent-playbook</a></li>
-        <li><a href="/blog/Project/mvm-plus/" target="_blank" rel="noopener">MVM+</a></li>
-        <li><a href="/blog/" target="_blank" rel="noopener">All posts</a></li>
       </ul>
     </section>
     <section>
@@ -1590,18 +1642,19 @@
     return cleanText(clone.textContent);
   }
 
-  Array.prototype.forEach.call(document.querySelectorAll('main a.card[href]'), function (card) {
+  Array.prototype.forEach.call(document.querySelectorAll('main .card'), function (card) {
     var title = card.querySelector('.card-title');
-    var description = card.querySelector('.card-desc');
+    var description = card.querySelector('.card-desc, .project-impact');
+    var destination = card.matches('a[href]') ? card : card.querySelector('.project-links a[href]');
     var section = card.closest('section');
     var sectionTitle = section && section.querySelector('.sec-title');
-    if (!title) return;
+    if (!title || !destination) return;
     searchItems.push({
       title: visibleText(title),
-      description: description ? cleanText(description.textContent) : '',
+      description: description ? cleanText(description.textContent) : visibleText(card),
       type: sectionTitle ? cleanText(sectionTitle.textContent) : 'Portfolio',
-      url: card.getAttribute('href'),
-      external: card.getAttribute('target') === '_blank'
+      url: destination.getAttribute('href'),
+      external: destination.getAttribute('target') === '_blank'
     });
   });
 
