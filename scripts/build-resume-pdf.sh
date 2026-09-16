@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # resume/index.html -> resume/jaewon-lee-resume.pdf (A4 다중 페이지)
-# index.html을 고친 뒤에는 반드시 이 스크립트를 다시 돌려 PDF를 맞춰둔다.
+# resume/index.html 또는 theme/resume/를 고친 뒤에는 반드시 이 스크립트를 다시 돌려 PDF를 맞춰둔다.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
