@@ -13,7 +13,7 @@ if (!chrome) throw new Error('Chrome/Chromium을 설치하거나 CHROME_PATH를 
 
 const html = await buildResume();
 const css = await readFile(resolve(projectRoot, 'theme/resume/resume.css'));
-const icon = await readFile(resolve(projectRoot, 'favicon.svg'));
+const icon = await readFile(resolve(projectRoot, 'public/favicon.svg'));
 const assets = new Map([
   ['/resume/', { type: 'text/html; charset=utf-8', body: Buffer.from(html) }],
   ['/theme/resume/resume.css', { type: 'text/css; charset=utf-8', body: css }],

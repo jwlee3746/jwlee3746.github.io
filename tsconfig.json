@@ -8,7 +8,12 @@
     "erasableSyntaxOnly": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
-    "types": ["node"]
+    "types": [
+      "node"
+    ]
   },
-  "include": ["scripts/**/*.ts", "theme/resume/**/*.ts"]
+  "include": [
+    "scripts/**/*.ts",
+    "pages/**/*.ts"
+  ]
 }

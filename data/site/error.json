@@ -1,0 +1,9 @@
+{
+  "title": "페이지를 찾을 수 없습니다 | 이재원",
+  "heading": "404",
+  "message": "요청하신 페이지를 찾을 수 없습니다.",
+  "links": [
+    { "label": "홈으로", "href": "/" },
+    { "label": "Blog 보기", "href": "/blog/" }
+  ]
+}
