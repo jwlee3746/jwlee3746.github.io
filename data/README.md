@@ -1,13 +1,14 @@
 # 데이터 구조
 
-사이트에서 보여 주는 데이터와 이미지를 관리합니다. 문서 조립은 `pages/`, 스타일과 브라우저 동작은 `theme/`,
-포스팅 본문은 루트 `posts/`, 이력서 PDF는 루트 `jaewon-lee-resume.pdf`에 둡니다. 생성 HTML은 `_site/`에만 둡니다.
+사이트에서 보여 주는 데이터와 이미지를 관리합니다. 문서 조립은 `templates/`, 스타일과 브라우저 동작은 `theme/`,
+포스팅 본문은 `data/posts/`, 이력서 PDF는 루트 `jaewon-lee-resume.pdf`에 둡니다. 생성 HTML은 `_site/`에만 둡니다.
 
 ```text
 data/
 ├── site/                       # 사이트 메타데이터·내비게이션·카테고리
 ├── profile/                    # 이름·소개·연락처·외부 프로필
 ├── portfolio/                  # 경력·학력·프로젝트·추천 글 목록
+├── posts/                      # 포스팅 Markdown 원본
 └── images/
     ├── profile/
     │   └── avatar.jpg
@@ -31,6 +32,7 @@ data/
 
 | 위치 | 데이터의 예 |
 | --- | --- |
+| `posts/` | 포스팅 Markdown 원본 |
 | `site/` | 사이트 제목·설명, 내비게이션, 카테고리 이름과 묶음 |
 | `profile/` | 이름, 소개, 이메일, GitHub·LinkedIn 주소 |
 | `portfolio/` | 경력, 학력, 프로젝트, 메인에서 소개할 글의 참조 |

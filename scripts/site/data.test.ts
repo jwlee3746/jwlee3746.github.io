@@ -4,8 +4,8 @@ import { cp, mkdtemp, rm, writeFile, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { loadPortfolio, projectRoot, href } from './data.ts';
-import { renderContent } from '../../pages/portfolio/sections/content.ts';
-import { renderSidebar } from '../../pages/portfolio/sections/navigation.ts';
+import { renderContent } from '../../templates/portfolio/sections/content.ts';
+import { renderSidebar } from '../../templates/portfolio/sections/navigation.ts';
 
 test('portfolio content is escaped while intentional emphasis is rendered', async () => {
   const { portfolio, site, profile } = await loadPortfolio();

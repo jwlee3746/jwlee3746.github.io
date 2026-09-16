@@ -2,7 +2,7 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadResume } from './resume/data.ts';
-import { renderResume } from '../pages/resume/layout.ts';
+import { renderResume } from '../templates/resume/layout.ts';
 
 export const projectRoot = fileURLToPath(new URL('../', import.meta.url));
 

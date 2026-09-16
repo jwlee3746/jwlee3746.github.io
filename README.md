@@ -11,18 +11,18 @@ Eleventy로 생성한 `_site/`만 GitHub Pages에 배포합니다. Node.js 24 �
 | `data/profile/` | 화면별 프로필·소개·연락처 |
 | `data/portfolio/` | 메인 경력·프로젝트·추천 글과 이력서 데이터 |
 | `data/images/` | 프로필 사진과 글별 이미지 |
-| `pages/portfolio/` | 메인 문서와 섹션 조립 |
-| `pages/resume/` | 이력서 문서와 섹션 조립 |
-| `pages/shared/`, `pages/404.11ty.ts` | 공통 렌더링 도구와 오류 페이지 |
+| `templates/portfolio/` | 메인 문서와 섹션 조립 |
+| `templates/resume/` | 이력서 문서와 섹션 조립 |
+| `templates/shared/`, `templates/404.11ty.ts` | 공통 렌더링 도구와 오류 페이지 |
 | `theme/` | 화면별 CSS와 브라우저 JavaScript |
-| `posts/` | 포스팅 Markdown 원본 |
+| `data/posts/` | 포스팅 Markdown 원본 |
 | `public/` | favicon·사이트 인증 HTML·`.nojekyll` 등 그대로 복사할 파일 |
 | `jaewon-lee-resume.pdf` | 자동 생성한 이력서 PDF |
 | `scripts/` | 데이터 검증, PDF 생성, 빌드·검증 도구 |
 | `_site/` | 자동 생성한 배포 결과. Git에서 제외 |
 
-`pages/portfolio/index.11ty.ts`는 `/index.html`, `pages/404.11ty.ts`는 `/404.html`,
-`pages/resume/index.11ty.ts`는 `/resume/index.html`을 생성합니다. 소스 위치와 공개 URL은 별개입니다.
+`templates/portfolio/index.11ty.ts`는 `/index.html`, `templates/404.11ty.ts`는 `/404.html`,
+`templates/resume/index.11ty.ts`는 `/resume/index.html`을 생성합니다. 소스 위치와 공개 URL은 별개입니다.
 `public/`의 파일은 배포 루트로 복사하므로 Google 인증 파일과 `/favicon.svg` 주소도 유지됩니다.
 
 글 목록·블로그 테마 이전은 별도 PR에서 진행합니다. 가져온 글은 기존 `/blog/Algorithm/1208/` URL로
@@ -34,7 +34,7 @@ Eleventy로 생성한 `_site/`만 GitHub Pages에 배포합니다. Node.js 24 �
 - 메인 문구·목록: `data/profile/portfolio.json`, `data/portfolio/homepage.json`
 - 메타데이터·메뉴·추천 링크: `data/site/portfolio.json`
 - 404 문구: `data/site/error.json`
-- 카드나 섹션의 HTML 구조: `pages/portfolio/sections/`
+- 카드나 섹션의 HTML 구조: `templates/portfolio/sections/`
 - 색상·레이아웃·모바일 메뉴: `theme/portfolio/`
 - 이력서: `data/profile/resume.json`, `data/site/resume.json`, `data/portfolio/`의 경력·학력·프로젝트 데이터
 - 데이터와 이미지 배치: [데이터 안내](data/README.md)
