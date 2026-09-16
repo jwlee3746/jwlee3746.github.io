@@ -12,8 +12,8 @@
 | `assets/js/portfolio.js` | 섹션 위치 표시, 모바일 메뉴, 빈 검색 제출 방지 |
 | `assets/avatar.jpg`, `assets/thumbs/` | 프로필 사진과 글 썸네일 |
 | `resume/index.html` | 인쇄용 이력서. PDF 렌더링을 위해 자체 스타일 유지 |
-| `resume/build-pdf.sh` | 이력서 PDF 생성 및 1~3페이지 범위 검증 |
-| `resume/install-hook.sh` | 이력서 수정 시 PDF를 갱신하는 커밋 훅 설치 |
+| `scripts/build-resume-pdf.sh` | 이력서 PDF 생성 및 1~3페이지 범위 검증 |
+| `scripts/install-resume-hook.sh` | 이력서 수정 시 PDF를 갱신하는 커밋 훅 설치 |
 | `404.html` | 독립적인 오류 페이지 |
 
 `/blog/`는 별도 저장소 `jwlee3746/blog`에서 배포합니다.
@@ -38,7 +38,9 @@ python3 -m http.server 8000
 - 이력서를 수정하면 Chrome/Chromium이 설치된 환경에서 아래 명령으로 PDF를 갱신합니다.
 
 ```sh
-bash resume/build-pdf.sh
+bash scripts/build-resume-pdf.sh
 ```
 
-클론 후 `bash resume/install-hook.sh`를 한 번 실행하면 이력서 HTML을 커밋할 때 PDF도 자동으로 갱신합니다.
+클론 후 `bash scripts/install-resume-hook.sh`를 한 번 실행하면 이력서 HTML을 커밋할 때 PDF도 자동으로 갱신합니다.
+
+기존 경로의 스크립트로 훅을 설치했다면 `bash scripts/install-resume-hook.sh`를 다시 실행해 호출 경로를 갱신합니다.

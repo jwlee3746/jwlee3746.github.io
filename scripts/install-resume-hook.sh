@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # resume/index.html을 고치고 PDF를 안 맞추는 실수를 막는 pre-commit 훅을 설치한다.
 # 훅은 .git/ 안에 있어 레포로 공유되지 않으므로, 클론한 뒤 한 번 실행해 둔다.
-#   bash resume/install-hook.sh
+#   bash scripts/install-resume-hook.sh
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -15,7 +15,7 @@ set -euo pipefail
 git diff --cached --name-only | grep -qx 'resume/index.html' || exit 0
 
 echo "resume/index.html이 변경되어 PDF를 다시 생성합니다..."
-if ! bash resume/build-pdf.sh; then
+if ! bash scripts/build-resume-pdf.sh; then
   echo "PDF 생성에 실패해 커밋을 중단합니다." >&2
   exit 1
 fi
