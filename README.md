@@ -64,12 +64,11 @@ PDF는 Chrome/Chromium이 설치된 환경에서 `npm run build:resume:pdf`로 �
 
 ## 배포 전환
 
-이 변경은 이력서 구조화 PR #6을 기반으로 합니다. #6 머지 후 이 PR의 base를 main으로 바꿉니다.
 루트 HTML을 제거하므로 기존 **Deploy from a branch → main / (root)** 방식으로 배포하면 안 됩니다.
 
 1. PR의 `Site build and Pages / build` 검사와 로컬 화면·PDF를 검토합니다.
-2. 이 PR을 main에 머지하기 직전에 Settings → Pages → Build and deployment → Source를 **GitHub Actions**로 전환합니다.
-3. main에 머지합니다. 워크플로가 검증 후 `_site/` 아티팩트만 배포합니다.
+2. main에 머지하기 직전에 Settings → Pages → Build and deployment → Source를 **GitHub Actions**로 전환합니다.
+3. PR의 base가 `main`인지 확인하고 머지합니다. 워크플로가 검증 후 `_site/` 아티팩트만 배포합니다.
 4. `/`, `/404.html`, `/resume/`, PDF, Google 인증 URL과 기존 `/blog/` 링크를 확인합니다.
 
 PR 이벤트는 검사만 실행합니다. 배포 작업은 main의 push 또는 main에서 수동 실행한 경우에만 실행됩니다.
