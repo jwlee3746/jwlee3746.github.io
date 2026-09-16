@@ -14,14 +14,17 @@
 | `resume/jaewon-lee-resume.pdf` | 생성 산출물 |
 | `scripts/build-resume-pdf.sh` | PDF 생성. 1~3페이지 범위를 벗어나거나 렌더가 잘못되면 실패로 끝난다 |
 | `scripts/install-resume-hook.sh` | PDF 자동 재생성 pre-commit 훅 설치 (클론 후 1회) |
-| `data/images/thumbs/` | 글 섹션 썸네일 축소판 (256×160 WebP) |
-| `data/images/og-image.png` | 링크 공유용 1200×630 |
+| `data/images/posts/<slug>/thumbnail.webp` | 글 섹션 썸네일 축소판 (256×160 WebP) |
+| `data/images/site/og-image.png` | 링크 공유용 1200×630 |
 
 화면 표현은 `theme/`, 콘텐츠는 `posts/`·`resume/`·`data/`, 이미지는 `data/images/`, 관리 도구는 `scripts/`에 둔다.
+`data/site/`는 사이트 설정, `data/profile/`은 개인 프로필, `data/portfolio/`는 경력·프로젝트 데이터의 준비 공간이다.
+현재 텍스트 콘텐츠는 HTML에서 읽는다. 데이터 파일은 실제 템플릿에 연결할 때 이전하며 중복 생성하지 않는다.
+이미지는 `data/images/profile/`, `data/images/site/`, `data/images/posts/<slug>/`로 나눈다. 상세 규칙은 `data/README.md`를 따른다.
 빈 디렉터리의 `.gitignore`는 자리 표시용이며 내용은 비워 둔다.
 같은 도메인의 `/blog/`는 아직 **별도 레포**(`jwlee3746/blog`, Jekyll)에서 서빙된다.
 블로그 소스는 후속 이전에서 이 구조에 반영하며 루트 `blog/`를 만들지 않는다.
-프로필 사진은 포트폴리오와 외부 블로그 모두 `/data/images/avatar.jpg`를 사용한다.
+프로필 사진은 포트폴리오와 외부 블로그 모두 `/data/images/profile/avatar.jpg`를 사용한다.
 사이트 공통 favicon 경로는 `/favicon.svg`로 유지한다.
 
 ## 작업 규칙
@@ -32,7 +35,7 @@
 - 인쇄에 영향을 주는 미디어쿼리는 `@media screen and (...)`으로 한정한다. 용지 폭(210mm)에 걸려 인쇄가 1컬럼으로 무너진 적이 있다.
 - 포트폴리오는 **다크 모드 전용**이다. `<html data-theme="dark">`를 유지하며 테마 전환 버튼이나 저장 스크립트를 다시 추가하지 않는다.
 - 레이아웃은 Chirpy 구조를 따른다: 260px 고정 사이드바, 중앙 콘텐츠 피드, 데스크톱 우측 보조 패널. 850px 미만에서는 사이드바를 오프캔버스로 전환한다.
-- 프로필 사진은 GitHub 공개 프로필에서 받은 `data/images/avatar.jpg`를 사용한다.
+- 프로필 사진은 GitHub 공개 프로필에서 받은 `data/images/profile/avatar.jpg`를 사용한다.
 - **블로그 SCSS 는 Ruby Sass 로 빌드된다.** GitHub Pages 의 legacy 빌드는 `jekyll-sass-converter 1.5.2` 를 쓰고, 그 안은 dart-sass 도 libsass 도 아닌 **Ruby Sass 3.x** 다. 로컬 dart-sass 로 통과한 SCSS 가 배포에서 죽은 적이 두 번 있다.
   - `hsl(188deg 52% 18%)` — 공백 구분 표기를 **SassScript 로 평가되는 자리**(변수 대입, 일반 선언의 값)에서 못 읽는다. 커스텀 프로퍼티 값(`--x: hsl(...)`)은 통과된다.
   - `--wave: url("data:image/svg+xml,...")` — **커스텀 프로퍼티 값 안의 `url()`** 을 못 읽는다. 데이터 URI 는 SCSS 변수(`$wave`)로 두고 선언에 직접 쓴다.
