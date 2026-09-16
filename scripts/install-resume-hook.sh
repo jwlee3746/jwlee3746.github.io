@@ -11,4 +11,4 @@ exec bash "$(git rev-parse --show-toplevel)/scripts/resume-pre-commit.sh"
 HOOK_BODY
 chmod +x "$HOOK"
 echo "설치 완료: $HOOK"
-echo "이력서 데이터·템플릿 변경 시 HTML과 PDF를 함께 생성합니다."
+echo "이력서 데이터·템플릿 변경 시 _site/의 HTML과 PDF를 생성하고 PDF를 스테이징합니다."

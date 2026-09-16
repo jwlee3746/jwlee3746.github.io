@@ -1,5 +1,5 @@
 import type { HistoryEntry } from '../../../scripts/resume/data.ts';
-import { escapeHtml as e, formatPeriod } from '../html.ts';
+import { escapeHtml as e, formatPeriod } from '../../shared/html.ts';
 
 export function renderHistory(title: string, entries: HistoryEntry[]): string {
   return `  <h2>${e(title)}</h2>\n` + entries.map(entry => `  <div class="row">

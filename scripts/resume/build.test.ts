@@ -82,7 +82,7 @@ for (const [name, change] of Object.entries({
     const before = await buildResume(root);
     await save(root, 'data/portfolio/projects/invalid.json', { ...await project(root), ...change });
     await assert.rejects(buildResume(root), /data\/portfolio\/projects\/invalid.json/);
-    assert.equal(await readFile(join(root, 'resume/index.html'), 'utf8'), before);
+    assert.equal(await readFile(join(root, '_site/resume/index.html'), 'utf8'), before);
   });
 }
 
@@ -106,7 +106,7 @@ test('check mode detects stale output without overwriting it', async t => {
   const root = await fixture(t);
   await buildResume(root);
   await buildResume(root, true);
-  await writeFile(join(root, 'resume/index.html'), 'stale');
+  await writeFile(join(root, '_site/resume/index.html'), 'stale');
   await assert.rejects(buildResume(root, true), /npm run build:resume/);
-  assert.equal(await readFile(join(root, 'resume/index.html'), 'utf8'), 'stale');
+  assert.equal(await readFile(join(root, '_site/resume/index.html'), 'utf8'), 'stale');
 });
