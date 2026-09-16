@@ -1,0 +1,103 @@
+---
+title: "[프로젝트] 네이버 스니펫 오픈도메인 QA"
+excerpt: "잘려 있는 검색 스니펫에서 답을 찾는 한국어 QA 모델. 학습 데이터의 90%가 unanswerable인 불균형을 증강으로 보완해 test 점수를 36.0에서 41.9로 올렸다."
+date: 2024-05-10
+permalink: /blog/Project/naver-snippet-qa/
+tags: ["Project", "NLP", "QA", "BERT", "KoELECTRA"]
+toc: true
+---
+
+## Introduction
+
+2020년 KAIST와 네이버가 함께 진행한 과제다. 오픈도메인 QA이지만 데이터가 특이했다. 네이버 검색 결과로 나타나는 **스니펫**을 그대로 쓰기 때문에, SQuAD나 KorQuAD처럼 잘 다듬어진 문단이 주어지지 않는다. 모델은 이 조각글 안에서 답을 찾아내야 한다.
+
+<figure>
+  <img src="/data/images/posts/naver-snippet-qa/snippet-example.webp" alt="'세종'을 검색했을 때 나오는 지식백과 스니펫 두 건이 붉은 상자로 표시된 네이버 검색 결과 화면">
+  <figcaption>모델에게 주어지는 지문은 이런 조각글이다. 문장이 온전히 끝나지 않고 “…”로 잘려 있다.</figcaption>
+</figure>
+
+## Data Analysis
+
+데이터를 열어 보니 두 가지가 걸렸다.
+
+- **극단적인 불균형.** 학습 데이터의 90%가 unanswerable — 주어진 스니펫 안에 정답이 아예 존재하지 않았다.
+- **끊긴 문장.** 스니펫은 문장이 완성되어 있지 않아, 모델이 전체 맥락을 잡기 어렵다.
+
+질문 유형도 한쪽으로 쏠려 있었다. Who · When · What · Where 같은 단답형이 대부분이었고, How와 Why는 100개도 되지 않았다.
+
+<figure>
+  <img src="/data/images/posts/naver-snippet-qa/raw-data.webp" alt="question, paragraphs, contents, label, source, url, date 필드로 이루어진 원본 QA 레코드 예시">
+  <figcaption>레코드 한 건. <code>contents</code>가 지문이고, 함께 실린 <code>url</code>이 나중에 지문을 되살리는 실마리가 된다.</figcaption>
+</figure>
+
+## Approach 1. 두 종류의 데이터 증강
+
+두 문제에 각각 다른 처방을 붙였다.
+
+**답이 없는 질문에는 맥락을 되찾아 줬다.** 스니펫이 잘려 나가면서 정답까지 함께 잘려 나간 경우가 많았다. 그래서 스니펫의 출처 url을 따라가 원문 context를 검색해 오고, 그 내용으로 지문을 보강(amplify)했다. 예를 들어 세종대왕에 관한 질문의 정답이 `1397년 5월 7일`인데 스니펫에는 그 대목이 잘려 있다면, 원문에서 해당 부분을 찾아 지문에 되살리는 식이다.
+
+**끊긴 문장에는 완성된 문장을 섞었다.** KorQuAD 1.0에서 **60,000개의 full-form QA pair**를 가져와 학습 데이터에 보충했다. 온전한 문장으로 된 예시를 함께 보여주면, 모델이 일반적인 맥락을 이해하는 데 도움이 되리라는 판단이었다.
+
+## Approach 2. 사전학습 모델 비교와 앙상블
+
+먼저 단일 모델로 ablation study를 돌렸다.
+
+- BERT-multilingual — 베이스라인
+- KoBERT, HanBERT, Electra
+- **KoELECTRA** — 가장 좋았다
+
+그다음 variance를 줄이기 위해 앙상블 구성을 바꿔 가며 비교했다. KoELECTRA-base 단독, KoELECTRA-small v2 + distilKoBERT 조합, KoELECTRA-small v2 4개 묶음. 여기에 learning rate · optimizer · dropout을 조정했다.
+
+## Results
+
+<div class="metrics">
+  <div class="metric">
+    <div class="metric-label">test score</div>
+    <div class="metric-value"><span class="from">36.0</span> → <span class="to">41.9</span></div>
+  </div>
+</div>
+
+BERT-multilingual 베이스라인이 36.0이었고, KorQuAD로 보강한 KoELECTRA-base-v2가 **41.9**로 마무리했다.
+
+<figure>
+  <img src="/data/images/posts/naver-snippet-qa/model-comparison.webp" alt="BERT-multilingual, KoELECTRA-small-v2, KoELECTRA-base-v2, KoELECTRA-base-v2(KorQuAD 버전)의 F1·EM 비교 표">
+  <figcaption>모델별 비교. 오른쪽 끝의 KorQuAD 보강 버전만 test 점수가 뚜렷하게 올라간다 — 나머지 셋은 36점대에 몰려 있다.</figcaption>
+</figure>
+
+여기서 읽을 수 있는 것은 **모델을 바꾼 것보다 데이터를 바꾼 쪽이 결정적이었다는 점**이다. KoELECTRA로 갈아타는 것만으로는 36.0 → 36.5에 그쳤고, 같은 모델에 KorQuAD를 보강하자 41.9로 올랐다.
+
+<figure>
+  <img src="/data/images/posts/naver-snippet-qa/dataset-ablation.webp" alt="다섯 가지 학습 데이터 조합에 따른 exact match와 F1 점수 막대그래프">
+  <figcaption>학습 데이터 조합별 성능. 가장 오른쪽 — 스니펫 + KorQuAD 1.0 + 스니펫 증강본 — 이 가장 높다.</figcaption>
+</figure>
+
+데이터 조합을 다섯 가지로 갈라 본 결과에서 한 가지가 눈에 띈다. **증강을 많이 할수록 좋아지지는 않았다.** 스니펫과 KorQuAD를 *둘 다* 증강한 조합은 오히려 KorQuAD만 더한 것보다 낮았고, 스니펫 쪽만 증강했을 때 가장 좋았다.
+
+<figure>
+  <img src="/data/images/posts/naver-snippet-qa/hyperparameter.webp" alt="learning rate와 batch size 조합 네 가지의 학습 곡선">
+  <figcaption>learning rate와 batch size 조합별 학습 곡선.</figcaption>
+</figure>
+
+## 결론
+
+**데이터 쪽에서.** 결국 중요한 것은 모델에게 올바른 맥락을 담은 데이터를 주는 일이었다. 스니펫에 특화된 모델을 만든다고 해서 스니펫 데이터만 써야 하는 것은 아니었다. 스니펫 + KorQuAD, 스니펫 + SQuAD 조합이 모두 도움이 됐다. 다만 지문이 길다고 무조건 좋은 것도 아니었다 — 필요한 것은 길이가 아니라 **일반적인 맥락**이었다.
+
+**모델 쪽에서.** 모델의 variance를 줄이는 일이 성능만큼 중요했다. 각 모델의 base 버전을 기준으로 ablation을 하고, 크기를 늘려 가며 확인한 뒤, 앙상블로 묶는 순서로 접근했다. 다만 앙상블을 키울수록 **성능 향상 폭이 점점 줄어들었다.** 모델을 키우는 수직적 확장과 여러 모델을 묶는 수평적 확장 사이의 trade-off를 어디서 끊을지가 실제 판단 지점이었다.
+
+## 남은 질문
+
+프로젝트를 끝내면서 가장 걸렸던 것은, url 원문을 일일이 검색해 지문을 보강하는 과정이 지나치게 번거롭다는 점이었다. 이 과정을 자동화할 수는 없을까. 모델에게 검색 기능을 쥐여 주고 url 원문을 스스로 읽어 오게 할 수는 없을까.
+
+<figure>
+  <img src="/data/images/posts/naver-snippet-qa/url-extraction.webp" alt="스니펫에 담긴 url을 따라가 원문 텍스트를 추출해 오는 흐름도">
+  <figcaption>당시 그려 둔 그림. 스니펫의 url을 따라가 원문을 읽어 온다 — 사람이 하던 자리에 도구를 넣는다.</figcaption>
+</figure>
+
+> (2023 추가) LLM을 사용한다면?
+
+지금은 그 질문에 해당하는 일을 하고 있다. 에이전트가 도구를 호출해 필요한 정보를 직접 가져오는 구조가, 그때 손으로 하던 일을 대신한다.
+
+## 자료
+
+- [보고서: 네이버 검색 결과 데이터를 이용한 QA 모델 학습](/blog/assets/docs/2024-05-10-1/naver-snippet-qa-report.pdf)
+- [코드: PIRL-korquad-open-cs492h](https://github.com/jwlee3746/PIRL-korquad-open-cs492h)
