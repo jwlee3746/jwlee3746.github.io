@@ -16,3 +16,6 @@ pre .token.string, pre .token.attr-value { color: #a7d88a; }
 pre .token.number, pre .token.constant { color: #f5bd76; }
 pre .token.function, pre .token.class-name { color: #93c5fd; }
 pre .token.operator, pre .token.tag, pre .token.attr-name { color: #7dd3fc; }
+.post-tags { display: flex; flex-wrap: wrap; gap: .5rem; padding: 0; list-style: none; }
+.post-tags a { display: inline-block; padding: .25rem .6rem; border: 1px solid #52525b; border-radius: .4rem; }
+section[id], h2[id] { scroll-margin-top: 1rem; }
