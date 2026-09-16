@@ -4,9 +4,23 @@
   "type": "module",
   "scripts": {
     "build": "eleventy",
-    "dev": "eleventy --serve"
+    "dev": "eleventy --serve",
+    "prebuild": "npm run build:resume",
+    "predev": "npm run build:resume",
+    "build:resume": "node scripts/build-resume-html.ts",
+    "build:resume:pdf": "node scripts/build-resume-pdf.ts",
+    "check:resume": "node scripts/build-resume-html.ts --check",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test scripts/resume/*.test.ts"
   },
   "devDependencies": {
-    "@11ty/eleventy": "3.1.6"
+    "@11ty/eleventy": "3.1.6",
+    "@types/node": "24.13.5",
+    "playwright": "1.63.0",
+    "typescript": "7.0.2",
+    "zod": "4.6.5"
+  },
+  "engines": {
+    "node": ">=24.0.0"
   }
 }

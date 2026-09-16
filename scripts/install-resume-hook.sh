@@ -1,27 +1,14 @@
 #!/usr/bin/env bash
-# 이력서 콘텐츠나 스타일을 고치고 PDF를 안 맞추는 실수를 막는 pre-commit 훅을 설치한다.
-# 훅은 .git/ 안에 있어 레포로 공유되지 않으므로, 클론한 뒤 한 번 실행해 둔다.
-#   bash scripts/install-resume-hook.sh
+# 클론 또는 worktree 생성 후 한 번 실행한다.
 set -euo pipefail
-
 cd "$(dirname "$0")/.."
-HOOK=".git/hooks/pre-commit"
-
+HOOK="$(git rev-parse --git-path hooks/pre-commit)"
+mkdir -p "$(dirname "$HOOK")"
 cat > "$HOOK" <<'HOOK_BODY'
 #!/usr/bin/env bash
-# 이력서 콘텐츠나 스타일이 스테이징되면 PDF를 다시 뽑아 함께 커밋한다.
 set -euo pipefail
-
-git diff --cached --name-only | grep -Eq '^(resume/index\.html|theme/resume/.*)$' || exit 0
-
-echo "이력서 콘텐츠 또는 스타일이 변경되어 PDF를 다시 생성합니다..."
-if ! bash scripts/build-resume-pdf.sh; then
-  echo "PDF 생성에 실패해 커밋을 중단합니다." >&2
-  exit 1
-fi
-git add resume/jaewon-lee-resume.pdf
+exec bash "$(git rev-parse --show-toplevel)/scripts/resume-pre-commit.sh"
 HOOK_BODY
-
 chmod +x "$HOOK"
 echo "설치 완료: $HOOK"
-echo "이제 이력서 콘텐츠 또는 스타일을 커밋하면 PDF가 자동으로 재생성되어 함께 올라갑니다."
+echo "이력서 데이터·템플릿 변경 시 HTML과 PDF를 함께 생성합니다."

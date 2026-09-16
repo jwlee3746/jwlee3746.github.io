@@ -1,0 +1,20 @@
+{
+  "historyTitle": "학력 및 경력",
+  "projectsTitle": "프로젝트",
+  "groups": [
+    {
+      "id": "core",
+      "order": 10,
+      "label": "Selected Projects",
+      "title": "핵심 프로젝트",
+      "description": "상위 에이전트의 라우팅 오류 분석과 회귀 검증"
+    },
+    {
+      "id": "platform",
+      "order": 20,
+      "label": "Platform & Operations",
+      "title": "플랫폼·운영 개선",
+      "description": "제품 에이전트의 실행 공통화와 운영 가시성 확보"
+    }
+  ]
+}

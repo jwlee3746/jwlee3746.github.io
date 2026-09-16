@@ -1,0 +1,36 @@
+{
+  "group": "platform",
+  "order": 20,
+  "title": "에이전트 도구 실행·관측 플랫폼",
+  "url": "https://github.com/jwlee3746/jw-agent-playbook",
+  "start": "2024-07",
+  "end": null,
+  "stack": [
+    "Agentic Platform",
+    "Langfuse",
+    "OpenTelemetry"
+  ],
+  "impact": "모델 제공자·도구 실행을 공통화하고 요청부터 결과까지 추적하는 제품 기반 구축",
+  "points": [
+    {
+      "label": "실행 구조",
+      "text": "요청 해석부터 도구 선택·호출·실행까지 공통 인터페이스 설계"
+    },
+    {
+      "label": "미들웨어",
+      "text": "실행 정책·예외 처리를 공통화해 도구별 중복을 줄이고 실패 처리 경로 구성"
+    },
+    {
+      "label": "Provider 호환",
+      "text": "제공자별 설정·응답 차이를 어댑터로 분리해 제품 코드의 결합도 완화"
+    },
+    {
+      "label": "관측성",
+      "text": "Langfuse·OpenTelemetry로 요청·모델 판단·도구 실행을 추적하는 체계 구축"
+    },
+    {
+      "label": "하네스 운영",
+      "text": "제품 시나리오별 프롬프트·하네스 전략과 공통 설정 설계·운영"
+    }
+  ]
+}
