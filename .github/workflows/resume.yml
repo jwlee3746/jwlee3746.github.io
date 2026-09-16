@@ -8,6 +8,7 @@ on:
       - 'resume/**'
       - 'package*.json'
       - 'tsconfig.json'
+      - 'eleventy.config.js'
       - '.nvmrc'
       - '.github/workflows/resume.yml'
   push:
@@ -19,6 +20,7 @@ on:
       - 'resume/**'
       - 'package*.json'
       - 'tsconfig.json'
+      - 'eleventy.config.js'
       - '.nvmrc'
       - '.github/workflows/resume.yml'
 permissions:
@@ -36,3 +38,4 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run check:resume
+      - run: npm run build

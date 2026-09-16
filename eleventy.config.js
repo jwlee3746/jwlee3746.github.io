@@ -4,7 +4,8 @@ export default function (eleventyConfig) {
     "*.html",
     ".nojekyll",
     "favicon.svg",
-    "resume",
+    "resume/index.html",
+    "resume/*.pdf",
     "data/images",
     "theme/**/*.css",
     "theme/**/*.js",
@@ -13,6 +14,7 @@ export default function (eleventyConfig) {
   }
   eleventyConfig.ignores.add("README.md");
   eleventyConfig.ignores.add("CLAUDE.md");
+  eleventyConfig.ignores.add("resume/README.md");
 
   return {
     dir: { input: ".", output: "_site", includes: "theme/posts", data: "data" },

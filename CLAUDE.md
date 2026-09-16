@@ -1,6 +1,6 @@
 # jwlee3746.github.io
 
-이재원(Jaewon Lee)의 개인 포트폴리오. GitHub Pages 정적 배포. 이력서는 Node.js 24+에서 TypeScript로 빌드하며 프런트엔드 프레임워크는 사용하지 않는다.
+이재원(Jaewon Lee)의 개인 포트폴리오. GitHub Pages 정적 배포. 사이트는 Eleventy로 빌드하고, 이력서는 Node.js 24+의 TypeScript 생성기를 사용한다.
 
 | 경로 | 내용 |
 |---|---|

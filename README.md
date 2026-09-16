@@ -44,12 +44,16 @@ Jekyll 설정은 만들지 않습니다. 통합 시 빌드가 위 소스를 Jeky
 
 ## 로컬 미리보기
 
-저장소 루트에서 실행한 뒤 <http://localhost:8000/>을 엽니다.
+Node.js 24 이상에서 의존성을 설치한 뒤 로컬 서버를 실행합니다.
 리소스 경로가 `/theme/`·`/data/images/` 등 절대경로이므로 HTML 파일을 직접 열지 말고 HTTP 서버를 사용합니다.
 
 ```sh
-python3 -m http.server 8000
+npm ci
+npm run dev
 ```
+
+`npm run build`와 `npm run dev`는 먼저 이력서 HTML을 생성하고 Eleventy를 실행합니다.
+미리보기 실행 중 이력서 JSON을 수정하면 별도 터미널에서 `npm run build:resume`을 실행해 반영합니다.
 
 ## 수정 및 확인
 
