@@ -1,5 +1,5 @@
 import type { Profile } from '../../../scripts/resume/data.ts';
-import { escapeHtml as e } from '../html.ts';
+import { escapeHtml as e } from '../../shared/html.ts';
 
 export function renderProfile(profile: Profile): string {
   return `  <div class="head">

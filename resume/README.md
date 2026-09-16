@@ -1,7 +1,7 @@
 # 이력서 편집
 
 이력서는 **JSON 원본 → TypeScript 섹션 템플릿 → HTML → PDF** 순서로 생성합니다.
-`index.html`과 PDF는 GitHub Pages에서 제공하는 산출물이며 직접 수정하지 않습니다.
+HTML은 `_site/resume/index.html`에 생성하고 Git에서 제외합니다. `resume/jaewon-lee-resume.pdf`만 배포용 산출물로 추적하며 직접 수정하지 않습니다.
 
 ## 준비
 
@@ -23,11 +23,11 @@ bash scripts/install-resume-hook.sh
 | 학력 | `data/portfolio/education.json` |
 | 섹션 제목·프로젝트 그룹 | `data/portfolio/resume.json` |
 | 개별 프로젝트 | `data/portfolio/projects/<slug>.json` |
-| 전체 문서 틀 | `theme/resume/layout.ts` |
-| 프로필·학력/경력·프로젝트 서식 | `theme/resume/sections/*.ts` |
+| 전체 문서 틀 | `pages/resume/layout.ts` |
+| 프로필·학력/경력·프로젝트 서식 | `pages/resume/sections/*.ts` |
 | 화면·인쇄 스타일 | `theme/resume/resume.css` |
 
-현재 데이터는 이력서에서 사용합니다. 메인 포트폴리오의 콘텐츠는 아직 루트 `index.html`에 있습니다.
+메인 포트폴리오의 요약 콘텐츠는 `data/portfolio/homepage.json`과 `data/profile/portfolio.json`에서 따로 관리합니다.
 
 ## 프로젝트 추가
 
@@ -65,11 +65,11 @@ bash scripts/install-resume-hook.sh
 저장소 루트에서 실행합니다.
 
 ```sh
-npm run build:resume       # JSON → resume/index.html
+npm run build:resume       # JSON → _site/resume/index.html
 npm run build:resume:pdf   # JSON → HTML → PDF 전체 갱신
 npm run typecheck
 npm test
-npm run check:resume       # 커밋할 HTML이 원본과 같은지 확인
+npm run check:resume       # 빌드된 HTML이 원본과 같은지 확인
 ```
 
 기존 `bash scripts/build-resume-pdf.sh` 명령도 전체 생성을 실행합니다.
@@ -78,12 +78,11 @@ PDF 빌드는 임시 로컬 서버를 띄우고 완료 후 종료합니다. Goog
 PDF는 기존 정책대로 A4 1~3페이지를 검증합니다. 초과하면 마지막 정상 PDF를 보존하고 실패합니다.
 프로젝트가 늘어날 때는 표시할 프로젝트를 선별하거나 내용을 조정하세요.
 
-`npm run dev`로 사이트를 열고 `/resume/`에서 미리 볼 수 있습니다. 사이트 빌드(`npm run build`)와 미리보기 시작 시에도 이력서 HTML을 먼저 생성합니다.
-미리보기 실행 중 JSON을 수정하면 별도 터미널에서 `npm run build:resume`을 실행하세요.
+`npm run dev`로 사이트를 열고 `/resume/`에서 미리 볼 수 있습니다. 사이트 빌드와 미리보기는 Eleventy가 같은 렌더러를 호출합니다. JSON·템플릿 수정도 자동 반영됩니다.
 
 ## 커밋과 PR
 
-훅은 데이터·템플릿·스타일·빌드 변경을 감지해 HTML과 PDF를 생성하고 함께 스테이징합니다.
+훅은 데이터·템플릿·스타일·빌드 변경을 감지해 HTML과 PDF를 생성하고 PDF만 스테이징합니다.
 스테이징하지 않은 관련 변경이나 새 프로젝트가 있으면 먼저 중단하므로, 커밋할 이력서 파일을 모두 스테이징하세요.
 기존 훅 사용자는 설치 스크립트를 다시 실행해야 합니다.
 
