@@ -6,6 +6,7 @@ export default function (eleventyConfig) {
     eleventyConfig.addPassthroughCopy(path);
   }
   eleventyConfig.ignores.add('**/README.md');
+  eleventyConfig.ignores.add('**/AGENTS.md');
   eleventyConfig.ignores.add('CLAUDE.md');
   eleventyConfig.ignores.add('docs/**');
   // Render functions load validated data and partials themselves. Watch both,
