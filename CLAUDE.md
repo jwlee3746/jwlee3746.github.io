@@ -4,10 +4,12 @@
 
 | 경로 | 내용 |
 |---|---|
-| `index.html` | 포트폴리오 메인 (다크 전용, 인라인 CSS/바닐라 JS) |
-| `resume/index.html` | A4 한 페이지 인쇄용 이력서 (`@page size: A4`) |
+| `index.html` | 포트폴리오 메인 콘텐츠·메타데이터 (다크 전용) |
+| `assets/css/portfolio.css` | 메인 페이지 스타일·반응형 레이아웃 |
+| `assets/js/portfolio.js` | 스크롤 스파이·모바일 메뉴·검색 입력 처리 (바닐라 JS) |
+| `resume/index.html` | A4 다중 페이지 인쇄용 이력서 (`@page size: A4`) |
 | `resume/jaewon-lee-resume.pdf` | 생성 산출물 |
-| `resume/build-pdf.sh` | PDF 생성. 한 페이지를 벗어나거나 렌더가 잘못되면 실패로 끝난다 |
+| `resume/build-pdf.sh` | PDF 생성. 1~3페이지 범위를 벗어나거나 렌더가 잘못되면 실패로 끝난다 |
 | `resume/install-hook.sh` | PDF 자동 재생성 pre-commit 훅 설치 (클론 후 1회) |
 | `assets/thumbs/` | 글 섹션 썸네일 축소판 (256×160 WebP) |
 | `og-image.png` | 링크 공유용 1200×630 |
@@ -18,7 +20,7 @@
 
 - 변경이 끝나면 **묻지 말고 바로 커밋·푸시**한다. Pages 배포에 시간 텀이 있어 승인 대기가 곧 배포 지연이다.
 - `resume/index.html`을 고치면 `bash resume/build-pdf.sh`로 PDF를 다시 뽑는다. pre-commit 훅이 설치돼 있으면 자동으로 처리된다.
-- 이력서는 **A4 한 페이지** 안에서 프로젝트 근거와 가독성을 우선한다. 빌드 스크립트가 페이지 수를 검증한다.
+- 이력서는 **A4 1~3페이지** 안에서 프로젝트 근거와 가독성을 우선한다. 빌드 스크립트가 페이지 수를 검증한다.
 - 인쇄에 영향을 주는 미디어쿼리는 `@media screen and (...)`으로 한정한다. 용지 폭(210mm)에 걸려 인쇄가 1컬럼으로 무너진 적이 있다.
 - 포트폴리오는 **다크 모드 전용**이다. `<html data-theme="dark">`를 유지하며 테마 전환 버튼이나 저장 스크립트를 다시 추가하지 않는다.
 - 레이아웃은 Chirpy 구조를 따른다: 260px 고정 사이드바, 중앙 콘텐츠 피드, 데스크톱 우측 보조 패널. 850px 미만에서는 사이드바를 오프캔버스로 전환한다.
