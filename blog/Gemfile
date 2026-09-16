@@ -1,5 +1,12 @@
 source "https://rubygems.org"
-gemspec
 
-gem 'jekyll-admin', group: :jekyll_plugins
-gem 'jekyll-sitemap'
+# Preserve the Jekyll/Ruby Sass versions used by the previous build-check.sh.
+# This is a site bundle, not the upstream theme's development gemspec.
+gem "jekyll", "3.9.3"
+gem "jekyll-sass-converter", "1.5.2"
+gem "kramdown-parser-gfm", "~> 1.1"
+gem "jekyll-paginate", "~> 1.1"
+gem "jekyll-sitemap", "~> 1.4"
+gem "jekyll-gist", "~> 1.5"
+gem "jekyll-feed", "~> 0.17"
+gem "jekyll-include-cache", "~> 0.2"

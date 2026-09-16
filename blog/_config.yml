@@ -165,7 +165,6 @@ exclude:
   - assets/js/_main.js
   - assets/js/vendor
   - Capfile
-  - CHANGELOG
   - config
   - Gemfile
   - Gruntfile.js
@@ -175,9 +174,10 @@ exclude:
   - node_modules
   - package.json
   - package-lock.json
-  - Rakefile
   - README
   - tmp
+  - build-check.sh
+  - banner.js
   - /docs # ignore Minimal Mistakes /docs
   - /test # ignore Minimal Mistakes /test
 keep_files:

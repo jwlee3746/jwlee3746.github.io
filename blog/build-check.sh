@@ -15,23 +15,22 @@ cd "$(dirname "$0")"
 
 command -v docker >/dev/null || { echo "docker 가 필요합니다." >&2; exit 1; }
 
-docker run --rm -v "$PWD":/w -w /w ruby:3.1-slim bash -c '
-set -e
+docker run --rm -v "$PWD":/w:ro -w /w \
+  ruby:3.1-slim@sha256:2704d8eede6d399b07e5475cae41f7e7077edd9e970753f543ddb445f7f0424f bash -c '
+set -euo pipefail
 apt-get update -qq >/dev/null 2>&1
 apt-get install -y -qq build-essential git >/dev/null 2>&1
-gem install jekyll -v 3.9.3 --no-document -q >/dev/null 2>&1
-gem install kramdown-parser-gfm jekyll-paginate jekyll-sitemap jekyll-gist \
-            jekyll-feed jekyll-include-cache --no-document -q >/dev/null 2>&1
+gem install bundler -v 2.5.23 --no-document
 
-# Gemfile 은 이 레포를 테마 gem 으로 선언하고 jekyll-admin 을 요구한다.
-# Pages 는 그 Gemfile 을 쓰지 않으므로 사본에서 치우고 빌드한다.
+# 소스는 읽기 전용으로 마운트하고 컨테이너 안의 사본에서 의존성을 설치한다.
 cp -r /w /build && cd /build
 # linked worktree의 .git 파일은 컨테이너 밖 경로를 가리키므로 빌드 사본에서 제거한다.
 rm -rf .git
-rm -f Gemfile Gemfile.lock
+bundle _2.5.23_ config set --local frozen true
+bundle _2.5.23_ install
 
-JEKYLL_ENV=production jekyll build --destination /tmp/site 2>&1 \
-  | grep -vE "^\s+from |Faraday" | head -20
+# 빌드 실패를 파이프로 숨기지 않고 즉시 검사 실패로 전달한다.
+JEKYLL_ENV=production bundle _2.5.23_ exec jekyll build --safe --destination /tmp/site
 
 echo "--- 산출물 ---"
 if [ -f /tmp/site/assets/css/main.css ]; then
@@ -42,6 +41,8 @@ else
 fi
 [ -f /tmp/site/Paper/Attention1/index.html ] || { echo "글이 생성되지 않았습니다"; exit 1; }
 [ -f /tmp/site/posts/index.html ] || { echo "Posts 목록이 생성되지 않았습니다"; exit 1; }
+[ -f /tmp/site/search/index.html ] || { echo "검색 페이지가 생성되지 않았습니다"; exit 1; }
+[ -f /tmp/site/assets/js/lunr/lunr-store.js ] || { echo "검색 인덱스가 생성되지 않았습니다"; exit 1; }
 [ -f /tmp/site/categories/evaluation/index.html ] || { echo "Evaluation 카테고리가 생성되지 않았습니다"; exit 1; }
 grep -q "재현 가능한 LLM 에이전트 평가" /tmp/site/categories/evaluation/index.html || { echo "평가 글이 Evaluation 카테고리에 없습니다"; exit 1; }
 grep -q "LangChain deepagents SDK" /tmp/site/categories/Agent/index.html || { echo "일반 에이전트 글이 Agent 카테고리에 없습니다"; exit 1; }
