@@ -13,11 +13,13 @@ export default function (eleventyConfig) {
   // Render functions load validated data and partials themselves. Watch both,
   // even when a newly added JSON file was not a dependency of the last render.
   eleventyConfig.addWatchTarget('data/**/*.json');
-  eleventyConfig.addWatchTarget('pages/**/*.ts');
+  eleventyConfig.addWatchTarget('templates/**/*.ts');
   eleventyConfig.addWatchTarget('scripts/site/**/*.ts');
   eleventyConfig.addWatchTarget('scripts/resume/data.ts');
+  // JSON is loaded by scripts; leave Eleventy's global data directory at its
+  // default so data/posts remains part of the Markdown template input.
   return {
-    dir: { input: '.', output: '_site', includes: 'pages/shared', data: 'data' },
+    dir: { input: '.', output: '_site', includes: 'templates/shared' },
     templateFormats: ['md', '11ty.ts'],
     markdownTemplateEngine: 'liquid',
   };

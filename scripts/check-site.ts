@@ -15,7 +15,7 @@ for (const required of ['index.html', '404.html', 'resume/index.html', 'resume/j
 }
 for (const file of built) {
   assert(!/\.(?:ts|json|md)$/.test(file) && !file.endsWith('.gitignore'), `소스가 배포 산출물에 포함됨: ${file}`);
-  assert(!/^(?:pages|scripts|public)\//.test(file), `소스 디렉터리가 배포됨: ${file}`);
+  assert(!/^(?:templates|scripts|public|data\/posts)\//.test(file), `소스 디렉터리가 배포됨: ${file}`);
 }
 for (const route of ['index.html', 'resume/index.html', '404.html']) {
   const html = await readFile(resolve(output, route), 'utf8');
