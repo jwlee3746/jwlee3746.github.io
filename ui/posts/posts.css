@@ -1,3 +1,18 @@
 body { max-width: 72ch; margin: auto; padding: 1rem; line-height: 1.7; overflow-wrap: anywhere; }
 img { max-width: 100%; height: auto; }
 pre { overflow-x: auto; }
+pre {
+  padding: 1rem;
+  border: 1px solid #34343c;
+  border-radius: .5rem;
+  background: #1b1b1e;
+  color: #e4e4e7;
+  tab-size: 4;
+}
+pre:focus-visible { outline: 2px solid #93c5fd; outline-offset: 2px; }
+pre .token.comment, pre .token.prolog { color: #a1a1aa; }
+pre .token.keyword, pre .token.boolean { color: #c5a5ef; }
+pre .token.string, pre .token.attr-value { color: #a7d88a; }
+pre .token.number, pre .token.constant { color: #f5bd76; }
+pre .token.function, pre .token.class-name { color: #93c5fd; }
+pre .token.operator, pre .token.tag, pre .token.attr-name { color: #7dd3fc; }
