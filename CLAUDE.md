@@ -5,26 +5,27 @@
 | 경로 | 내용 |
 |---|---|
 | `data/home.json` | 메인 콘텐츠·메타데이터 (`profile`, `content`, `site`) |
-| `templates/portfolio/` | 메인 문서·섹션 조립 |
-| `templates/404.11ty.ts`, `data/error.json` | 오류 페이지 조립·문구 |
+| `ui/portfolio/` | 메인 문서·섹션 조립 |
+| `ui/404.11ty.ts`, `data/error.json` | 오류 페이지 조립·문구 |
 | `public/` | 배포 루트로 복사하는 favicon·사이트 인증 파일 |
-| `theme/portfolio/portfolio.css` | 메인 페이지 스타일·반응형 레이아웃 |
-| `theme/portfolio/portfolio.js` | 스크롤 스파이·모바일 메뉴·검색 입력 처리 (바닐라 JS) |
-| `theme/resume/resume.css` | 이력서 화면·인쇄 스타일 |
-| `theme/shared/` | 공용 화면 스타일 (현재 404) |
-| `theme/posts/` | 블로그 스타일 이전을 위한 빈 디렉터리 |
+| `ui/portfolio/portfolio.css` | 메인 페이지 스타일·반응형 레이아웃 |
+| `ui/portfolio/portfolio.js` | 스크롤 스파이·모바일 메뉴·검색 입력 처리 (바닐라 JS) |
+| `ui/resume/resume.css` | 이력서 화면·인쇄 스타일 |
+| `ui/shared/` | 공용 화면 스타일 (현재 404) |
+| `ui/posts/` | 글 목록·본문 템플릿과 CSS |
 | `data/posts/` | 이전한 포스팅 Markdown 원본 |
 | `_site/resume/index.html` | 자동 생성 HTML. 직접 편집·커밋하지 않는다 |
 | `data/resume/profile.json`, `data/resume/site.json` | 프로필·소개와 페이지 메타데이터 |
 | `data/resume/` | 이력서 학력·경력·프로젝트별 JSON·섹션 설정 |
-| `templates/resume/layout.ts`, `templates/resume/sections/` | 문서 틀·섹션 템플릿 |
+| `ui/resume/layout.ts`, `ui/resume/sections/` | 문서 틀·섹션 템플릿 |
 | `scripts/build-resume-html.ts`, `scripts/build-resume-pdf.ts` | 데이터 검증·HTML/PDF 생성 |
 | `jaewon-lee-resume.pdf` | 생성 산출물 |
 | `scripts/build-resume-pdf.sh` | PDF 생성. 1~3페이지 범위를 벗어나거나 렌더가 잘못되면 실패로 끝난다 |
 | `scripts/install-resume-hook.sh` | PDF 자동 재생성 pre-commit 훅 설치 (클론 후 1회) |
 | `data/images/posts/<slug>/thumbnail.webp` | 글 섹션 썸네일 축소판 (256×160 WebP) |
 
-문서 조립은 `templates/`, 스타일·브라우저 동작은 `theme/`, 콘텐츠는 `data/`, 이미지는 `data/images/`, 관리 도구는 `scripts/`에 둔다.
+문서 조립·스타일·브라우저 동작은 화면별 `ui/`, 콘텐츠는 `data/`, 이미지는 `data/images/`, 관리 도구는 `scripts/`에 둔다.
+`ui/`의 CSS·JavaScript는 기존 `/theme/` 주소로 배포하며 TypeScript 원본은 배포하지 않는다.
 메인은 `data/home.json`, 이력서는 `data/resume/`, 404 문구는 `data/error.json`에서 관리한다.
 데이터 배치는 `data/README.md`, 생성·검증 명령은 루트 `README.md`를 따른다.
 이미지는 `data/images/profile/`, `data/images/posts/<slug>/`로 나눈다. 상세 규칙은 `data/README.md`를 따른다.
@@ -38,7 +39,7 @@
 ## 작업 규칙
 
 - 변경이 끝나면 **묻지 말고 바로 커밋·푸시**한다. Pages 배포에 시간 텀이 있어 승인 대기가 곧 배포 지연이다.
-- 이력서 원본 데이터·`templates/resume/`·`templates/shared/`·`theme/resume/`·빌드 코드를 고치면 `npm run build:resume:pdf`로 HTML과 PDF를 함께 갱신한다. `npm run typecheck`, `npm test`, `npm run check:resume`도 통과해야 한다.
+- 이력서 원본 데이터·`ui/resume/`·`ui/shared/`·빌드 코드를 고치면 `npm run build:resume:pdf`로 HTML과 PDF를 함께 갱신한다. `npm run typecheck`, `npm test`, `npm run check:resume`도 통과해야 한다.
 - 새 프로젝트는 `data/resume/projects/<slug>.json` 하나를 추가한다. `_site/resume/index.html`은 직접 수정하지 않는다. 훅은 `bash scripts/install-resume-hook.sh`로 설치·갱신한다.
 - 이력서는 **A4 1~3페이지** 안에서 프로젝트 근거와 가독성을 우선한다. 빌드 스크립트가 페이지 수를 검증한다.
 - 인쇄에 영향을 주는 미디어쿼리는 `@media screen and (...)`으로 한정한다. 용지 폭(210mm)에 걸려 인쇄가 1컬럼으로 무너진 적이 있다.
