@@ -10,7 +10,7 @@
 | `index.html` | 메인 페이지 콘텐츠, 메타데이터, 구조화 데이터 |
 | `theme/portfolio/portfolio.css` | 다크 테마, 레이아웃, 컴포넌트, 반응형 스타일 |
 | `theme/portfolio/portfolio.js` | 섹션 위치 표시, 모바일 메뉴, 빈 검색 제출 방지 |
-| `data/images/profile/`, `data/images/site/` | 프로필 사진, 사이트 OG 이미지 |
+| `data/images/profile/` | 프로필 사진 |
 | `data/images/posts/<slug>/` | 글별 썸네일·본문 이미지 |
 | `theme/shared/` | 공용 화면 스타일. 현재 404 페이지 스타일 |
 | `theme/resume/resume.css` | 이력서 화면·인쇄 스타일 |

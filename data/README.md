@@ -11,8 +11,6 @@ data/
 └── images/
     ├── profile/
     │   └── avatar.jpg
-    ├── site/
-    │   └── og-image.png
     └── posts/
         ├── attention-1/
         │   └── thumbnail.webp
@@ -39,7 +37,7 @@ data/
 
 ## 이미지
 
-- 공통 프로필 사진은 `images/profile/`, 사이트 공유 이미지는 `images/site/`에 둡니다.
+- 공통 프로필 사진은 `images/profile/`에 둡니다.
 - 글 이미지는 `images/posts/<slug>/`에 모읍니다. 썸네일은 `thumbnail.webp`,
   본문 이미지는 `architecture.svg`처럼 내용을 나타내는 이름을 사용합니다.
 - 디렉터리와 파일명은 영문 소문자·숫자·하이픈을 사용합니다.
