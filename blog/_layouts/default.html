@@ -1,0 +1,146 @@
+---
+---
+
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.22.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="{{ site.locale | slice: 0,2 | default: "en" }}" class="no-js" data-theme="dark">
+  <head>
+    {% include head.html %}
+    {% include head/custom.html %}
+
+    <meta name="msapplication-TileColor" content="#1e1e1e">
+    <meta name="theme-color" content="#1b1b1e">
+  </head>
+
+  <body class="portfolio-blog layout--{{ page.layout | default: layout.layout }}{% if page.classes or layout.classes %}{{ page.classes | default: layout.classes | join: ' ' | prepend: ' ' }}{% endif %}">
+    {% include_cached skip-links.html %}
+    {% include_cached browser-upgrade.html %}
+
+    <div class="pb-layout">
+      {% include blog-sidebar.html %}
+
+      <div class="pb-shell">
+        {% include blog-topbar.html %}
+
+        <div class="pb-grid">
+          <main class="pb-content initial-content" id="main-content">
+            {{ content }}
+          </main>
+
+          {% include blog-panel.html %}
+        </div>
+
+        <footer class="pb-footer" id="footer">
+          <span>&copy; {{ site.time | date: '%Y' }} Jaewon Lee</span>
+          <span>Built for clarity, kept intentionally simple.</span>
+        </footer>
+      </div>
+    </div>
+
+    <div class="pb-mask" id="pb-mask" aria-hidden="true"></div>
+
+    {% include scripts.html %}
+
+    <script>
+      (function () {
+        var trigger = document.getElementById('pb-sidebar-trigger');
+        var mask = document.getElementById('pb-mask');
+        var sidebar = document.getElementById('pb-sidebar');
+        var searchForm = document.getElementById('pb-search-form');
+        var searchInput = document.getElementById('pb-search-input');
+        var searchClear = document.getElementById('pb-search-clear');
+        var mobileQuery = window.matchMedia('(max-width: 849px)');
+        var lastFocusedElement = null;
+
+        function setSidebarAvailability(open) {
+          if (!sidebar) return;
+          if (mobileQuery.matches) {
+            sidebar.setAttribute('aria-hidden', String(!open));
+            if (open) sidebar.removeAttribute('inert');
+            else sidebar.setAttribute('inert', '');
+          } else {
+            sidebar.removeAttribute('aria-hidden');
+            sidebar.removeAttribute('inert');
+          }
+        }
+
+        function closeSidebar(restoreFocus) {
+          document.body.classList.remove('pb-sidebar-open');
+          if (trigger) trigger.setAttribute('aria-expanded', 'false');
+          setSidebarAvailability(false);
+          if (restoreFocus && lastFocusedElement) lastFocusedElement.focus();
+        }
+
+        if (trigger && mask && sidebar) {
+          setSidebarAvailability(false);
+          trigger.addEventListener('click', function () {
+            var open = !document.body.classList.contains('pb-sidebar-open');
+            if (open) {
+              lastFocusedElement = document.activeElement;
+              document.body.classList.add('pb-sidebar-open');
+              trigger.setAttribute('aria-expanded', 'true');
+              setSidebarAvailability(true);
+              var firstLink = sidebar.querySelector('a');
+              if (firstLink) firstLink.focus();
+            } else {
+              closeSidebar(true);
+            }
+          });
+          mask.addEventListener('click', function () { closeSidebar(true); });
+          sidebar.querySelectorAll('a').forEach(function (link) {
+            link.addEventListener('click', function () { closeSidebar(false); });
+          });
+          mobileQuery.addEventListener('change', function () { closeSidebar(false); });
+        }
+
+        if (searchForm && searchInput && searchClear) {
+          var query = new URLSearchParams(window.location.search).get('q');
+          if (query) {
+            searchInput.value = query;
+            searchClear.hidden = false;
+          }
+          searchInput.addEventListener('input', function () {
+            searchClear.hidden = searchInput.value.length === 0;
+          });
+          searchClear.addEventListener('click', function () {
+            searchInput.value = '';
+            searchClear.hidden = true;
+            searchInput.focus();
+          });
+          searchForm.addEventListener('submit', function (event) {
+            if (!searchInput.value.trim()) event.preventDefault();
+          });
+        }
+
+        document.addEventListener('keydown', function (event) {
+          if (event.key === 'Escape') {
+            if (document.body.classList.contains('pb-sidebar-open')) {
+              closeSidebar(true);
+            } else if (searchInput && document.activeElement === searchInput && searchInput.value) {
+              searchInput.value = '';
+              searchClear.hidden = true;
+            }
+          }
+          if (event.key === 'Tab' && document.body.classList.contains('pb-sidebar-open')) {
+            var focusable = sidebar.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])');
+            if (!focusable.length) return;
+            var first = focusable[0];
+            var last = focusable[focusable.length - 1];
+            if (event.shiftKey && document.activeElement === first) {
+              event.preventDefault();
+              last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+              event.preventDefault();
+              first.focus();
+            }
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

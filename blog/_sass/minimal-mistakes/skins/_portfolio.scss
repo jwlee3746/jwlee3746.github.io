@@ -1,0 +1,118 @@
+/* ==========================================================================
+   Portfolio skin — "따뜻한 쪽" 방향
+   joshwcomeau.com 의 문법(색 있는 제목 · 뜨거운 대문자 라벨 · 하늘 밴드 ·
+   넉넉한 여백)을 가져오되, 색은 포트폴리오의 민트 계열로 쓴다.
+
+   중립색은 순회색을 피해 전부 청록 쪽으로 살짝 기울여 둔다 —
+   joshwcomeau 가 회색을 225deg 로 통일해 둔 것과 같은 이유다.
+   ========================================================================== */
+
+:root {
+  --mm-bg:       hsl(0deg 0% 100%);
+  --mm-raised:   hsl(185deg 40% 97%);
+  --mm-line:     hsl(190deg 25% 90%);
+  --mm-text:     hsl(200deg 18% 22%);
+  --mm-ink:      hsl(188deg 52% 18%);   /* 제목에 색을 준다 — 검정으로 두지 않는다 */
+  --mm-muted:    hsl(200deg 12% 45%);
+  --mm-accent:   hsl(178deg 84% 26%);   /* 링크 · 액션 */
+  --mm-hot:      hsl(340deg 72% 42%);   /* 대문자 라벨 — 차가운 지면에 뜨거운 점 하나 */
+  --mm-chip:     hsl(178deg 52% 93%);
+  --mm-active:   hsl(178deg 45% 95%);
+  --mm-code-bg:  hsl(190deg 45% 97%);
+
+  /* 상단 하늘 밴드 */
+  --mm-band-1:   hsl(174deg 62% 87%);
+  --mm-band-2:   hsl(182deg 52% 94%);
+
+  --c-bg: hsl(190deg 45% 97%);  --c-line: hsl(190deg 30% 92%); --c-sel: hsl(190deg 25% 86%);
+  --c-dim: hsl(200deg 12% 48%); --c-fg: hsl(200deg 18% 22%);   --c-str: hsl(160deg 90% 24%);
+  --c-num: hsl(25deg 85% 38%);  --c-key: hsl(265deg 70% 48%);  --c-fn: hsl(215deg 85% 42%);
+  --c-cls: hsl(38deg 80% 32%);  --c-var: hsl(348deg 75% 45%);  --c-acc: hsl(178deg 84% 26%);
+}
+
+@mixin dark-tokens {
+  --mm-bg:       hsl(215deg 22% 8%);
+  --mm-raised:   hsl(210deg 20% 12%);
+  --mm-line:     hsl(210deg 17% 18%);
+  --mm-text:     hsl(208deg 14% 70%);
+  --mm-ink:      hsl(168deg 55% 85%);   /* 다크에서도 제목은 색을 유지한다 */
+  --mm-muted:    hsl(207deg 9% 49%);
+  --mm-accent:   hsl(168deg 76% 65%);
+  --mm-hot:      hsl(340deg 85% 72%);
+  --mm-chip:     hsl(170deg 35% 15%);
+  --mm-active:   hsl(172deg 30% 13%);
+  --mm-code-bg:  hsl(212deg 22% 11%);
+
+  --mm-band-1:   hsl(184deg 32% 15%);
+  --mm-band-2:   hsl(206deg 24% 10%);
+
+  --c-bg: hsl(212deg 22% 11%);  --c-line: hsl(210deg 20% 14%); --c-sel: hsl(210deg 17% 20%);
+  --c-dim: hsl(207deg 9% 52%);  --c-fg: hsl(206deg 30% 91%);   --c-str: hsl(135deg 65% 72%);
+  --c-num: hsl(28deg 100% 74%); --c-key: hsl(270deg 90% 84%);  --c-fn: hsl(210deg 100% 74%);
+  --c-cls: hsl(45deg 85% 66%);  --c-var: hsl(5deg 100% 74%);   --c-acc: hsl(168deg 76% 65%);
+}
+
+@mixin light-tokens {
+  --mm-bg: hsl(0deg 0% 100%);        --mm-raised: hsl(185deg 40% 97%);
+  --mm-line: hsl(190deg 25% 90%);    --mm-text: hsl(200deg 18% 22%);
+  --mm-ink: hsl(188deg 52% 18%);     --mm-muted: hsl(200deg 12% 45%);
+  --mm-accent: hsl(178deg 84% 26%);  --mm-hot: hsl(340deg 72% 42%);
+  --mm-chip: hsl(178deg 52% 93%);    --mm-active: hsl(178deg 45% 95%);
+  --mm-code-bg: hsl(190deg 45% 97%);
+  --mm-band-1: hsl(174deg 62% 87%);  --mm-band-2: hsl(182deg 52% 94%);
+
+  --c-bg: hsl(190deg 45% 97%);  --c-line: hsl(190deg 30% 92%); --c-sel: hsl(190deg 25% 86%);
+  --c-dim: hsl(200deg 12% 48%); --c-fg: hsl(200deg 18% 22%);   --c-str: hsl(160deg 90% 24%);
+  --c-num: hsl(25deg 85% 38%);  --c-key: hsl(265deg 70% 48%);  --c-fn: hsl(215deg 85% 42%);
+  --c-cls: hsl(38deg 80% 32%);  --c-var: hsl(348deg 75% 45%);  --c-acc: hsl(178deg 84% 26%);
+}
+
+@media (prefers-color-scheme: dark) { :root { @include dark-tokens; } }
+:root[data-theme="dark"] { @include dark-tokens; }
+:root[data-theme="light"] { @include light-tokens; }
+
+
+/* ── 폰트 ───────────────────────────────────────────────────────────── */
+$sans-serif: 'IBM Plex Sans KR', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif;
+$monospace: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+$menufont: $sans-serif;
+$sans-serif-narrow: $sans-serif;
+$caption-font-family: $sans-serif;
+
+
+/* ── 테마 변수를 토큰으로 ─────────────────────────────────────────────── */
+$background-color: var(--mm-bg);
+$text-color: var(--mm-text);
+$muted-text-color: var(--mm-muted);
+$primary-color: var(--mm-accent);
+$border-color: var(--mm-line);
+
+$code-background-color: var(--mm-code-bg);
+$code-background-color-dark: var(--mm-raised);
+$mark-highlight-color: var(--mm-chip);
+$block-quote-background-color: var(--mm-raised);
+$form-background-color: var(--mm-raised);
+$footer-background-color: var(--mm-bg);
+
+$link-color: var(--mm-accent);
+$link-color-hover: var(--mm-ink);
+$link-color-visited: var(--mm-accent);
+
+$masthead-link-color: var(--mm-text);
+$masthead-link-color-hover: var(--mm-ink);
+$navicon-link-color-hover: var(--mm-text);
+$active-color: var(--mm-active);
+
+/* libsass(GitHub Pages)는 hsl() 의 공백 구분 표기를 SassScript 자리에서 못 읽는다.
+   커스텀 프로퍼티 값은 plain CSS 로 통과되지만, 여기처럼 평가되는 자리는 리터럴로 둔다. */
+$yiq-contrasted-dark-default: #163f46 !default;
+$yiq-contrasted-light-default: #ffffff !default;
+$yiq-contrasted-threshold: 175 !default;
+$yiq-debug: false !default;
+
+$base00: var(--c-bg);  $base01: var(--c-line); $base02: var(--c-sel);
+$base03: var(--c-dim); $base04: var(--c-dim);  $base05: var(--c-fg);
+$base06: var(--c-fg);  $base07: var(--c-fg);   $base08: var(--c-var);
+$base09: var(--c-num); $base0a: var(--c-cls);  $base0b: var(--c-str);
+$base0c: var(--c-acc); $base0d: var(--c-fn);   $base0e: var(--c-key);
+$base0f: var(--c-var);

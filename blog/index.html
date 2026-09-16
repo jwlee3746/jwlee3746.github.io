@@ -1,0 +1,37 @@
+---
+layout: archive
+title: "Posts by Category"
+---
+
+<section class="category-intro">
+  <p>관심 있는 분야에서 시작할 수 있도록 글을 주제별로 묶었습니다. 새로 작성한 글은 <a href="{{ site.baseurl }}/posts/">Posts</a>에서 최신순으로 볼 수 있습니다.</p>
+</section>
+
+<div class="category-groups">
+  {% for group in site.data.category_groups %}
+    <section class="category-group" aria-labelledby="category-group-{{ forloop.index }}">
+      <header class="category-group__header">
+        <h2 id="category-group-{{ forloop.index }}">{{ group.title }}</h2>
+        <p>{{ group.description }}</p>
+      </header>
+      <div class="category-grid">
+        {% for item in group.categories %}
+          {% assign category_posts = site.categories[item.name] %}
+          {% if category_posts and category_posts.size > 0 %}
+            {% assign latest_post = category_posts | first %}
+            <a class="category-card" href="{{ item.url | relative_url }}">
+              <div class="category-card__top">
+                <h3>{{ item.name }}</h3>
+                <span class="category-card__count">{{ category_posts.size }}</span>
+              </div>
+              <p>{{ item.description }}</p>
+              <div class="category-card__latest">최근 글 · {{ latest_post.title }}</div>
+            </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </section>
+  {% endfor %}
+</div>
+
+<a class="all-categories-link" href="{{ site.baseurl }}/categories/">카테고리별 전체 글 보기 →</a>

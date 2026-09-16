@@ -1,0 +1,31 @@
+<aside class="pb-panel" aria-label="바로가기">
+  {% if page.toc %}
+    <section class="pb-panel-toc">
+      <h2>{{ page.toc_label | default: site.data.ui-text[site.locale].toc_label | default: "On this page" }}</h2>
+      <nav class="toc" aria-label="{{ page.toc_label | default: site.data.ui-text[site.locale].toc_label | default: 'On this page' }}">
+        {% include toc.html sanitize=true html=content h_min=2 h_max=4 class="toc__menu" skip_no_ids=true %}
+      </nav>
+    </section>
+  {% endif %}
+
+  <section>
+    <h2>Recent Posts</h2>
+    <ul>
+      {% assign recent_posts = site.posts | slice: 0, 5 %}
+      {% for post in recent_posts %}
+        <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a></li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section>
+    <h2>Categories</h2>
+    <div class="pb-panel-tags">
+      {% assign sorted_categories = site.categories | sort %}
+      {% for category in sorted_categories limit: 8 %}
+        {% capture category_path %}/categories/{{ category[0] | uri_escape }}/{% endcapture %}
+        <a href="{{ category_path | relative_url }}">{{ category[0] }}</a>
+      {% endfor %}
+    </div>
+  </section>
+</aside>

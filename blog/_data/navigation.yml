@@ -1,0 +1,10 @@
+# main links
+main:
+  - title: "Portfolio"
+    url: https://jwlee3746.github.io/ # 포트폴리오 홈 (루트)
+
+  - title: "Posts"
+    url: /posts/ # 최신 글 목록
+
+  - title: "Search"
+    url: /search/

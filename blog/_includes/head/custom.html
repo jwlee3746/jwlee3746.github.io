@@ -1,0 +1,24 @@
+<!-- start custom head snippets -->
+
+<!-- 저장된 테마를 첫 페인트 전에 적용한다. CSS 뒤로 내리면 새로고침마다 화면이 번쩍인다. -->
+<script>
+  (function () {
+    try {
+      {% if page.layout == 'categories' or page.layout == 'category' %}
+      document.documentElement.dataset.theme = 'dark';
+      return;
+      {% endif %}
+      var t = localStorage.getItem('theme');
+      if (t) document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  })();
+</script>
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+<link rel="icon" href="{{ '/favicon.svg' | relative_url }}" type="image/svg+xml">
+
+{% if page.use_math %}
+    {% include mathjax-support.html %}
+{% endif %}
+
+<!-- end custom head snippets -->

@@ -1,0 +1,59 @@
+{% if site.footer_scripts %}
+  {% for script in site.footer_scripts %}
+    <script src="{{ script | relative_url }}"></script>
+  {% endfor %}
+{% else %}
+  <script src="{{ '/assets/js/main.min.js' | relative_url }}"></script>
+{% endif %}
+
+{% if site.search == true or page.layout == "search" %}
+  {%- assign search_provider = site.search_provider | default: "lunr" -%}
+  {%- case search_provider -%}
+    {%- when "lunr" -%}
+      {% include_cached search/lunr-search-scripts.html %}
+    {%- when "google" -%}
+      {% include_cached search/google-search-scripts.html %}
+    {%- when "algolia" -%}
+      {% include_cached search/algolia-search-scripts.html %}
+  {%- endcase -%}
+{% endif %}
+
+{% include analytics.html %}
+{% include /comments-providers/scripts.html %}
+
+{% if site.after_footer_scripts %}
+  {% for script in site.after_footer_scripts %}
+    <script src="{{ script | relative_url }}"></script>
+  {% endfor %}
+{% endif %}
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+    function isDark() {
+      return root.dataset.theme ? root.dataset.theme === 'dark' : prefersDark.matches;
+    }
+    function paint() {
+      var dark = isDark();
+      var next = dark ? '라이트 모드로 전환' : '다크 모드로 전환';
+      btn.setAttribute('aria-pressed', String(dark));
+      btn.setAttribute('aria-label', next);
+      btn.setAttribute('title', next);
+    }
+    btn.addEventListener('click', function () {
+      var next = isDark() ? 'light' : 'dark';
+      root.dataset.theme = next;
+      try { localStorage.setItem('theme', next); } catch (e) {}
+      paint();
+    });
+    // 직접 고른 적이 없으면 OS 설정 변화를 그대로 따라간다
+    prefersDark.addEventListener('change', function () {
+      if (!root.dataset.theme) paint();
+    });
+    paint();
+  })();
+</script>

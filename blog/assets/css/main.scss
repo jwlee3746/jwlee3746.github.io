@@ -1,0 +1,52 @@
+---
+# Only the main Sass file needs front matter (the dashes are enough)
+---
+
+@charset "utf-8";
+
+@import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}"; // skin
+@import "minimal-mistakes"; // main partials
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Source+Sans+Pro:wght@400;600;700;900&display=swap');
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css');
+
+@import "overrides";
+
+
+/* ── 글 본문: 그림 · 수치 · 표 ─────────────────────────── */
+.page__content {
+  figure { margin: 2.2em 0; }
+  figcaption {
+    width: 100%; margin-top: 0.7em;
+    font-size: 0.74em; line-height: 1.65;
+    color: var(--mm-muted); text-align: left;
+  }
+  img { border-radius: 12px; }
+
+  .metrics { display: flex; flex-wrap: wrap; gap: 0.75em; margin: 1.6em 0; }
+  .metric {
+    flex: 1 1 180px; padding: 1.1em 1.3em;
+    border: 1px solid var(--mm-line); border-radius: 12px;
+    background: var(--mm-raised);
+  }
+  .metric-label {
+    font-family: $monospace; font-size: 0.7em; font-weight: 600;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--mm-hot);
+  }
+  .metric-value {
+    margin-top: 0.35em; font-size: 1.6em; font-weight: 700;
+    line-height: 1.2; color: var(--mm-ink);
+    .from { color: var(--mm-muted); font-weight: 400; }
+    .to { color: var(--mm-accent); }
+  }
+
+  /* 정렬은 마크다운 표의 `---:` 지정에 맡긴다 */
+  table { font-size: 0.88em; }
+  td { font-variant-numeric: tabular-nums; }
+}
+
+/* 흰 배경 도해는 다크에서만 판을 깐다. 라이트에서는 지면과 같은 색이라 필요 없다. */
+@mixin plate { .page__content img { background: #fff; padding: 0.75em; } }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { @include plate; } }
+:root[data-theme="dark"] { @include plate; }

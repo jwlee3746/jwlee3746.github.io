@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">Trace-to-Eval data flywheel</title>
+  <desc id="desc">OpenTelemetry observations are indexed, selected, curated, promoted into versioned datasets, evaluated, and fed back to production monitoring.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#475569"/></marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0f172a" flood-opacity=".12"/></filter>
+    <style>.title{font:700 30px system-ui,sans-serif;fill:#0f172a}.sub{font:16px system-ui,sans-serif;fill:#64748b}.lane{font:700 17px system-ui,sans-serif;fill:#334155;letter-spacing:1px}.label{font:700 18px system-ui,sans-serif;fill:#0f172a}.small{font:14px system-ui,sans-serif;fill:#475569}.box{fill:#fff;stroke:#cbd5e1;stroke-width:2;rx:15;filter:url(#shadow)}.cyan{fill:#ecfeff;stroke:#0f766e}.blue{fill:#eff6ff;stroke:#2563eb}.amber{fill:#fffbeb;stroke:#b45309}.violet{fill:#f5f3ff;stroke:#7c3aed}.line{stroke:#475569;stroke-width:2.5;fill:none;marker-end:url(#arrow)}.feedback{stroke:#7c3aed;stroke-width:2.5;stroke-dasharray:8 6;fill:none;marker-end:url(#arrow)}</style>
+  </defs>
+  <rect width="1200" height="680" rx="24" fill="#f8fafc"/>
+  <text x="55" y="56" class="title">Trace-to-Eval Data Flywheel</text><text x="55" y="86" class="sub">관측 trace는 후보이고, 검토된 task만 versioned evaluation asset이 된다.</text>
+  <rect x="40" y="125" width="1120" height="145" rx="20" fill="#eff6ff" opacity=".72"/><text x="65" y="158" class="lane">OBSERVE</text>
+  <rect x="40" y="285" width="1120" height="145" rx="20" fill="#ecfeff" opacity=".72"/><text x="65" y="318" class="lane">CURATE</text>
+  <rect x="40" y="445" width="1120" height="145" rx="20" fill="#f5f3ff" opacity=".72"/><text x="65" y="478" class="lane">EVALUATE</text>
+
+  <rect x="160" y="160" width="205" height="80" class="box blue"/><text x="262" y="192" text-anchor="middle" class="label">Runtime Signals</text><text x="262" y="219" text-anchor="middle" class="small">trace · feedback · outcome</text>
+  <rect x="460" y="160" width="205" height="80" class="box blue"/><text x="562" y="192" text-anchor="middle" class="label">OTel + Index</text><text x="562" y="219" text-anchor="middle" class="small">attributes · session · spans</text>
+  <rect x="760" y="160" width="245" height="80" class="box blue"/><text x="882" y="192" text-anchor="middle" class="label">Candidate Queries</text><text x="882" y="219" text-anchor="middle" class="small">failure · rare path · drift</text>
+  <path d="M365 200H460" class="line"/><path d="M665 200H760" class="line"/>
+
+  <rect x="160" y="320" width="205" height="80" class="box cyan"/><text x="262" y="352" text-anchor="middle" class="label">Redact</text><text x="262" y="379" text-anchor="middle" class="small">privacy · secret · expiry</text>
+  <rect x="460" y="320" width="205" height="80" class="box cyan"/><text x="562" y="352" text-anchor="middle" class="label">Cluster &amp; Minimize</text><text x="562" y="379" text-anchor="middle" class="small">dedupe · fingerprint</text>
+  <rect x="760" y="320" width="245" height="80" class="box amber"/><text x="882" y="352" text-anchor="middle" class="label">Annotate &amp; Promote</text><text x="882" y="379" text-anchor="middle" class="small">oracle · mode · lineage</text>
+  <path d="M882 240V320" class="line"/><path d="M760 360H665" class="line"/><path d="M460 360H365" class="line"/>
+
+  <rect x="160" y="480" width="205" height="80" class="box violet"/><text x="262" y="512" text-anchor="middle" class="label">Versioned Tasks</text><text x="262" y="539" text-anchor="middle" class="small">dataset · scorer · state</text>
+  <rect x="460" y="480" width="205" height="80" class="box violet"/><text x="562" y="512" text-anchor="middle" class="label">Trials</text><text x="562" y="539" text-anchor="middle" class="small">replay · sandbox · simulator</text>
+  <rect x="760" y="480" width="245" height="80" class="box violet"/><text x="882" y="512" text-anchor="middle" class="label">Scores &amp; Artifacts</text><text x="882" y="539" text-anchor="middle" class="small">outcome · slice · provenance</text>
+  <path d="M262 400V480" class="line"/><path d="M365 520H460" class="line"/><path d="M665 520H760" class="line"/>
+  <path d="M1005 520H1090V110H262V160" class="feedback"/>
+  <text x="55" y="638" class="sub">자동화의 목표는 복사 속도가 아니라 후보 탐색, 중복 제거, oracle 합의와 원인 추적의 lead time을 줄이는 것이다.</text>
+</svg>

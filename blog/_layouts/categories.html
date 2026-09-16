@@ -1,0 +1,16 @@
+---
+layout: portfolio-archive
+---
+
+{% assign sorted_categories = site.categories | sort %}
+<div class="pc-category-card" aria-label="글 카테고리">
+  {% for category in sorted_categories %}
+    {% capture category_path %}/categories/{{ category[0] | uri_escape }}/{% endcapture %}
+    <a class="pc-category-row" href="{{ category_path | relative_url }}">
+      <i class="far fa-folder fa-fw" aria-hidden="true"></i>
+      <span class="pc-category-name">{{ category[0] }}</span>
+      <span class="pc-category-count">{{ category[1].size }}{% if category[1].size == 1 %} post{% else %} posts{% endif %}</span>
+      <i class="fas fa-angle-right fa-fw pc-category-arrow" aria-hidden="true"></i>
+    </a>
+  {% endfor %}
+</div>
