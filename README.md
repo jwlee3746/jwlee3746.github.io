@@ -10,7 +10,8 @@
 | `index.html` | 메인 페이지 콘텐츠, 메타데이터, 구조화 데이터 |
 | `theme/portfolio/portfolio.css` | 다크 테마, 레이아웃, 컴포넌트, 반응형 스타일 |
 | `theme/portfolio/portfolio.js` | 섹션 위치 표시, 모바일 메뉴, 빈 검색 제출 방지 |
-| `data/images/profile/`, `data/images/site/` | 프로필 사진, 사이트 OG 이미지 |
+| `data/images/profile/` | 프로필 사진 |
+| `data/images/site/` | 향후 사이트 공용 이미지 (현재 비어 있음) |
 | `data/images/posts/<slug>/` | 글별 썸네일·본문 이미지 |
 | `theme/shared/` | 공용 화면 스타일. 현재 404 페이지 스타일 |
 | `theme/resume/resume.css` | 이력서 화면·인쇄 스타일 |
@@ -31,7 +32,7 @@
 데이터별 배치와 이미지 명명 규칙은 [data/README.md](data/README.md)에 정리했습니다.
 `data/site/`, `data/profile/`, `data/portfolio/`는 아직 HTML에서 사용하는 데이터를 이전하기 위한 준비 공간입니다.
 
-아직 비어 있는 `theme/posts/`, `posts/`, 위 데이터 디렉터리는 빈 `.gitignore`로 추적합니다.
+아직 비어 있는 `theme/posts/`, `posts/`, `data/images/site/`, 위 데이터 디렉터리는 빈 `.gitignore`로 추적합니다.
 이 파일들은 자리 표시용이며 앞으로 추가하는 콘텐츠를 무시하지 않습니다.
 
 `/blog/`는 아직 별도 저장소 `jwlee3746/blog`에서 배포합니다. 루트 `blog/`나 사용하지 않는
