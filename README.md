@@ -43,6 +43,17 @@ JSON의 문자열은 일반 텍스트로 이스케이프합니다. About의 강�
 표현하며 임의 HTML은 넣지 않습니다. 화면별 요약의 길이가 달라 메인과 이력서 데이터는 구분합니다.
 미리보기 실행 중 JSON과 TypeScript 템플릿 변경도 자동으로 반영됩니다.
 
+## 글 목차와 앵커
+
+글의 front matter에 `toc: true`를 쓰면 빌드 시 목차를 생성합니다. 목차를 끈 글도 제목 앵커는 유지합니다.
+`markdown-it-anchor`가 제목 ID·중복을 처리하고, `markdown-it-table-of-contents`가 그 ID로 중첩 목차를 만듭니다.
+수식 제목은 목차에서도 KaTeX로 표시하며, 앵커는 원본 TeX를 사용해 기존 URL을 유지합니다.
+브라우저 JavaScript는 필요하지 않습니다.
+
+연결 설정은 `ui/posts/toc.ts`, 기존 HTML 제목·명시적 ID와의 호환 처리는 `ui/posts/html-headings.ts`에 있습니다.
+일반 Markdown 제목은 렌더링 전 토큰으로 처리합니다. HTML 제목은 호환 어댑터가 플러그인에 전달하며,
+본문의 명시적 ID는 자동 앵커와 충돌하지 않도록 예약합니다.
+
 ## 실행·검증
 
 ```sh
