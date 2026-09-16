@@ -24,7 +24,7 @@ const server = createServer((request, response) => {
   response.writeHead(asset ? 200 : 404, { 'Content-Type': asset?.type ?? 'text/plain' });
   response.end(asset?.body ?? 'Not found');
 });
-const temporary = resolve(projectRoot, `resume/.resume-${process.pid}.pdf`);
+const temporary = resolve(projectRoot, `.resume-${process.pid}.pdf`);
 let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined;
 try {
   await new Promise<void>((resolve, reject) => {
@@ -48,8 +48,8 @@ try {
     throw new Error(`PDF 검증 실패: ${pages}페이지, ${pdf.length}B (허용 범위: 1~3페이지)`);
   }
   await writeFile(temporary, pdf);
-  await rename(temporary, resolve(projectRoot, 'resume/jaewon-lee-resume.pdf'));
-  console.log(`생성 완료: resume/jaewon-lee-resume.pdf (${pages}페이지, ${pdf.length.toLocaleString()}B)`);
+  await rename(temporary, resolve(projectRoot, 'jaewon-lee-resume.pdf'));
+  console.log(`생성 완료: jaewon-lee-resume.pdf (${pages}페이지, ${pdf.length.toLocaleString()}B)`);
 } finally {
   try {
     await browser?.close();

@@ -19,14 +19,14 @@
 | `data/portfolio/` | 학력·경력·프로젝트별 JSON·그룹 설정 |
 | `pages/resume/layout.ts`, `pages/resume/sections/` | 문서 틀·섹션 템플릿 |
 | `scripts/build-resume-html.ts`, `scripts/build-resume-pdf.ts` | 데이터 검증·HTML/PDF 생성 |
-| `resume/jaewon-lee-resume.pdf` | 생성 산출물 |
+| `jaewon-lee-resume.pdf` | 생성 산출물 |
 | `scripts/build-resume-pdf.sh` | PDF 생성. 1~3페이지 범위를 벗어나거나 렌더가 잘못되면 실패로 끝난다 |
 | `scripts/install-resume-hook.sh` | PDF 자동 재생성 pre-commit 훅 설치 (클론 후 1회) |
 | `data/images/posts/<slug>/thumbnail.webp` | 글 섹션 썸네일 축소판 (256×160 WebP) |
 
-문서 조립은 `pages/`, 스타일·브라우저 동작은 `theme/`, 콘텐츠는 `posts/`·`resume/`·`data/`, 이미지는 `data/images/`, 관리 도구는 `scripts/`에 둔다.
+문서 조립은 `pages/`, 스타일·브라우저 동작은 `theme/`, 콘텐츠는 `posts/`·`data/`, 이미지는 `data/images/`, 관리 도구는 `scripts/`에 둔다.
 `data/site/`는 사이트 설정, `data/profile/`은 개인 프로필, `data/portfolio/`는 학력·경력·프로젝트 원본이다.
-이력서는 이 데이터를 읽어 생성한다. 메인 문구는 `data/portfolio/homepage.json`, `data/profile/portfolio.json`, `data/site/portfolio.json`에서 관리한다. 편집 절차는 `resume/README.md`를 따른다.
+이력서는 이 데이터를 읽어 생성한다. 메인 문구는 `data/portfolio/homepage.json`, `data/profile/portfolio.json`, `data/site/portfolio.json`에서 관리한다. 데이터 배치는 `data/README.md`, 생성·검증 명령은 루트 `README.md`를 따른다.
 이미지는 `data/images/profile/`, `data/images/posts/<slug>/`로 나눈다. 상세 규칙은 `data/README.md`를 따른다.
 빈 디렉터리의 `.gitignore`는 자리 표시용이며 내용은 비워 둔다.
 같은 도메인의 `/blog/`는 아직 **별도 레포**(`jwlee3746/blog`, Jekyll)에서 서빙된다.
