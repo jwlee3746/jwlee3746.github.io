@@ -15,16 +15,15 @@ async function repository(t: { after: (fn: () => Promise<void>) => void }) {
   git('config', 'user.email', 'test@example.com');
   git('config', 'core.hooksPath', '/dev/null');
   await mkdir(join(root, 'data/portfolio/projects'), { recursive: true });
-  await mkdir(join(root, 'resume'));
   await mkdir(join(root, 'bin'));
   await writeFile(join(root, 'data/portfolio/projects/example.json'), '{}\n');
-  await writeFile(join(root, 'resume/jaewon-lee-resume.pdf'), 'original pdf');
+  await writeFile(join(root, 'jaewon-lee-resume.pdf'), 'original pdf');
   await writeFile(join(root, 'README.md'), 'original readme');
   git('add', '.');
   git('commit', '-m', 'fixture');
   // Stub only the expensive PDF command: assertions exercise the actual Git hook.
   const node = join(root, 'bin/node');
-  await writeFile(node, '#!/bin/sh\nprintf generated > resume/jaewon-lee-resume.pdf\n');
+  await writeFile(node, '#!/bin/sh\nprintf generated > jaewon-lee-resume.pdf\n');
   await chmod(node, 0o755);
   const run = () => spawnSync('bash', [join(projectRoot, 'scripts/resume-pre-commit.sh')], {
     cwd: root, encoding: 'utf8', env: { ...process.env, PATH: `${join(root, 'bin')}:${process.env.PATH}` },
@@ -38,7 +37,7 @@ test('hook stages the PDF without committing generated HTML when a project is st
   git('add', 'data/portfolio/projects/example.json');
   assert.equal(run().status, 0);
   assert(!git('diff', '--cached', '--name-only').includes('index.html'));
-  assert.equal(git('show', ':resume/jaewon-lee-resume.pdf'), 'generated');
+  assert.equal(git('show', ':jaewon-lee-resume.pdf'), 'generated');
 });
 
 test('hook rejects partially staged data instead of publishing unstaged text', async t => {
@@ -49,7 +48,7 @@ test('hook rejects partially staged data instead of publishing unstaged text', a
   const result = run();
   assert.equal(result.status, 1);
   assert.match(result.stderr, /스테이징하지 않은/);
-  assert.equal(git('show', ':resume/jaewon-lee-resume.pdf'), 'original pdf');
+  assert.equal(git('show', ':jaewon-lee-resume.pdf'), 'original pdf');
 });
 
 test('hook rejects untracked projects when rebuilding', async t => {
@@ -58,7 +57,7 @@ test('hook rejects untracked projects when rebuilding', async t => {
   git('add', 'data/portfolio/projects/example.json');
   await writeFile(join(root, 'data/portfolio/projects/untracked.json'), '{}');
   assert.equal(run().status, 1);
-  assert.equal(await readFile(join(root, 'resume/jaewon-lee-resume.pdf'), 'utf8'), 'original pdf');
+  assert.equal(await readFile(join(root, 'jaewon-lee-resume.pdf'), 'utf8'), 'original pdf');
 });
 
 test('unrelated commits do not rebuild resume artifacts', async t => {
@@ -66,5 +65,5 @@ test('unrelated commits do not rebuild resume artifacts', async t => {
   await writeFile(join(root, 'README.md'), 'updated');
   git('add', 'README.md');
   assert.equal(run().status, 0);
-  assert.equal(git('show', ':resume/jaewon-lee-resume.pdf'), 'original pdf');
+  assert.equal(git('show', ':jaewon-lee-resume.pdf'), 'original pdf');
 });

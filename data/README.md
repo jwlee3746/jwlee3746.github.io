@@ -1,7 +1,7 @@
 # 데이터 구조
 
 사이트에서 보여 주는 데이터와 이미지를 관리합니다. 문서 조립은 `pages/`, 스타일과 브라우저 동작은 `theme/`,
-포스팅 본문은 루트 `posts/`, 이력서 PDF는 루트 `resume/`에 둡니다. 생성 HTML은 `_site/`에만 둡니다.
+포스팅 본문은 루트 `posts/`, 이력서 PDF는 루트 `jaewon-lee-resume.pdf`에 둡니다. 생성 HTML은 `_site/`에만 둡니다.
 
 ```text
 data/
@@ -27,7 +27,7 @@ data/
 프로젝트는 파일 단위로 자동으로 포함되며, 결과 HTML은 직접 편집하지 않습니다.
 메인 포트폴리오는 `site/portfolio.json`, `profile/portfolio.json`, `portfolio/homepage.json`을 읽습니다.
 404 문구는 `site/error.json`에서 관리합니다. 화면별 문구 길이가 다르므로 메인과 이력서의 요약은 구분합니다.
-자세한 필드와 추가 방법은 [이력서 편집 가이드](../resume/README.md)를 참고하세요.
+생성·검증 명령은 [루트 README](../README.md#실행검증)를 참고하세요.
 
 | 위치 | 데이터의 예 |
 | --- | --- |

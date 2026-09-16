@@ -17,7 +17,7 @@ Eleventy로 생성한 `_site/`만 GitHub Pages에 배포합니다. Node.js 24 �
 | `theme/` | 화면별 CSS와 브라우저 JavaScript |
 | `posts/` | 포스팅 Markdown 원본 |
 | `public/` | favicon·사이트 인증 HTML·`.nojekyll` 등 그대로 복사할 파일 |
-| `resume/` | 이력서 PDF와 편집 안내 |
+| `jaewon-lee-resume.pdf` | 자동 생성한 이력서 PDF |
 | `scripts/` | 데이터 검증, PDF 생성, 빌드·검증 도구 |
 | `_site/` | 자동 생성한 배포 결과. Git에서 제외 |
 
@@ -36,7 +36,7 @@ Eleventy로 생성한 `_site/`만 GitHub Pages에 배포합니다. Node.js 24 �
 - 404 문구: `data/site/error.json`
 - 카드나 섹션의 HTML 구조: `pages/portfolio/sections/`
 - 색상·레이아웃·모바일 메뉴: `theme/portfolio/`
-- 이력서: [이력서 편집 가이드](resume/README.md)
+- 이력서: `data/profile/resume.json`, `data/site/resume.json`, `data/portfolio/`의 경력·학력·프로젝트 데이터
 - 데이터와 이미지 배치: [데이터 안내](data/README.md)
 
 JSON의 문자열은 일반 텍스트로 이스케이프합니다. About의 강조만 `{ "strong": "강조할 내용" }`으로
@@ -59,6 +59,7 @@ npm run check:resume           # 생성된 이력서와 데이터 동기화 검�
 저장소 루트에는 제공할 HTML이 없으므로 루트 HTTP 서버로 미리 보지 않습니다.
 
 PDF는 Chrome/Chromium이 설치된 환경에서 `npm run build:resume:pdf`로 갱신합니다.
+루트의 `jaewon-lee-resume.pdf`로 저장하며, 배포 시 기존 `/resume/jaewon-lee-resume.pdf` 주소로 복사합니다.
 `bash scripts/install-resume-hook.sh`로 설치하는 훅은 이력서 원본을 검사하고 PDF를 갱신합니다.
 생성 HTML은 `_site/resume/index.html`에만 쓰며 커밋하지 않습니다. 기존 훅은 재설치하세요.
 

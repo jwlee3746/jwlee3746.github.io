@@ -2,7 +2,8 @@ export default function (eleventyConfig) {
   // Node 24 executes erasable TypeScript; type checking is a separate build check.
   eleventyConfig.addExtension('11ty.ts', { key: '11ty.js' });
   eleventyConfig.addPassthroughCopy({ public: '.' });
-  for (const path of ['resume/*.pdf', 'data/images', 'theme/**/*.css', 'theme/**/*.js']) {
+  eleventyConfig.addPassthroughCopy({ 'jaewon-lee-resume.pdf': 'resume/jaewon-lee-resume.pdf' });
+  for (const path of ['data/images', 'theme/**/*.css', 'theme/**/*.js']) {
     eleventyConfig.addPassthroughCopy(path);
   }
   eleventyConfig.ignores.add('**/README.md');
