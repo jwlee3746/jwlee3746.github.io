@@ -1,6 +1,18 @@
 import { globSync } from 'node:fs';
+import Prism from 'prismjs';
+import loadLanguages from 'prismjs/components/index.js';
+
+loadLanguages.silent = true;
 
 export default function (eleventyConfig) {
+  eleventyConfig.addMarkdownHighlighter((code, language) => {
+    if (language) loadLanguages(language);
+    const grammar = Object.hasOwn(Prism.languages, language) ? Prism.languages[language] : undefined;
+    const highlighted = grammar && typeof grammar === 'object'
+      ? Prism.highlight(code, grammar, language)
+      : code.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+    return `<pre tabindex="0"><code>${highlighted}</code></pre>`;
+  });
   // Node 24 executes erasable TypeScript; type checking is a separate build check.
   eleventyConfig.addExtension('11ty.ts', { key: '11ty.js' });
   eleventyConfig.addPassthroughCopy({ public: '.' });
