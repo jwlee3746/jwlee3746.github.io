@@ -1,5 +1,5 @@
 import type { Group, Project } from '../../../scripts/resume/data.ts';
-import { escapeHtml as e, formatPeriod } from '../html.ts';
+import { escapeHtml as e, formatPeriod } from '../../shared/html.ts';
 
 function renderProject(project: Project): string {
   const title = project.url

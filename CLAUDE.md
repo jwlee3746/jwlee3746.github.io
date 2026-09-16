@@ -4,37 +4,42 @@
 
 | 경로 | 내용 |
 |---|---|
-| `index.html` | 포트폴리오 메인 콘텐츠·메타데이터 (다크 전용) |
+| `data/portfolio/homepage.json`, `data/profile/portfolio.json`, `data/site/portfolio.json` | 메인 콘텐츠·메타데이터 |
+| `pages/portfolio/` | 메인 문서·섹션 조립 |
+| `pages/404.11ty.ts`, `data/site/error.json` | 오류 페이지 조립·문구 |
+| `public/` | 배포 루트로 복사하는 favicon·사이트 인증 파일 |
 | `theme/portfolio/portfolio.css` | 메인 페이지 스타일·반응형 레이아웃 |
 | `theme/portfolio/portfolio.js` | 스크롤 스파이·모바일 메뉴·검색 입력 처리 (바닐라 JS) |
 | `theme/resume/resume.css` | 이력서 화면·인쇄 스타일 |
 | `theme/shared/` | 공용 화면 스타일 (현재 404) |
-| `theme/posts/`, `posts/` | 블로그 이전을 위한 빈 디렉터리. 빈 `.gitignore`로 추적 |
-| `resume/index.html` | 자동 생성 HTML. 직접 편집하지 않는다 |
+| `theme/posts/` | 블로그 스타일 이전을 위한 빈 디렉터리 |
+| `posts/` | 이전한 포스팅 Markdown 원본 |
+| `_site/resume/index.html` | 자동 생성 HTML. 직접 편집·커밋하지 않는다 |
 | `data/profile/resume.json`, `data/site/resume.json` | 프로필·소개와 페이지 메타데이터 |
 | `data/portfolio/` | 학력·경력·프로젝트별 JSON·그룹 설정 |
-| `theme/resume/layout.ts`, `theme/resume/sections/` | 문서 틀·섹션 템플릿 |
+| `pages/resume/layout.ts`, `pages/resume/sections/` | 문서 틀·섹션 템플릿 |
 | `scripts/build-resume-html.ts`, `scripts/build-resume-pdf.ts` | 데이터 검증·HTML/PDF 생성 |
 | `resume/jaewon-lee-resume.pdf` | 생성 산출물 |
 | `scripts/build-resume-pdf.sh` | PDF 생성. 1~3페이지 범위를 벗어나거나 렌더가 잘못되면 실패로 끝난다 |
 | `scripts/install-resume-hook.sh` | PDF 자동 재생성 pre-commit 훅 설치 (클론 후 1회) |
 | `data/images/posts/<slug>/thumbnail.webp` | 글 섹션 썸네일 축소판 (256×160 WebP) |
 
-화면 표현은 `theme/`, 콘텐츠는 `posts/`·`resume/`·`data/`, 이미지는 `data/images/`, 관리 도구는 `scripts/`에 둔다.
+문서 조립은 `pages/`, 스타일·브라우저 동작은 `theme/`, 콘텐츠는 `posts/`·`resume/`·`data/`, 이미지는 `data/images/`, 관리 도구는 `scripts/`에 둔다.
 `data/site/`는 사이트 설정, `data/profile/`은 개인 프로필, `data/portfolio/`는 학력·경력·프로젝트 원본이다.
-이력서는 이 데이터를 읽어 생성하며, 메인 페이지 콘텐츠는 아직 루트 HTML에 있다. 편집 절차는 `resume/README.md`를 따른다.
+이력서는 이 데이터를 읽어 생성한다. 메인 문구는 `data/portfolio/homepage.json`, `data/profile/portfolio.json`, `data/site/portfolio.json`에서 관리한다. 편집 절차는 `resume/README.md`를 따른다.
 이미지는 `data/images/profile/`, `data/images/posts/<slug>/`로 나눈다. 상세 규칙은 `data/README.md`를 따른다.
 빈 디렉터리의 `.gitignore`는 자리 표시용이며 내용은 비워 둔다.
 같은 도메인의 `/blog/`는 아직 **별도 레포**(`jwlee3746/blog`, Jekyll)에서 서빙된다.
 블로그 소스는 후속 이전에서 이 구조에 반영하며 루트 `blog/`를 만들지 않는다.
 프로필 사진은 포트폴리오와 외부 블로그 모두 `/data/images/profile/avatar.jpg`를 사용한다.
-사이트 공통 favicon 경로는 `/favicon.svg`로 유지한다.
+사이트 공통 favicon 원본은 `public/favicon.svg`이며 공개 경로는 `/favicon.svg`로 유지한다.
+루트 HTML은 두지 않는다. `_site/`만 배포하며 배포 절차는 README.md를 따른다.
 
 ## 작업 규칙
 
 - 변경이 끝나면 **묻지 말고 바로 커밋·푸시**한다. Pages 배포에 시간 텀이 있어 승인 대기가 곧 배포 지연이다.
-- 이력서 원본 데이터·`theme/resume/`·빌드 코드를 고치면 `npm run build:resume:pdf`로 HTML과 PDF를 함께 갱신한다. `npm run typecheck`, `npm test`, `npm run check:resume`도 통과해야 한다.
-- 새 프로젝트는 `data/portfolio/projects/<slug>.json` 하나를 추가한다. `resume/index.html`은 직접 수정하지 않는다. 훅은 `bash scripts/install-resume-hook.sh`로 설치·갱신한다.
+- 이력서 원본 데이터·`pages/resume/`·`pages/shared/`·`theme/resume/`·빌드 코드를 고치면 `npm run build:resume:pdf`로 HTML과 PDF를 함께 갱신한다. `npm run typecheck`, `npm test`, `npm run check:resume`도 통과해야 한다.
+- 새 프로젝트는 `data/portfolio/projects/<slug>.json` 하나를 추가한다. `_site/resume/index.html`은 직접 수정하지 않는다. 훅은 `bash scripts/install-resume-hook.sh`로 설치·갱신한다.
 - 이력서는 **A4 1~3페이지** 안에서 프로젝트 근거와 가독성을 우선한다. 빌드 스크립트가 페이지 수를 검증한다.
 - 인쇄에 영향을 주는 미디어쿼리는 `@media screen and (...)`으로 한정한다. 용지 폭(210mm)에 걸려 인쇄가 1컬럼으로 무너진 적이 있다.
 - 포트폴리오는 **다크 모드 전용**이다. `<html data-theme="dark">`를 유지하며 테마 전환 버튼이나 저장 스크립트를 다시 추가하지 않는다.
@@ -54,7 +59,7 @@
 
 현재 경력 기술이 "무엇을 했다"에서 끝나 규모·난이도·성과가 드러나지 않는다. 채용 담당자가 판단할 근거가 없어 실제보다 낮게 평가될 수 있다.
 
-**반영 위치**: `index.html`의 경력 카드와 `data/portfolio/experience.json`·프로젝트 JSON. 이력서 HTML/PDF는 다시 생성한다.
+**반영 위치**: `data/portfolio/homepage.json`의 경력 카드와 `data/portfolio/experience.json`·프로젝트 JSON. 이력서 HTML/PDF는 다시 생성한다.
 
 채워야 할 숫자 (본인만 알 수 있는 정보. **절대 추정하거나 지어내지 말 것**):
 
@@ -74,7 +79,7 @@ Bixby LLM 평가 파이프라인 구축 — [N]개 시나리오 자동 평가, �
 
 ### 2. 학부 연구 시작 연도 확인
 
-`index.html`·`resume/index.html` 모두 `2020 — 2023`으로 채웠다. 근거는 노션 아카이브에 남은
+메인·이력서 데이터 모두 `2020 — 2023`으로 채웠다. 근거는 노션 아카이브에 남은
 2020년 네이버 프로젝트 2건(쇼핑 이미지 분류 · 스니펫 QA)이다. 실제 시작 시점이 다르면 두 곳을 함께 고친다.
 
 ### 3. 세 표면의 역할 분담
@@ -82,7 +87,7 @@ Bixby LLM 평가 파이프라인 구축 — [N]개 시나리오 자동 평가, �
 프로젝트 케이스 스터디는 **블로그가 맡는다.** 한동안 이 레포에 `projects/*/index.html`로 상세 페이지를 두었으나, 날짜·카테고리·검색이 붙는 블로그 쪽이 글의 집이 맞다고 보고 전부 옮겼다.
 
 - **이력서**: 경력과 프로젝트를 빠르게 훑을 수 있도록 한 줄 성과와 근거 bullet을 계층화
-- **웹 포트폴리오(`index.html`)**: 목차 역할 — 카드 한 장에 핵심 수치까지만 담고 상세는 블로그로 넘긴다
+- **웹 포트폴리오(`/`)**: 목차 역할 — 카드 한 장에 핵심 수치까지만 담고 상세는 블로그로 넘긴다
 - **블로그**: 문제→접근→결과 케이스 스터디, 설계 의사결정, 그림·표·원본 자료
 
 카드에서 블로그로 나가는 링크는 `/blog/Project/<slug>/` 형태다.
