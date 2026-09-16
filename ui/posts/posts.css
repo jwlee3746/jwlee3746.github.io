@@ -2,7 +2,7 @@ body { max-width: 72ch; margin: auto; padding: 1rem; line-height: 1.7; overflow-
 img { max-width: 100%; height: auto; }
 .post-toc { margin-block: 1.5rem; padding: 1rem; border: 1px solid #34343c; border-radius: .5rem; }
 .post-toc ol { padding: 0; margin-bottom: 0; list-style: none; }
-.post-toc li { margin-inline-start: calc(var(--toc-depth) * 1rem); }
+.post-toc ol ol { margin: 0; padding-inline-start: 1rem; }
 :is(h1, h2, h3, h4, h5, h6)[id] { scroll-margin-top: 1rem; }
 pre { overflow-x: auto; }
 pre {

@@ -2,6 +2,7 @@ import { globSync } from 'node:fs';
 import Prism from 'prismjs';
 import loadLanguages from 'prismjs/components/index.js';
 import { katex } from '@mdit/plugin-katex';
+import { postTableOfContents } from './ui/posts/toc.ts';
 
 loadLanguages.silent = true;
 
@@ -10,7 +11,7 @@ export default function (eleventyConfig) {
     transformer: (html, display) => display
       ? `<div class="math-block" tabindex="0" role="region" aria-label="수식">${html}</div>`
       : html,
-  }));
+  }).use(postTableOfContents));
   eleventyConfig.addPassthroughCopy({
     'node_modules/katex/dist/katex.min.css': 'theme/posts/katex/katex.min.css',
     'node_modules/katex/dist/fonts': 'theme/posts/katex/fonts',
