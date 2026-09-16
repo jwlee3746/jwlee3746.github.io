@@ -5,9 +5,15 @@
 
 ```text
 data/
-├── site/                       # 사이트 메타데이터·내비게이션·카테고리
-├── profile/                    # 이름·소개·연락처·외부 프로필
-├── portfolio/                  # 경력·학력·프로젝트·추천 글 목록
+├── home.json                   # 메인 소개·본문·메뉴·메타데이터
+├── error.json                  # 404 문구
+├── resume/                     # 이력서 데이터
+│   ├── profile.json            # 이름·직무·연락처·소개
+│   ├── site.json               # 페이지 제목·설명·공개 URL
+│   ├── experience.json         # 경력
+│   ├── education.json          # 학력
+│   ├── sections.json           # 섹션 제목·프로젝트 그룹
+│   └── projects/               # 프로젝트별 JSON
 ├── posts/                      # 포스팅 Markdown 원본
 └── images/
     ├── profile/
@@ -23,19 +29,20 @@ data/
 
 ## 구조화 데이터
 
-이력서 생성기는 `site/resume.json`, `profile/resume.json`, `portfolio/experience.json`,
-`portfolio/education.json`, `portfolio/resume.json`, `portfolio/projects/*.json`을 읽습니다.
-프로젝트는 파일 단위로 자동으로 포함되며, 결과 HTML은 직접 편집하지 않습니다.
-메인 포트폴리오는 `site/portfolio.json`, `profile/portfolio.json`, `portfolio/homepage.json`을 읽습니다.
-404 문구는 `site/error.json`에서 관리합니다. 화면별 문구 길이가 다르므로 메인과 이력서의 요약은 구분합니다.
+메인은 `home.json` 하나에서 수정합니다. `site`는 제목·설명·메뉴·링크,
+`profile`은 이름·직무·소개, `content`는 본문·경력 요약·프로젝트·추천 글을 담습니다.
+이력서는 `resume/` 안에서 수정합니다. 새 프로젝트는 `resume/projects/<slug>.json`으로 추가하면
+자동으로 포함됩니다. 프로젝트의 `group`은 `resume/sections.json`에 정의된 그룹을 사용합니다.
+404 문구는 `error.json`에서 관리합니다. 화면별 문구 길이가 다르므로 메인과 이력서의 요약은 구분합니다.
+생성된 HTML과 PDF는 직접 편집하지 않습니다.
 생성·검증 명령은 [루트 README](../README.md#실행검증)를 참고하세요.
 
 | 위치 | 데이터의 예 |
 | --- | --- |
 | `posts/` | 포스팅 Markdown 원본 |
-| `site/` | 사이트 제목·설명, 내비게이션, 카테고리 이름과 묶음 |
-| `profile/` | 이름, 소개, 이메일, GitHub·LinkedIn 주소 |
-| `portfolio/` | 경력, 학력, 프로젝트, 메인에서 소개할 글의 참조 |
+| `home.json` | 메인 소개·본문·메뉴·메타데이터 |
+| `resume/` | 이력서 프로필·경력·학력·프로젝트 |
+| `error.json` | 404 제목·문구·링크 |
 
 실제 데이터가 생기면 해당 디렉터리의 자리 표시용 `.gitignore`는 제거해도 됩니다.
 빈 `.gitignore`는 추가되는 파일을 무시하지 않습니다.

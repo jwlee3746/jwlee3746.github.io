@@ -14,9 +14,9 @@ async function repository(t: { after: (fn: () => Promise<void>) => void }) {
   git('config', 'user.name', 'Resume Test');
   git('config', 'user.email', 'test@example.com');
   git('config', 'core.hooksPath', '/dev/null');
-  await mkdir(join(root, 'data/portfolio/projects'), { recursive: true });
+  await mkdir(join(root, 'data/resume/projects'), { recursive: true });
   await mkdir(join(root, 'bin'));
-  await writeFile(join(root, 'data/portfolio/projects/example.json'), '{}\n');
+  await writeFile(join(root, 'data/resume/projects/example.json'), '{}\n');
   await writeFile(join(root, 'jaewon-lee-resume.pdf'), 'original pdf');
   await writeFile(join(root, 'README.md'), 'original readme');
   git('add', '.');
@@ -33,8 +33,8 @@ async function repository(t: { after: (fn: () => Promise<void>) => void }) {
 
 test('hook stages the PDF without committing generated HTML when a project is staged', async t => {
   const { root, git, run } = await repository(t);
-  await writeFile(join(root, 'data/portfolio/projects/example.json'), '{"title":"new"}\n');
-  git('add', 'data/portfolio/projects/example.json');
+  await writeFile(join(root, 'data/resume/projects/example.json'), '{"title":"new"}\n');
+  git('add', 'data/resume/projects/example.json');
   assert.equal(run().status, 0);
   assert(!git('diff', '--cached', '--name-only').includes('index.html'));
   assert.equal(git('show', ':jaewon-lee-resume.pdf'), 'generated');
@@ -42,9 +42,9 @@ test('hook stages the PDF without committing generated HTML when a project is st
 
 test('hook rejects partially staged data instead of publishing unstaged text', async t => {
   const { root, git, run } = await repository(t);
-  await writeFile(join(root, 'data/portfolio/projects/example.json'), '{"title":"staged"}\n');
-  git('add', 'data/portfolio/projects/example.json');
-  await writeFile(join(root, 'data/portfolio/projects/example.json'), '{"title":"unstaged"}\n');
+  await writeFile(join(root, 'data/resume/projects/example.json'), '{"title":"staged"}\n');
+  git('add', 'data/resume/projects/example.json');
+  await writeFile(join(root, 'data/resume/projects/example.json'), '{"title":"unstaged"}\n');
   const result = run();
   assert.equal(result.status, 1);
   assert.match(result.stderr, /스테이징하지 않은/);
@@ -53,9 +53,9 @@ test('hook rejects partially staged data instead of publishing unstaged text', a
 
 test('hook rejects untracked projects when rebuilding', async t => {
   const { root, git, run } = await repository(t);
-  await writeFile(join(root, 'data/portfolio/projects/example.json'), '{"title":"staged"}\n');
-  git('add', 'data/portfolio/projects/example.json');
-  await writeFile(join(root, 'data/portfolio/projects/untracked.json'), '{}');
+  await writeFile(join(root, 'data/resume/projects/example.json'), '{"title":"staged"}\n');
+  git('add', 'data/resume/projects/example.json');
+  await writeFile(join(root, 'data/resume/projects/untracked.json'), '{}');
   assert.equal(run().status, 1);
   assert.equal(await readFile(join(root, 'jaewon-lee-resume.pdf'), 'utf8'), 'original pdf');
 });

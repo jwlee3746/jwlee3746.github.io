@@ -22,14 +22,14 @@ test('data changes appear on the next render and errors name the source', async 
   const root = await mkdtemp(join(tmpdir(), 'portfolio-data-'));
   t.after(() => rm(root, { recursive: true, force: true }));
   await cp(join(projectRoot, 'data'), join(root, 'data'), { recursive: true });
-  const path = join(root, 'data/portfolio/homepage.json');
+  const path = join(root, 'data/home.json');
   const data = JSON.parse(await readFile(path, 'utf8'));
-  data.projects[0].title = '변경된 프로젝트';
+  data.content.projects[0].title = '변경된 프로젝트';
   await writeFile(path, JSON.stringify(data));
   assert(renderContent((await loadPortfolio(root)).portfolio).includes('변경된 프로젝트'));
-  data.projects[0].links[0].href = 'javascript:alert(1)';
+  data.content.projects[0].links[0].href = 'javascript:alert(1)';
   await writeFile(path, JSON.stringify(data));
-  await assert.rejects(loadPortfolio(root), /data\/portfolio\/homepage.json/);
+  await assert.rejects(loadPortfolio(root), /data\/home.json/);
 });
 
 test('navigation accepts site anchors and external links but rejects executable URLs', () => {
