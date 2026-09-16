@@ -12,7 +12,7 @@
 | `assets/js/portfolio.js` | 섹션 위치 표시, 모바일 메뉴, 빈 검색 제출 방지 |
 | `assets/avatar.jpg`, `assets/thumbs/` | 프로필 사진과 글 썸네일 |
 | `resume/index.html` | 인쇄용 이력서. PDF 렌더링을 위해 자체 스타일 유지 |
-| `resume/build-pdf.sh` | 이력서 PDF 생성 및 한 페이지 여부 검증 |
+| `resume/build-pdf.sh` | 이력서 PDF 생성 및 1~3페이지 범위 검증 |
 | `resume/install-hook.sh` | 이력서 수정 시 PDF를 갱신하는 커밋 훅 설치 |
 | `404.html` | 독립적인 오류 페이지 |
 
