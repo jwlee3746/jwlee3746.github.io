@@ -21,8 +21,7 @@
 빈 디렉터리의 `.gitignore`는 자리 표시용이며 내용은 비워 둔다.
 같은 도메인의 `/blog/`는 아직 **별도 레포**(`jwlee3746/blog`, Jekyll)에서 서빙된다.
 블로그 소스는 후속 이전에서 이 구조에 반영하며 루트 `blog/`를 만들지 않는다.
-`assets/avatar.jpg`는 외부 블로그의 기존 URL을 위한 호환용 복사본이다.
-프로필을 바꾸면 `images/avatar.jpg`와 함께 갱신하고, 외부 참조를 전환한 뒤 제거한다.
+프로필 사진은 포트폴리오와 외부 블로그 모두 `/images/avatar.jpg`를 사용한다.
 사이트 공통 favicon 경로는 `/favicon.svg`로 유지한다.
 
 ## 작업 규칙
