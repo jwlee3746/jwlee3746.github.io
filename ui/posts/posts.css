@@ -14,6 +14,8 @@ pre {
   tab-size: 4;
 }
 pre:focus-visible { outline: 2px solid #93c5fd; outline-offset: 2px; }
+.math-block { overflow-x: auto; padding-block: .25rem; }
+.math-block:focus-visible { outline: 2px solid #93c5fd; outline-offset: 2px; }
 pre .token.comment, pre .token.prolog { color: #a1a1aa; }
 pre .token.keyword, pre .token.boolean { color: #c5a5ef; }
 pre .token.string, pre .token.attr-value { color: #a7d88a; }
