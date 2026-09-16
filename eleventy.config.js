@@ -16,11 +16,22 @@ export default function (eleventyConfig) {
   eleventyConfig.addWatchTarget('templates/**/*.ts');
   eleventyConfig.addWatchTarget('scripts/site/**/*.ts');
   eleventyConfig.addWatchTarget('scripts/resume/data.ts');
+  eleventyConfig.addCollection('posts', collection => {
+    const posts = collection.getFilteredByGlob('data/posts/**/*.md');
+    // Flat data/posts/YYYY-MM-DD-slug.md; classify content with front matter tags.
+    const filename = /^\.\/data\/posts\/\d{4}-\d{2}-\d{2}-[a-z0-9]+(?:-[a-z0-9]+)*\.md$/;
+    for (const post of posts) {
+      if (!filename.test(post.inputPath)) {
+        throw new Error(`Use data/posts/YYYY-MM-DD-slug.md and tags, not category directories: ${post.inputPath}`);
+      }
+    }
+    return posts;
+  });
   // JSON is loaded by scripts; leave Eleventy's global data directory at its
   // default so data/posts remains part of the Markdown template input.
   return {
-    dir: { input: '.', output: '_site', includes: 'templates/shared' },
+    dir: { input: '.', output: '_site', includes: 'templates/shared', layouts: 'templates/posts/layouts' },
     templateFormats: ['md', '11ty.ts'],
-    markdownTemplateEngine: 'liquid',
+    markdownTemplateEngine: false,
   };
 }
