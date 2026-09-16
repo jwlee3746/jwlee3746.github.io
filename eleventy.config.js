@@ -1,10 +1,15 @@
+import { globSync } from 'node:fs';
+
 export default function (eleventyConfig) {
   // Node 24 executes erasable TypeScript; type checking is a separate build check.
   eleventyConfig.addExtension('11ty.ts', { key: '11ty.js' });
   eleventyConfig.addPassthroughCopy({ public: '.' });
   eleventyConfig.addPassthroughCopy({ 'jaewon-lee-resume.pdf': 'resume/jaewon-lee-resume.pdf' });
-  for (const path of ['data/images', 'theme/**/*.css', 'theme/**/*.js']) {
-    eleventyConfig.addPassthroughCopy(path);
+  eleventyConfig.addPassthroughCopy('data/images');
+  // Keep public asset URLs stable while colocating source files under ui/.
+  // Copy only browser assets, never TypeScript templates or helper modules.
+  for (const path of globSync('ui/**/*.{css,js}')) {
+    eleventyConfig.addPassthroughCopy({ [path]: path.replace(/^ui\//, 'theme/') });
   }
   eleventyConfig.ignores.add('**/README.md');
   eleventyConfig.ignores.add('**/AGENTS.md');
@@ -13,7 +18,7 @@ export default function (eleventyConfig) {
   // Render functions load validated data and partials themselves. Watch both,
   // even when a newly added JSON file was not a dependency of the last render.
   eleventyConfig.addWatchTarget('data/**/*.json');
-  eleventyConfig.addWatchTarget('templates/**/*.ts');
+  eleventyConfig.addWatchTarget('ui/**/*.ts');
   eleventyConfig.addWatchTarget('scripts/site/**/*.ts');
   eleventyConfig.addWatchTarget('scripts/resume/data.ts');
   eleventyConfig.addCollection('posts', collection => {
@@ -30,7 +35,7 @@ export default function (eleventyConfig) {
   // JSON is loaded by scripts; leave Eleventy's global data directory at its
   // default so data/posts remains part of the Markdown template input.
   return {
-    dir: { input: '.', output: '_site', includes: 'templates/shared', layouts: 'templates/posts/layouts' },
+    dir: { input: '.', output: '_site', includes: 'ui/shared', layouts: 'ui/posts/layouts' },
     templateFormats: ['md', '11ty.ts'],
     markdownTemplateEngine: false,
   };

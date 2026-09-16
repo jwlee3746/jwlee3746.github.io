@@ -12,7 +12,7 @@ const chrome = process.env.CHROME_PATH || ['google-chrome', 'google-chrome-stabl
 if (!chrome) throw new Error('Chrome/Chromium을 설치하거나 CHROME_PATH를 지정하세요.');
 
 const html = await buildResume();
-const css = await readFile(resolve(projectRoot, 'theme/resume/resume.css'));
+const css = await readFile(resolve(projectRoot, 'ui/resume/resume.css'));
 const icon = await readFile(resolve(projectRoot, 'public/favicon.svg'));
 const assets = new Map([
   ['/resume/', { type: 'text/html; charset=utf-8', body: Buffer.from(html) }],
