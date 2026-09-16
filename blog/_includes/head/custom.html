@@ -14,8 +14,8 @@
   })();
 </script>
 
-<!-- insert favicons. use https://realfavicongenerator.net/ -->
-<link rel="icon" href="{{ '/favicon.svg' | relative_url }}" type="image/svg+xml">
+<!-- 공용 자산에는 블로그 baseurl을 붙이지 않는다. -->
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 
 {% if page.use_math %}
     {% include mathjax-support.html %}

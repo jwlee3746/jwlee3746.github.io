@@ -14,6 +14,23 @@
 테마 gem을 배포하기 위한 gemspec·Rake 작업, 과거 Travis CI, 테마 변경 이력과
 소개용 스크린샷은 제거했습니다. 커스텀 파일을 구분해 기본 테마를 패키지로 대체하는 작업은 별도로 진행합니다.
 
+## 공용 자산
+
+저장소 루트의 `assets/`는 `/assets/`로 배포합니다. 블로그 사이드바의 프로필 사진도
+`/assets/avatar.jpg`를 참조하므로 로컬 미리보기에서 운영 사이트의 사진을 요청하지 않습니다.
+루트 `favicon.svg`가 유일한 아이콘 원본이며, 양쪽 사이트 모두 `/favicon.svg`를 참조합니다.
+
+Jekyll을 `<출력>/blog/`로 빌드한 뒤 루트에서 아래 명령으로 공용 자산을 복사합니다.
+통합 빌드도 이 단계를 사용해야 합니다. `build-check.sh`에는 이미 포함되어 있습니다.
+
+```sh
+bash scripts/copy-shared-assets.sh <출력>
+```
+
+기존 `/blog/favicon.svg`는 같은 원본에서 생성하는 호환 경로입니다.
+공용 URL에는 `/blog`를 붙이는 `relative_url` 필터를 사용하지 않습니다.
+블로그 전용 CSS·검색 JavaScript·본문 이미지는 계속 `blog/assets/`에서 관리합니다.
+
 ## 검증
 
 저장소 루트에서 Docker로 실행합니다.

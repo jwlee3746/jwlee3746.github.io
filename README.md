@@ -18,6 +18,12 @@
 
 `/blog/`는 별도 저장소 `jwlee3746/blog`에서 배포합니다.
 
+통합 준비 중인 `blog/` 소스도 루트 `assets/`를 공용 자산 위치로 사용합니다.
+프로필 사진은 `/assets/avatar.jpg`, favicon은 루트 `/favicon.svg`를 공유합니다.
+블로그 전용 스타일·검색·본문 이미지는 `blog/assets/`에 유지합니다.
+`scripts/copy-shared-assets.sh <출력>`은 빌드 결과에 공용 자산과 기존 `/blog/favicon.svg` 호환 파일을 복사합니다.
+`bash blog/build-check.sh`로 이 경로를 포함한 블로그 빌드를 검증할 수 있습니다.
+
 ## 로컬 미리보기
 
 저장소 루트에서 실행한 뒤 <http://localhost:8000/>을 엽니다.
