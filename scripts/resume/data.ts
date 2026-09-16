@@ -56,27 +56,27 @@ async function readJson<T>(root: string, file: string, schema: z.ZodType<T>): Pr
 
 export async function loadResume(root: string): Promise<ResumeData> {
   const [site, profile, experience, education, sections, files] = await Promise.all([
-    readJson(root, 'data/site/resume.json', siteSchema),
-    readJson(root, 'data/profile/resume.json', profileSchema),
-    readJson(root, 'data/portfolio/experience.json', z.array(historySchema)),
-    readJson(root, 'data/portfolio/education.json', z.array(historySchema)),
-    readJson(root, 'data/portfolio/resume.json', sectionsSchema),
-    readdir(join(root, 'data/portfolio/projects')).catch((error: NodeJS.ErrnoException) => {
+    readJson(root, 'data/resume/site.json', siteSchema),
+    readJson(root, 'data/resume/profile.json', profileSchema),
+    readJson(root, 'data/resume/experience.json', z.array(historySchema)),
+    readJson(root, 'data/resume/education.json', z.array(historySchema)),
+    readJson(root, 'data/resume/sections.json', sectionsSchema),
+    readdir(join(root, 'data/resume/projects')).catch((error: NodeJS.ErrnoException) => {
       if (error.code === 'ENOENT') return [];
       throw error;
     }),
   ]);
   const groups = new Set(sections.groups.map(group => group.id));
   if (groups.size !== sections.groups.length) {
-    throw new Error('data/portfolio/resume.json: 프로젝트 그룹 id가 중복됩니다');
+    throw new Error('data/resume/sections.json: 프로젝트 그룹 id가 중복됩니다');
   }
   const projects = await Promise.all(files.filter(file => file.endsWith('.json')).sort().map(async file => {
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*\.json$/.test(file)) {
-      throw new Error(`data/portfolio/projects/${file}: 파일명은 영문 소문자·숫자·하이픈을 사용하세요`);
+      throw new Error(`data/resume/projects/${file}: 파일명은 영문 소문자·숫자·하이픈을 사용하세요`);
     }
-    const project = await readJson(root, `data/portfolio/projects/${file}`, projectSchema);
+    const project = await readJson(root, `data/resume/projects/${file}`, projectSchema);
     if (!groups.has(project.group)) {
-      throw new Error(`data/portfolio/projects/${file}: 알 수 없는 그룹 '${project.group}'`);
+      throw new Error(`data/resume/projects/${file}: 알 수 없는 그룹 '${project.group}'`);
     }
     return { ...project, id: file.slice(0, -5) };
   }));

@@ -7,9 +7,9 @@ Eleventy로 생성한 `_site/`만 GitHub Pages에 배포합니다. Node.js 24 �
 
 | 경로 | 역할 |
 | --- | --- |
-| `data/site/` | 페이지 제목·설명, 내비게이션, 404 문구 |
-| `data/profile/` | 화면별 프로필·소개·연락처 |
-| `data/portfolio/` | 메인 경력·프로젝트·추천 글과 이력서 데이터 |
+| `data/home.json` | 메인 소개·경력 요약·프로젝트·메뉴·메타데이터 |
+| `data/resume/` | 이력서 프로필·경력·학력·프로젝트·메타데이터 |
+| `data/error.json` | 404 문구 |
 | `data/images/` | 프로필 사진과 글별 이미지 |
 | `templates/portfolio/` | 메인 문서와 섹션 조립 |
 | `templates/resume/` | 이력서 문서와 섹션 조립 |
@@ -31,12 +31,11 @@ Eleventy로 생성한 `_site/`만 GitHub Pages에 배포합니다. Node.js 24 �
 
 ## 편집
 
-- 메인 문구·목록: `data/profile/portfolio.json`, `data/portfolio/homepage.json`
-- 메타데이터·메뉴·추천 링크: `data/site/portfolio.json`
-- 404 문구: `data/site/error.json`
+- 메인 문구·목록·메뉴·메타데이터: `data/home.json` (`profile`, `content`, `site`)
+- 404 문구: `data/error.json`
 - 카드나 섹션의 HTML 구조: `templates/portfolio/sections/`
 - 색상·레이아웃·모바일 메뉴: `theme/portfolio/`
-- 이력서: `data/profile/resume.json`, `data/site/resume.json`, `data/portfolio/`의 경력·학력·프로젝트 데이터
+- 이력서: `data/resume/`의 프로필·경력·학력·프로젝트 데이터
 - 데이터와 이미지 배치: [데이터 안내](data/README.md)
 
 JSON의 문자열은 일반 텍스트로 이스케이프합니다. About의 강조만 `{ "strong": "강조할 내용" }`으로

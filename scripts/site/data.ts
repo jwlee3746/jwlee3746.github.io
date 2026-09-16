@@ -51,10 +51,8 @@ export async function readData<T>(file: string, schema: z.ZodType<T>, root = pro
   catch (error) { throw new Error(`${file}: ${error instanceof Error ? error.message : String(error)}`); }
 }
 export async function loadPortfolio(root = projectRoot) {
-  const [site, profile, portfolio] = await Promise.all([
-    readData('data/site/portfolio.json', siteSchema, root),
-    readData('data/profile/portfolio.json', profileSchema, root),
-    readData('data/portfolio/homepage.json', portfolioSchema, root),
-  ]);
-  return { site, profile, portfolio };
+  const { site, profile, content } = await readData('data/home.json', z.strictObject({
+    site: siteSchema, profile: profileSchema, content: portfolioSchema,
+  }), root);
+  return { site, profile, portfolio: content };
 }

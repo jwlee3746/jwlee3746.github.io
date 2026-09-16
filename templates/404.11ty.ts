@@ -2,7 +2,7 @@ import { readData, errorSchema } from '../scripts/site/data.ts';
 import { escapeHtml as e } from './shared/html.ts';
 export const data = { permalink: '/404.html', eleventyExcludeFromCollections: true };
 export default async function () {
-  const page = await readData('data/site/error.json', errorSchema);
+  const page = await readData('data/error.json', errorSchema);
   return `<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${e(page.title)}</title><link rel="icon" href="/favicon.svg" type="image/svg+xml">
