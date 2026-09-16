@@ -23,6 +23,7 @@ export default function ({ title, date, content, tags }: PageData): string {
   <title>${heading} | Jaynote</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/theme/posts/posts.css">
+  ${content.includes('class="katex"') ? '<link rel="stylesheet" href="/theme/posts/katex/katex.min.css">' : ''}
 </head>
 <body>
   <nav aria-label="블로그">

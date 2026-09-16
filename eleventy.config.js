@@ -1,10 +1,20 @@
 import { globSync } from 'node:fs';
 import Prism from 'prismjs';
 import loadLanguages from 'prismjs/components/index.js';
+import { katex } from '@mdit/plugin-katex';
 
 loadLanguages.silent = true;
 
 export default function (eleventyConfig) {
+  eleventyConfig.amendLibrary('md', markdown => markdown.use(katex, {
+    transformer: (html, display) => display
+      ? `<div class="math-block" tabindex="0" role="region" aria-label="수식">${html}</div>`
+      : html,
+  }));
+  eleventyConfig.addPassthroughCopy({
+    'node_modules/katex/dist/katex.min.css': 'theme/posts/katex/katex.min.css',
+    'node_modules/katex/dist/fonts': 'theme/posts/katex/fonts',
+  });
   eleventyConfig.addMarkdownHighlighter((code, language) => {
     if (language) loadLanguages(language);
     const grammar = Object.hasOwn(Prism.languages, language) ? Prism.languages[language] : undefined;

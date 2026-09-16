@@ -14,7 +14,9 @@
   },
   "devDependencies": {
     "@11ty/eleventy": "3.1.6",
+    "@mdit/plugin-katex": "0.25.2",
     "@types/node": "24.13.5",
+    "katex": "0.16.47",
     "linkedom": "0.18.13",
     "playwright": "1.63.0",
     "prismjs": "1.30.0",
