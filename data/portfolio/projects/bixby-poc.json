@@ -1,0 +1,28 @@
+{
+  "group": "platform",
+  "order": 10,
+  "title": "OpenClaw 기반 서버형 Bixby 에이전트 PoC",
+  "url": "https://jwlee3746.github.io/blog/Agent/openclaw-component-application/",
+  "start": "2026-03",
+  "end": "2026-07",
+  "stack": [
+    "OpenClaw",
+    "TypeScript",
+    "Docker Compose"
+  ],
+  "impact": "디바이스 어시스턴트 기능을 서버형 에이전트에 연결해 요청 라우팅·도구 실행·후속 대화 검증",
+  "points": [
+    {
+      "label": "연동·라우팅",
+      "text": "Bixby 기능을 OpenClaw 도구 인터페이스로 연결하고 Skill 기반 에이전트 선택·질의 구성 설계"
+    },
+    {
+      "label": "멀티턴 처리",
+      "text": "사용자 확인·값 선택 후 이전 요청을 이어가는 멀티턴 흐름 구현"
+    },
+    {
+      "label": "안정성·실행 환경",
+      "text": "이벤트 정규화·비정상 응답 방어·호출 로깅과 Docker Compose 실행 환경 구성"
+    }
+  ]
+}

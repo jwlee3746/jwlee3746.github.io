@@ -1,7 +1,7 @@
 # Jaewon Lee · Portfolio
 
 이재원의 개인 포트폴리오입니다. HTML, CSS, 바닐라 JavaScript로 구성하며,
-빌드나 패키지 설치 없이 GitHub Pages에서 배포합니다.
+GitHub Pages에는 정적 파일을 배포합니다. 이력서는 JSON 데이터와 TypeScript 템플릿으로 생성합니다.
 
 ## 파일 구조
 
@@ -16,22 +16,25 @@
 | `theme/resume/resume.css` | 이력서 화면·인쇄 스타일 |
 | `theme/posts/` | 향후 글 목록·본문의 스타일·동작·템플릿 |
 | `posts/` | 향후 포스팅 원본 |
-| `data/site/` | 향후 사이트 메타데이터·내비게이션·카테고리 |
-| `data/profile/` | 향후 이름·소개·연락처·외부 프로필 |
-| `data/portfolio/` | 향후 경력·학력·프로젝트·추천 글 목록 |
-| `resume/index.html` | 이력서 콘텐츠·문서 구조. PDF는 같은 디렉터리에 보관 |
+| `data/site/resume.json` | 이력서 검색·공유 메타데이터 |
+| `data/profile/resume.json` | 이력서 이름·직무·소개·이메일 |
+| `data/portfolio/` | 이력서 경력·학력·그룹 설정·프로젝트별 JSON |
+| `theme/resume/layout.ts`, `theme/resume/sections/` | 이력서 문서 틀과 섹션별 템플릿 |
+| `resume/index.html` | 자동 생성된 이력서 HTML. PDF는 같은 디렉터리에 보관 |
+| `scripts/build-resume-html.ts` | 데이터 검증·정렬 및 HTML 생성 |
+| `scripts/build-resume-pdf.ts` | HTML 갱신·Chrome PDF 생성·폰트/분량 검증 |
 | `scripts/build-resume-pdf.sh` | 이력서 PDF 생성 및 1~3페이지 범위 검증 |
 | `scripts/install-resume-hook.sh` | 이력서 수정 시 PDF를 갱신하는 커밋 훅 설치 |
 | `404.html` | 독립적인 오류 페이지 |
 
 화면 표현은 `theme/`, 콘텐츠는 `posts/`·`resume/`·`data/`, 이미지는 `data/images/`,
 관리 도구는 `scripts/`로 구분합니다. CSS·JS는 파일 형식별 디렉터리 대신 해당 화면 아래에 함께 둡니다.
-현재 HTML의 문서 구조와 콘텐츠는 함께 유지하며, 블로그 템플릿은 이후 이전합니다.
+이력서의 내용은 JSON, 문서 구조는 TypeScript 템플릿에서 관리합니다. 메인 페이지는 HTML 콘텐츠를 유지하며, 블로그 템플릿은 이후 이전합니다.
 
 데이터별 배치와 이미지 명명 규칙은 [data/README.md](data/README.md)에 정리했습니다.
-`data/site/`, `data/profile/`, `data/portfolio/`는 아직 HTML에서 사용하는 데이터를 이전하기 위한 준비 공간입니다.
+이력서 데이터는 `data/site/`, `data/profile/`, `data/portfolio/`에서 읽습니다.
 
-아직 비어 있는 `theme/posts/`, `posts/`, 위 데이터 디렉터리는 빈 `.gitignore`로 추적합니다.
+아직 비어 있는 `theme/posts/`, `posts/`는 빈 `.gitignore`로 추적합니다.
 이 파일들은 자리 표시용이며 앞으로 추가하는 콘텐츠를 무시하지 않습니다.
 
 `/blog/`는 아직 별도 저장소 `jwlee3746/blog`에서 배포합니다. 루트 `blog/`나 사용하지 않는
@@ -41,12 +44,16 @@ Jekyll 설정은 만들지 않습니다. 통합 시 빌드가 위 소스를 Jeky
 
 ## 로컬 미리보기
 
-저장소 루트에서 실행한 뒤 <http://localhost:8000/>을 엽니다.
+Node.js 24 이상에서 의존성을 설치한 뒤 로컬 서버를 실행합니다.
 리소스 경로가 `/theme/`·`/data/images/` 등 절대경로이므로 HTML 파일을 직접 열지 말고 HTTP 서버를 사용합니다.
 
 ```sh
-python3 -m http.server 8000
+npm ci
+npm run dev
 ```
+
+`npm run build`와 `npm run dev`는 먼저 이력서 HTML을 생성하고 Eleventy를 실행합니다.
+미리보기 실행 중 이력서 JSON을 수정하면 별도 터미널에서 `npm run build:resume`을 실행해 반영합니다.
 
 ## 수정 및 확인
 
@@ -56,12 +63,8 @@ python3 -m http.server 8000
 - 데스크톱과 모바일에서 가로 넘침, 메뉴 열기·배경 클릭·링크 이동·화면 크기 변경,
   스크롤 시 섹션 표시, 빈 검색 차단을 확인합니다. 실제 블로그 검색 결과는 블로그 배포 환경에서 확인합니다.
 - JavaScript 문법은 `node --check theme/portfolio/portfolio.js`로 확인할 수 있습니다.
-- `resume/index.html` 또는 `theme/resume/`를 수정하면 Chrome/Chromium이 설치된 환경에서 아래 명령으로 PDF를 갱신합니다.
+- 이력서는 Node.js 24 이상에서 `npm ci` 후 `npm run build:resume:pdf`로 갱신합니다. Chrome/Chromium이 필요합니다.
+- HTML만 생성하려면 `npm run build:resume`, 검증은 `npm run typecheck && npm test && npm run check:resume`을 실행합니다.
+- `bash scripts/install-resume-hook.sh`를 실행하면 이력서 원본 변경 시 HTML과 PDF를 함께 갱신합니다.
 
-```sh
-bash scripts/build-resume-pdf.sh
-```
-
-클론 후 `bash scripts/install-resume-hook.sh`를 한 번 실행하면 이력서 HTML 또는 스타일을 커밋할 때 PDF도 자동으로 갱신합니다.
-
-기존 훅을 설치했다면 `bash scripts/install-resume-hook.sh`를 다시 실행해 호출 경로와 스타일 변경 감지를 갱신합니다.
+프로젝트 파일 추가 예시와 전체 편집 절차는 [이력서 편집 가이드](resume/README.md)를 참고하세요.

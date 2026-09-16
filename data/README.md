@@ -22,11 +22,13 @@ data/
 
 ## 구조화 데이터
 
-`site/`, `profile/`, `portfolio/`는 빈 `.gitignore`로 디렉터리만 준비합니다.
-현재 사이트는 HTML 안의 콘텐츠를 사용하며 이 디렉터리를 자동으로 읽지 않습니다.
-템플릿·빌드에 연결할 때 데이터를 이전하고, HTML과 데이터 파일에 같은 내용을 중복 관리하지 않습니다.
+이력서 생성기는 `site/resume.json`, `profile/resume.json`, `portfolio/experience.json`,
+`portfolio/education.json`, `portfolio/resume.json`, `portfolio/projects/*.json`을 읽습니다.
+프로젝트는 파일 단위로 자동으로 포함되며, 결과 HTML은 직접 편집하지 않습니다.
+메인 포트폴리오는 아직 루트 `index.html`의 콘텐츠를 사용합니다.
+자세한 필드와 추가 방법은 [이력서 편집 가이드](../resume/README.md)를 참고하세요.
 
-| 위치 | 이전할 데이터의 예 |
+| 위치 | 데이터의 예 |
 | --- | --- |
 | `site/` | 사이트 제목·설명, 내비게이션, 카테고리 이름과 묶음 |
 | `profile/` | 이름, 소개, 이메일, GitHub·LinkedIn 주소 |
