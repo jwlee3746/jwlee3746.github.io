@@ -1,4 +1,5 @@
-import { renderPostList } from './list.ts';
+import { renderCategoryLinks } from './category-links.ts';
+import { renderPostList, type Post } from './list.ts';
 import type { Category } from './categories.ts';
 
 export const data = {
@@ -12,6 +13,6 @@ export const data = {
   },
 };
 
-export default function ({ categoryGroup }: { categoryGroup: Category }): string {
-  return `<p class="post-count">${categoryGroup.posts.length}개의 글</p>${renderPostList(categoryGroup.posts)}`;
+export default function ({ categoryGroup, collections }: { categoryGroup: Category; collections: { categories: Category[]; posts: Post[] } }): string {
+  return `${renderCategoryLinks(collections.categories, collections.posts.length, categoryGroup.name)}<p class="post-count">${categoryGroup.posts.length}개의 글</p>${renderPostList(categoryGroup.posts)}`;
 }

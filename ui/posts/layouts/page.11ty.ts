@@ -66,7 +66,7 @@ export default async function ({ title, date, content, tags, category, page, col
         </header>
         ${content}
       </main>
-      ${renderPanel(collections.posts, toc, { showTags: !tagPage })}
+      ${renderPanel(collections.posts, toc, { showTags: !tagPage, showRecent: page.url !== '/posts/' })}
     </div>
     ${renderFooter(site)}
   </div>

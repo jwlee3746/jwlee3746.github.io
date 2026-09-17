@@ -15,9 +15,10 @@ export function renderPostList(posts: readonly Post[], { searchBody = false }: {
   if (posts.length === 0) return '<p>아직 이전된 글이 없습니다.</p>';
   const items = [...posts].reverse().map(post => {
     const date = formatDate(post.date);
-    return `<li class="post-card" data-search="${escapeHtml([post.data.title, post.data.excerpt, post.data.category, ...normalizeTags(post.data.tags), searchBody ? searchText(post.templateContent ?? '') : ''].filter(Boolean).join(" "))}">
+    return `<li class="post-card" data-search="${escapeHtml([post.data.title, post.data.excerpt, post.data.category, ...normalizeTags(post.data.tags), searchBody ? searchText(post.templateContent ?? '') : ''].filter(Boolean).join(" "))}"${searchBody ? ` data-search-tags="${escapeHtml(JSON.stringify(normalizeTags(post.data.tags)))}"` : ''}>
       <a class="post-card-title" href="${escapeHtml(post.url)}">${escapeHtml(post.data.title)}</a>
       ${post.data.excerpt ? `<p class="post-card-excerpt">${escapeHtml(post.data.excerpt)}</p>` : ""}
+      ${searchBody ? '<p class="post-match" hidden></p>' : ''}
       <div class="post-card-meta"><time datetime="${date}">${date}</time>
       ${post.data.category ? `<a class="post-card-category" href="${categoryUrl(post.data.category)}">${escapeHtml(post.data.category)}</a>` : ""}</div>
     </li>`;
