@@ -28,6 +28,7 @@
   --text-post-title: 2rem;
   --text-post-title-mobile: 1.8rem;
   --text-card-title: 1.25rem;
+  --text-card-title-mobile: 1.125rem;
   --text-error-heading: clamp(2.5rem, 8vw, 4rem);
 
   /* 3. 기본 색상 — 메인·404·블로그 공통 */
@@ -77,8 +78,8 @@
   --radius-control: .75rem;
   --radius-tag: .4rem;
   --radius-card: 10px;
-  --card-padding: 1.45rem 1.55rem;
-  --card-padding-mobile: 1.2rem;
+  --card-padding: 1.1rem 1.25rem;
+  --card-padding-mobile: 1rem;
 
   /* 7. 전환 시간 — 동작 줄이기 설정이 켜지면 화면 CSS에서 끕니다. */
   --transition-link: .25s;
