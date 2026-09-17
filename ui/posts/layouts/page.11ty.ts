@@ -43,7 +43,7 @@ export default async function ({ title, date, content, tags, page, collections }
     <header class="blog-topbar">
       <button type="button" class="blog-menu-trigger" aria-label="메뉴 열기" aria-controls="blog-sidebar" aria-expanded="false" hidden>☰</button>
       <nav class="blog-breadcrumb" aria-label="현재 위치">
-        <a href="/blog/posts/">Blog</a><span aria-hidden="true">/</span><span aria-current="page">${heading}</span>
+        <a href="/blog/">Blog</a><span aria-hidden="true">/</span><span aria-current="page">${page.url === '/blog/' ? '홈' : heading}</span>
       </nav>
     </header>
     <div class="blog-grid">

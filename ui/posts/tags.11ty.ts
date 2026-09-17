@@ -1,19 +1,11 @@
 import { escapeHtml } from '../shared/html.ts';
 import { renderPostList, type Post } from './list.ts';
-import { normalizeTags, tagAnchor, tagUrl } from './tags.ts';
+import { groupPostsByTag, tagAnchor, tagUrl } from './tags.ts';
 
 export const data = { title: '태그', layout: 'page.11ty.ts', permalink: '/blog/tags/' };
 
 export default function ({ collections }: { collections: { posts: Post[] } }): string {
-  const groups = new Map<string, Post[]>();
-  for (const post of collections.posts) {
-    for (const tag of normalizeTags(post.data.tags)) {
-      const posts = groups.get(tag) ?? [];
-      posts.push(post);
-      groups.set(tag, posts);
-    }
-  }
-  const tags = [...groups].sort(([a], [b]) => a.localeCompare(b, 'ko'));
+  const tags = groupPostsByTag(collections.posts);
   if (tags.length === 0) return '<p>태그가 지정된 글이 없습니다.</p>';
   const links = tags.map(([tag, posts]) =>
     `<li><a href="${tagUrl(tag)}">${escapeHtml(tag)} (${posts.length})</a></li>`);

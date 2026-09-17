@@ -11,3 +11,16 @@ export function tagAnchor(tag: string): string {
 export function tagUrl(tag: string): string {
   return `/blog/tags/#${tagAnchor(tag)}`;
 }
+import type { Post } from './list.ts';
+
+export function groupPostsByTag(posts: readonly Post[]): [string, Post[]][] {
+  const groups = new Map<string, Post[]>();
+  for (const post of posts) {
+    for (const tag of normalizeTags(post.data.tags)) {
+      const tagged = groups.get(tag) ?? [];
+      tagged.push(post);
+      groups.set(tag, tagged);
+    }
+  }
+  return [...groups].sort(([a], [b]) => a.localeCompare(b, 'ko'));
+}

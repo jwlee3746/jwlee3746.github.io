@@ -16,7 +16,8 @@ export function renderSidebar(site: Site, profile: Profile, url: string): string
       <a class="blog-resume" href="${e(site.resume.href)}" target="_blank" rel="noopener">${e(site.resume.label)} <span aria-hidden="true">→</span><span class="sr-only"> (새 탭에서 열림)</span></a>
       <nav class="blog-nav" aria-label="블로그">
         <a href="/">포트폴리오</a>
-        <a href="/blog/posts/"${!isTags ? ' aria-current="' + (url === '/blog/posts/' ? 'page' : 'location') + '"' : ''}>글 목록</a>
+        <a href="/blog/"${url === '/blog/' ? ' aria-current="page"' : ''}>블로그 홈</a>
+        <a href="/blog/posts/"${!isTags && url !== '/blog/' ? ' aria-current="' + (url === '/blog/posts/' ? 'page' : 'location') + '"' : ''}>글 목록</a>
         <a href="/blog/tags/"${isTags ? ' aria-current="page"' : ''}>태그</a>
       </nav>
     </div>
