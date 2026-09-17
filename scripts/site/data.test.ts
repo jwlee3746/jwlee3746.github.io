@@ -27,7 +27,7 @@ test('data changes appear on the next render and errors name the source', async 
   data.content.projects[0].title = '변경된 프로젝트';
   await writeFile(path, JSON.stringify(data));
   assert(renderContent((await loadPortfolio(root)).portfolio).includes('변경된 프로젝트'));
-  data.content.projects[0].links[0].href = 'javascript:alert(1)';
+  data.content.projects[0].links = [{ label: 'unsafe', href: 'javascript:alert(1)' }];
   await writeFile(path, JSON.stringify(data));
   await assert.rejects(loadPortfolio(root), /data\/home.json/);
 });

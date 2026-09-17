@@ -1,3 +1,5 @@
+import type { Post } from './list.ts';
+
 export function normalizeTags(tags?: string | string[]): string[] {
   const names = typeof tags === 'string' ? [tags] : tags ?? [];
   return [...new Set(names.map(tag => tag.trim()).filter(Boolean))];
@@ -9,9 +11,8 @@ export function tagAnchor(tag: string): string {
 }
 
 export function tagUrl(tag: string): string {
-  return `/blog/tags/#${tagAnchor(tag)}`;
+  return `/tags/#${tagAnchor(tag)}`;
 }
-import type { Post } from './list.ts';
 
 export function groupPostsByTag(posts: readonly Post[]): [string, Post[]][] {
   const groups = new Map<string, Post[]>();
