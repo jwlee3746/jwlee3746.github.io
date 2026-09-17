@@ -2,18 +2,20 @@ import { escapeHtml } from '../shared/html.ts';
 import { categoryUrl } from './categories.ts';
 import { normalizeTags } from './tags.ts';
 import { formatDate } from './date.ts';
+import { searchText } from './search-text.ts';
 
 export interface Post {
   url: string;
   date: Date;
+  templateContent?: string;
   data: { title: string; legacyUrl?: string; category?: string; excerpt?: string; tags?: string | string[] };
 }
 
-export function renderPostList(posts: readonly Post[]): string {
+export function renderPostList(posts: readonly Post[], { searchBody = false }: { searchBody?: boolean } = {}): string {
   if (posts.length === 0) return '<p>아직 이전된 글이 없습니다.</p>';
   const items = [...posts].reverse().map(post => {
     const date = formatDate(post.date);
-    return `<li class="post-card" data-search="${escapeHtml([post.data.title, post.data.excerpt, post.data.category, ...normalizeTags(post.data.tags)].filter(Boolean).join(" "))}">
+    return `<li class="post-card" data-search="${escapeHtml([post.data.title, post.data.excerpt, post.data.category, ...normalizeTags(post.data.tags), searchBody ? searchText(post.templateContent ?? '') : ''].filter(Boolean).join(" "))}">
       <a class="post-card-title" href="${escapeHtml(post.url)}">${escapeHtml(post.data.title)}</a>
       ${post.data.excerpt ? `<p class="post-card-excerpt">${escapeHtml(post.data.excerpt)}</p>` : ""}
       <div class="post-card-meta"><time datetime="${date}">${date}</time>
