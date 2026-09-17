@@ -4,13 +4,15 @@
   const status = document.getElementById('post-results');
   const empty = document.getElementById('post-empty');
   if (!form || !input || !status || !empty) return;
-  const cards = [...document.querySelectorAll('.post-card')];
   const normalize = text => text.normalize('NFKC').toLocaleLowerCase();
+  const cards = [...document.querySelectorAll('.post-card')].map(card => ({
+    card, text: normalize(card.dataset.search || ''),
+  }));
   function filter() {
     const words = normalize(input.value).trim().split(/\s+/).filter(Boolean);
     let count = 0;
-    for (const card of cards) {
-      const matches = words.every(word => normalize(card.dataset.search).includes(word));
+    for (const { card, text } of cards) {
+      const matches = words.every(word => text.includes(word));
       card.hidden = !matches;
       if (matches) count++;
     }
