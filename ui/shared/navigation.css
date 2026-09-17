@@ -15,8 +15,5 @@
   .site-nav-sub { margin-left: 65px; }
 }
 @media screen and (max-width: 849px) {
-  .blog-sidebar .site-nav { margin-left: -24px; margin-right: -24px; }
-  .blog-sidebar .site-nav-heading a { padding-left: 24px; }
-  .blog-sidebar .site-nav-sub { margin-left: 33px; }
   .site-nav-sub a { min-height: 44px; display: flex; align-items: center; }
 }
