@@ -18,6 +18,7 @@ ${metadata(site)}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7/css/all.min.css">
 <script type="application/ld+json">${JSON.stringify(site.schema).replace(/</g, '\\u003c')}</script>
+<link rel="stylesheet" href="/theme/shared/theme.css">
 <link rel="stylesheet" href="/theme/portfolio/portfolio.css">
 <script src="/theme/portfolio/portfolio.js" defer></script></head>
 <body><div class="layout">${renderSidebar(site, profile)}

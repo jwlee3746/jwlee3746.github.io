@@ -11,7 +11,7 @@
 | `ui/portfolio/portfolio.css` | 메인 페이지 스타일·반응형 레이아웃 |
 | `ui/portfolio/portfolio.js` | 스크롤 스파이·모바일 메뉴·검색 입력 처리 (바닐라 JS) |
 | `ui/resume/resume.css` | 이력서 화면·인쇄 스타일 |
-| `ui/shared/` | 공용 화면 스타일 (현재 404) |
+| `ui/shared/` | 공용 다크 테마·404 스타일 |
 | `ui/posts/` | 글 목록·본문 템플릿과 CSS |
 | `data/posts/` | 이전한 포스팅 Markdown 원본 |
 | `_site/resume/index.html` | 자동 생성 HTML. 직접 편집·커밋하지 않는다 |

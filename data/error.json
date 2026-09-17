@@ -4,6 +4,6 @@
   "message": "요청하신 페이지를 찾을 수 없습니다.",
   "links": [
     { "label": "홈으로", "href": "/" },
-    { "label": "Blog 보기", "href": "/blog/" }
+    { "label": "글 목록", "href": "/blog/posts/" }
   ]
 }

@@ -1,17 +1,11 @@
 /* 다크 모드 전용 색상과 글꼴. 반응형 규칙은 캐스케이드 순서를 유지한다. */
 :root {
   --mono: var(--sans);
-  --sans: "Source Sans Pro", "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   --line: hsl(210deg 17% 18%);
   --ink: hsl(168deg 55% 85%);
   --accent: hsl(168deg 76% 65%);
-  --chirpy-main-bg: rgb(27 27 30);
-  --chirpy-main-border: rgb(44 45 45);
-  --chirpy-text: rgb(175 176 177);
   --chirpy-muted: #868686;
-  --chirpy-heading: #ccc;
   --chirpy-label: #a7a7a7;
-  --chirpy-link: rgb(138 180 248);
   --chirpy-sidebar-bg: #1e1e1e;
   --chirpy-sidebar-border: #292929;
   --chirpy-sidebar-muted: #868686;
@@ -20,10 +14,7 @@
   --chirpy-sidebar-btn-bg: #232328;
   --chirpy-avatar-border: rgb(206 206 206 / 90%);
   --chirpy-topbar-bg: rgb(27 27 30 / 64%);
-  --chirpy-btn-border: #2e2f31;
   --chirpy-tag-bg: #292828;
-  color-scheme: dark;
-  --heading: "Lato", "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
 }
 
 /* 기본 요소와 접근성 */

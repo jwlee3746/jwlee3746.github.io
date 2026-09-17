@@ -35,7 +35,9 @@ Eleventy로 생성한 `_site/`만 GitHub Pages에 배포합니다. Node.js 24 �
 - 메인 문구·목록·메뉴·메타데이터: `data/home.json` (`profile`, `content`, `site`)
 - 404 문구: `data/error.json`
 - 카드나 섹션의 HTML 구조: `ui/portfolio/sections/`
-- 색상·레이아웃·모바일 메뉴: `ui/portfolio/`
+- 메인·404 공통 색상·글꼴: `ui/shared/theme.css`
+- 메인 레이아웃·모바일 메뉴: `ui/portfolio/`
+- 404 레이아웃·버튼: `ui/shared/404.css`
 - 이력서: `data/resume/`의 프로필·경력·학력·프로젝트 데이터
 - 데이터와 이미지 배치: [데이터 안내](data/README.md)
 
