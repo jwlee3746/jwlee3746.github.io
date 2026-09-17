@@ -49,7 +49,9 @@ JSON의 문자열은 일반 텍스트로 이스케이프합니다. About의 강�
 
 ## 메뉴·분류·검색
 
-메인과 블로그는 `ui/shared/navigation.ts`의 HOME / POSTS 메뉴를 공유합니다.
+메인과 글 화면의 프로필·상단바·검색·푸터·모바일 메뉴는 `ui/shared/site-shell.ts`, `site-shell.css`, `site-shell.js`에서 함께 관리합니다.
+이름 색상은 루트 `theme.css`의 `--color-profile-name`을 수정합니다.
+HOME / POSTS 메뉴는 `ui/shared/navigation.ts`를 공유합니다.
 하위 메뉴는 항상 표시하며 접기·펼치기 토글을 두지 않습니다. 홈에서는 스크롤 위치에 맞춰 목차를 강조합니다.
 HOME의 목차는 `data/home.json`의 `site.sections`, POSTS의 분류·글 수는 Markdown에서 자동 생성합니다.
 
@@ -57,7 +59,7 @@ HOME의 목차는 `data/home.json`의 `site.sections`, POSTS의 분류·글 수�
 - 글마다 `category` 하나를 지정합니다. 분류 목록을 별도 JSON에 중복 관리하지 않습니다.
 - `tags`는 BERT·GAN 같은 세부 키워드입니다. 카테고리 이름을 태그에 중복 입력하지 않습니다.
 - 분류별 목록은 `/categories/<분류 이름>/`, 태그는 `/tags/`에 생성됩니다.
-- 전체 글 목록에서 제목·요약·본문·분류·태그를 검색합니다. 홈 검색도 이 목록으로 연결됩니다.
+- 전체 글 목록에서 제목·요약·본문·분류·태그를 검색합니다. 홈·글 본문·분류 화면에서도 같은 상단 검색창을 사용하며 전체 목록으로 연결됩니다.
 - 본문 검색 데이터는 빌드 시 글 목록에 포함하며, 검색은 추가 요청 없이 브라우저에서 동작합니다. JavaScript가 없어도 전체 목록과 메뉴 링크는 사용할 수 있습니다.
 - `excerpt`는 목록 카드에 표시합니다. 홈 추천 글·Featured에는 이전이 끝난 글만 연결합니다.
 - `check:site`는 홈과 공통 메뉴·목록·보조 패널의 내부 링크 및 앵커가 실제 생성되었는지 검사합니다.

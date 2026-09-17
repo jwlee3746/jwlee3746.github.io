@@ -1,16 +1,21 @@
 (() => {
-  const sidebar = document.getElementById('blog-sidebar');
-  const shell = document.getElementById('blog-shell');
-  const trigger = document.querySelector('.blog-menu-trigger');
-  const close = document.querySelector('.blog-menu-close');
-  const mask = document.querySelector('.blog-mask');
+  const form = document.querySelector('.site-search');
+  const input = document.getElementById('search-input');
+  form?.addEventListener('submit', event => {
+    if (!input.value.trim() && !document.getElementById('post-results')) event.preventDefault();
+  });
+  const sidebar = document.getElementById('site-sidebar');
+  const shell = document.getElementById('site-shell');
+  const trigger = document.querySelector('.site-menu-trigger');
+  const close = document.querySelector('.site-menu-close');
+  const mask = document.querySelector('.site-mask');
   if (!sidebar || !shell || !trigger || !close || !mask) return;
 
   const mobile = window.matchMedia('(max-width: 849px)');
   let open = false;
   function setOpen(value, restoreFocus = false) {
     open = value && mobile.matches;
-    document.body.classList.toggle('blog-nav-open', open);
+    document.body.classList.toggle('site-nav-open', open);
     trigger.setAttribute('aria-expanded', String(open));
     sidebar.inert = mobile.matches && !open;
     shell.inert = open;
@@ -21,7 +26,7 @@
 
   trigger.hidden = false;
   close.hidden = false;
-  document.body.classList.add('blog-nav-ready');
+  document.body.classList.add('site-nav-ready');
   setOpen(false);
   trigger.addEventListener('click', () => setOpen(!open));
   close.addEventListener('click', () => setOpen(false, true));

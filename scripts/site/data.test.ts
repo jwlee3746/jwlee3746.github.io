@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { loadPortfolio, projectRoot, href } from './data.ts';
 import { renderContent } from '../../ui/portfolio/sections/content.ts';
-import { renderSidebar } from '../../ui/portfolio/sections/navigation.ts';
+import { renderSidebar } from '../../ui/shared/site-shell.ts';
 
 test('portfolio content is escaped while intentional emphasis is rendered', async () => {
   const { portfolio, site, profile } = await loadPortfolio();

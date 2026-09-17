@@ -3,7 +3,8 @@ import { escapeHtml } from "../../shared/html.ts";
 import { formatDate } from "../date.ts";
 import { normalizeTags, tagUrl } from '../tags.ts';
 import { loadPortfolio } from '../../../scripts/site/data.ts';
-import { renderSidebar, renderPanel } from '../navigation.ts';
+import { renderPanel } from '../navigation.ts';
+import { renderSidebar, renderTopbar, renderFooter, menuMask } from '../../shared/site-shell.ts';
 import type { Category } from '../categories.ts';
 import { categoryUrl } from '../categories.ts';
 import type { Post } from '../list.ts';
@@ -41,20 +42,16 @@ export default async function ({ title, date, content, tags, category, page, col
   <link rel="stylesheet" href="/theme/posts/article.css">
   ${content.includes('class="katex"') ? '<link rel="stylesheet" href="/theme/posts/katex/katex.min.css">' : ''}
   <link rel="stylesheet" href="/theme/shared/navigation.css">
-  <script src="/theme/posts/navigation.js" defer></script>
+  <link rel="stylesheet" href="/theme/shared/site-shell.css">
+  <script src="/theme/shared/site-shell.js" defer></script>
 </head>
 <body>
-  <a class="skip-link" href="#blog-content">본문으로 건너뛰기</a>
-  ${renderSidebar(site, profile, page.url, collections.categories, category)}
-  <div class="blog-shell" id="blog-shell">
-    <header class="blog-topbar">
-      <button type="button" class="blog-menu-trigger" aria-label="메뉴 열기" aria-controls="blog-sidebar" aria-expanded="false" hidden>☰</button>
-      <nav class="blog-breadcrumb" aria-label="현재 위치">
-        <a href="/posts/">Posts</a><span aria-hidden="true">/</span><span aria-current="page">${heading}</span>
-      </nav>
-    </header>
-    <div class="blog-grid">
-      <main id="blog-content" tabindex="-1">
+  <a class="site-skip" href="#site-content">본문으로 건너뛰기</a>
+  ${renderSidebar(site, profile, collections.categories, page.url, category)}
+  <div class="site-shell site-shell-posts" id="site-shell">
+    ${renderTopbar(page.url === '/posts/' ? [{ label: 'Posts' }] : [{ label: 'Posts', href: '/posts/' }, { label: title }])}
+    <div class="site-grid">
+      <main id="site-content" tabindex="-1">
         <header class="blog-page-heading">
           <h1>${heading}</h1>
           ${category && published ? `<a class="post-category" href="${categoryUrl(category)}">${escapeHtml(category)}</a> · ` : ""}
@@ -65,9 +62,9 @@ export default async function ({ title, date, content, tags, category, page, col
       </main>
       ${renderPanel(collections.posts, toc)}
     </div>
-    <footer class="blog-footer">${site.footer.map(line => `<span>${escapeHtml(line)}</span>`).join('')}</footer>
+    ${renderFooter(site)}
   </div>
-  <div class="blog-mask" aria-hidden="true" hidden></div>
+  ${menuMask}
 </body>
 </html>`;
 }

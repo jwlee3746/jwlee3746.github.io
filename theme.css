@@ -42,6 +42,7 @@
 
   /* 4. 보조 영역 — 사이드바·메뉴·상단바 */
   --color-sidebar: #1e1e1e;
+  --color-profile-name: #717070;
   --color-sidebar-border: #292929;
   --color-nav-active: rgb(255 255 255 / 95%);
   --color-nav-hover: #262626;
@@ -51,8 +52,6 @@
   --color-topbar: rgb(27 27 30 / 64%);
   --color-tag-background: #292828;
   --color-label: #a7a7a7;
-  --color-blog-topbar: rgb(27 27 30 / 90%);
-  --color-blog-nav-active: #f2f2f2;
   --color-card: #1e1e1e;
   --color-card-hover: #252527;
   --color-card-border: #343434;

@@ -10,9 +10,9 @@
 | `ui/404.11ty.ts`, `data/error.json` | 오류 페이지 조립·문구 |
 | `public/` | 배포 루트로 복사하는 favicon·사이트 인증 파일 |
 | `ui/portfolio/portfolio.css` | 메인 페이지 스타일·반응형 레이아웃 |
-| `ui/portfolio/portfolio.js` | 스크롤 스파이·모바일 메뉴·검색 입력 처리 (바닐라 JS) |
+| `ui/portfolio/portfolio.js` | 홈 섹션 스크롤 스파이 (바닐라 JS) |
 | `ui/resume/resume.css` | 이력서 화면·인쇄 스타일 |
-| `ui/shared/` | 공용 렌더링·웹폰트 로딩·404 스타일 |
+| `ui/shared/` | 공통 프로필·상단바·검색·푸터·모바일 메뉴, 웹폰트 로딩·404 스타일 |
 | `ui/posts/` | 글 목록·본문 템플릿과 CSS |
 | `data/posts/` | 이전한 포스팅 Markdown 원본 |
 | `_site/resume/index.html` | 자동 생성 HTML. 직접 편집·커밋하지 않는다 |
