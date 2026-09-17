@@ -23,6 +23,12 @@ interface PageData {
 export default async function ({ title, date, content, tags, category, page, collections }: PageData): Promise<string> {
   const { site, profile } = await loadPortfolio();
   const toc = parseHTML(content).document.querySelector('.post-content > .post-toc')?.outerHTML;
+  const tagPage = page.url.startsWith('/tags/');
+  const crumbs = page.url === '/posts/' ? [{ label: 'Posts' }] : [
+    { label: 'Posts', href: '/posts/' },
+    ...(tagPage && page.url !== '/tags/' ? [{ label: 'Tags', href: '/tags/' }] : []),
+    { label: title },
+  ];
   const heading = escapeHtml(title);
   const published = date ? formatDate(date) : undefined;
   const labels = normalizeTags(tags).map(tag =>
@@ -49,7 +55,7 @@ export default async function ({ title, date, content, tags, category, page, col
   <a class="site-skip" href="#site-content">본문으로 건너뛰기</a>
   ${renderSidebar(site, profile, collections.categories, page.url, category)}
   <div class="site-shell site-shell-posts" id="site-shell">
-    ${renderTopbar(page.url === '/posts/' ? [{ label: 'Posts' }] : [{ label: 'Posts', href: '/posts/' }, { label: title }])}
+    ${renderTopbar(crumbs)}
     <div class="site-grid">
       <main id="site-content" tabindex="-1">
         <header class="blog-page-heading">
@@ -60,7 +66,7 @@ export default async function ({ title, date, content, tags, category, page, col
         </header>
         ${content}
       </main>
-      ${renderPanel(collections.posts, toc)}
+      ${renderPanel(collections.posts, toc, { showTags: !tagPage })}
     </div>
     ${renderFooter(site)}
   </div>

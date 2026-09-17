@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import Prism from 'prismjs';
 import loadLanguages from 'prismjs/components/index.js';
 import { katex } from '@mdit/plugin-katex';
+import { tagPages } from './ui/posts/tags.ts';
 import { groupCategories } from './ui/posts/categories.ts';
 import { legacyRedirects } from './ui/posts/legacy-urls.ts';
 import { postTableOfContents } from './ui/posts/toc.ts';
@@ -83,6 +84,8 @@ export default function (eleventyConfig) {
     }
     return posts;
   });
+  eleventyConfig.addCollection('tagGroups', collection =>
+    tagPages(collection.getFilteredByGlob('data/posts/**/*.md')));
   eleventyConfig.addCollection('categories', collection =>
     groupCategories(collection.getFilteredByGlob('data/posts/**/*.md')));
   eleventyConfig.addCollection('legacyRedirects', collection =>
