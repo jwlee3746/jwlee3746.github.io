@@ -4,7 +4,7 @@ import type { Post } from './list.ts';
 import { normalizeTags, tagUrl } from './tags.ts';
 
 export function renderSidebar(site: Site, profile: Profile, url: string): string {
-  const isTags = url === '/blog/tags/';
+  const isTags = url === '/blog/tags/' || url.startsWith('/blog/categories/');
   return `<aside class="blog-sidebar" id="blog-sidebar" aria-label="블로그 탐색">
     <div>
       <button type="button" class="blog-menu-close" aria-label="메뉴 닫기" hidden>×</button>

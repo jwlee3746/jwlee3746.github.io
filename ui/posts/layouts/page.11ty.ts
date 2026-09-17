@@ -13,9 +13,10 @@ interface PageData {
   tags?: string | string[];
   page: { url: string };
   collections: { posts: Post[] };
+  redirectTo?: string;
 }
 
-export default async function ({ title, date, content, tags, page, collections }: PageData): Promise<string> {
+export default async function ({ title, date, content, tags, page, collections, redirectTo }: PageData): Promise<string> {
   const { site, profile } = await loadPortfolio();
   const heading = escapeHtml(title);
   const published = date ? formatDate(date) : undefined;
@@ -28,6 +29,8 @@ export default async function ({ title, date, content, tags, page, collections }
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
   <title>${heading} | Jaynote</title>
+  ${redirectTo ? `<meta http-equiv="refresh" content="0;url=${escapeHtml(redirectTo)}">
+  <link rel="canonical" href="${escapeHtml(new URL(redirectTo.split('#')[0], site.url).href)}">` : ''}
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   ${screenTheme()}
   <link rel="stylesheet" href="/theme/posts/posts.css">
