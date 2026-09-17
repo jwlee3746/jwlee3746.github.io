@@ -1,6 +1,6 @@
 (() => {
-  const form = document.querySelector('.post-search');
-  const input = document.getElementById('post-query');
+  const form = document.querySelector('.site-search');
+  const input = document.getElementById('search-input');
   const status = document.getElementById('post-results');
   const empty = document.getElementById('post-empty');
   if (!form || !input || !status || !empty) return;
@@ -23,7 +23,6 @@
     input.value = new URL(location.href).searchParams.get('q') || '';
     filter();
   }
-  form.hidden = false;
   readUrl();
   input.addEventListener('input', filter);
   form.addEventListener('submit', event => {

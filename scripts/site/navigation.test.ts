@@ -86,3 +86,30 @@ test('legacy page routes map to canonical posts and categories without duplicate
     assert.throws(() => legacyRedirects([{ ...article, data: { ...article.data, legacyUrl: path } }]), /legacyUrl/);
   }
 });
+
+
+test('home and posts keep the same profile, search, footer and shared interaction assets', async () => {
+  const { default: renderHome } = await import('../../ui/portfolio/index.11ty.ts');
+  const { default: renderPage } = await import('../../ui/posts/layouts/page.11ty.ts');
+  const collections = { categories: [], posts: [] };
+  const home = parseHTML(await renderHome({ collections })).document;
+  const posts = parseHTML(await renderPage({ title: 'Posts', content: '', page: { url: '/posts/' }, collections })).document;
+  for (const selector of ['.site-sidebar > div:first-child', '.site-search', '.site-footer']) {
+    const fragments = [home, posts].map(doc => {
+      const fragment = doc.querySelector(selector)!.cloneNode(true) as Element;
+      fragment.querySelector('.site-nav')?.remove();
+      return fragment.outerHTML;
+    });
+    assert.equal(fragments[0], fragments[1], selector);
+  }
+  for (const doc of [home, posts]) {
+    assert.equal(doc.querySelectorAll('form[role="search"]').length, 1);
+    assert.equal(doc.querySelector('.site-topbar form')?.getAttribute('action'), '/posts/');
+    assert.equal(doc.querySelector('.site-topbar input')?.getAttribute('name'), 'q');
+    assert(doc.querySelector('script[src="/theme/shared/site-shell.js"]'));
+    assert(doc.querySelector('link[href="/theme/shared/site-shell.css"]'));
+    assert.equal(doc.querySelectorAll('#site-content').length, 1);
+  }
+  assert.equal(home.querySelector('.site-breadcrumb [aria-current]')?.textContent, 'Home');
+  assert.equal(posts.querySelector('.site-breadcrumb [aria-current]')?.textContent, 'Posts');
+});
