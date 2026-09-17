@@ -1,0 +1,80 @@
+---
+title: "[MLOps] Pickle로 머신러닝 모델 직렬화 및 배포하기"
+excerpt: "Pickle로 머신러닝 모델 직렬화 및 배포하기"
+date: 2024-05-29
+permalink: "/blog/MLOps/Pickle/"
+tags: ["MLOps", "Machine Learning"]
+toc: true
+---
+
+## Pickle 이란?
+
+파이썬 객체 구조의 직렬화, 역직렬화 제공. 이를 위한 바이너리 프로토콜 구현.
+인터페이스
+  - pickle.dump(obj, file, protocol=None, *, fix_imports=True, buffer_callback=None):  
+    객체 obj를 opened file에 작성.
+  - pickle.load(file, *, fix_imports=True, encoding='ASCII', errors='strict', buffers=None):  
+    opened file에서 객체 표현을 읽고, 객체 계층 구조를 재구성 및 반환.
+
+## sklearn 모델 학습 후 pickle로 직렬화 예시
+```python
+import pickle
+from sklearn.datasets import fetch_openml
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+
+# MNIST 데이터셋 불러오기
+mnist = fetch_openml("mnist_784", data_home="path/to/data/dir")
+X, y = mnist["data"], mnist["target"]
+
+# 데이터를 학습 데이터와 테스트 데이터로 분리
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# RandomForestClassifier 모델 생성 및 하이퍼파라미터 튜닝
+rf_clf = RandomForestClassifier(n_estimators=200, max_depth=20, random_state=42)
+
+# 모델 학습
+rf_clf.fit(X_train, y_train)
+
+# 테스트 데이터에 대한 정확도 출력
+accuracy = rf_clf.score(X_test, y_test)
+print(f"RandomForestClassifier 정확도: {accuracy * 100:.2f}%")
+
+# 모델 저장
+with open("mnist_model.pkl", "wb") as f:
+    pickle.dump(rf_clf, f)
+```
+
+## fastAPI 활용해 학습한 모델 배포
+```python
+import io
+import pickle
+import numpy as np
+
+from PIL import Image, ImageOps
+from fastapi import FastAPI, File, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+
+with open("mnist_model.pkl", "rb") as file:
+    model = pickle.load(file)
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.post("/predict-image/")
+async def predict_image(file: UploadFile = File(...)):
+    contents = await file.read()
+    pil_image = Image.open(io.BytesIO(contents)).convert("L")
+    pil_image = ImageOps.invert(pil_image)
+    pil_image = pil_image.resize((28, 28))
+    image_array = np.array(pil_image).reshape(1, -1)
+    prediction = model.predict(image_array)
+    return {"prediction": int(prediction[0])}
+```
