@@ -3,7 +3,8 @@ category: "Project"
 title: "[프로젝트] 네이버 쇼핑 이미지 준지도 분류"
 excerpt: "흔들리고 잘린 실사용자 쇼핑 사진을 레이블 없이 학습에 쓴다. RandAugment와 변형 MixMatch로 top-1 정확도를 56.42에서 69.62로 올렸다."
 date: 2024-05-09
-permalink: /blog/Project/naver-shopping-semisup/
+permalink: /posts/naver-shopping-semisup/
+legacyUrl: "/blog/Project/naver-shopping-semisup/"
 tags: ["Computer Vision", "Semi-supervised Learning", "Data Augmentation"]
 toc: true
 ---
@@ -99,6 +100,6 @@ MixUp 단계에서는 레이블된 데이터와 strong 증강을 거친 레이�
 
 ## 자료
 
-- [보고서: 사용자 쇼핑 이미지 분류 자동화를 위한 준지도 모델 학습](/blog/assets/docs/2024-05-09-1/naver-shopping-semisup-report.pdf)
-- [발표자료: 사용자 쇼핑 이미지 분류 자동화를 위한 준지도 모델 학습](/blog/assets/docs/2024-05-09-1/naver-shopping-semisup-slides.pdf)
+- [보고서: 사용자 쇼핑 이미지 분류 자동화를 위한 준지도 모델 학습](/data/pdf/2024-05-09-1/naver-shopping-semisup-report.pdf)
+- [발표자료: 사용자 쇼핑 이미지 분류 자동화를 위한 준지도 모델 학습](/data/pdf/2024-05-09-1/naver-shopping-semisup-slides.pdf)
 - [코드: KAIST_NAVER_semi_sup_vision](https://github.com/jwlee3746/KAIST_NAVER_semi_sup_vision)

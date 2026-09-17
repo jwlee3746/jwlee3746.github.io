@@ -9,5 +9,5 @@ export function tagAnchor(tag: string): string {
 }
 
 export function tagUrl(tag: string): string {
-  return `/blog/tags/#${tagAnchor(tag)}`;
+  return `/tags/#${tagAnchor(tag)}`;
 }
