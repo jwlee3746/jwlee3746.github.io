@@ -1,0 +1,103 @@
+---
+title: "[프로젝트] 네이버 쇼핑 이미지 준지도 분류"
+excerpt: "흔들리고 잘린 실사용자 쇼핑 사진을 레이블 없이 학습에 쓴다. RandAugment와 변형 MixMatch로 top-1 정확도를 56.42에서 69.62로 올렸다."
+date: 2024-05-09
+permalink: /blog/Project/naver-shopping-semisup/
+tags: ["Project", "Computer Vision", "Semi-supervised Learning", "Data Augmentation"]
+toc: true
+---
+
+## Introduction
+
+2020년 KAIST와 네이버가 함께 진행한 과제다. 네이버 쇼핑에 실제 사용자가 올린 제품 사진으로 이루어진 데이터셋을 다뤘다. 잘리고, 흔들리고, 배경이 지저분한 — 한마디로 noisy한 이미지들이다.
+
+<figure>
+  <img src="/data/images/posts/naver-shopping-semisup/dataset.webp" alt="레이블된 이미지 2만 장과 레이블 없는 이미지 4만 장으로 구성된 데이터셋 구성도">
+  <figcaption>레이블된 사진 2만 장에, 레이블이 없는 사진이 그 두 배인 4만 장. 쓰지 못하고 남겨 둔 쪽이 더 컸다.</figcaption>
+</figure>
+
+출발점은 오히려 나쁘지 않았다. 레이블된 데이터가 2만 장으로 적지 않았고, 그것만으로 지도 학습을 돌린 성능도 쓸 만했다. 문제는 그 방식이 오래가지 못한다는 데 있었다.
+
+- 레이블된 데이터가 적은 환경에는 그대로 적용할 수 없다
+- 사용자가 계속 올리는 수많은 **레이블 없는 이미지를 전혀 활용하지 못한다**
+- 새로운 카테고리가 생길 때마다 다시 레이블링을 해야 한다
+
+> 레이블 없는 데이터를 준지도 학습으로 끌어 쓰고, 잘못 찍힌 사진에도 흔들리지 않는 모델을 만들자.
+
+## Approach 1. 촬영 노이즈를 데이터 증강으로 흉내 내기
+
+사용자 사진이 망가지는 방식은 대체로 정해져 있었다 — 흔들림, 잘림, 지저분한 배경. 그렇다면 학습 데이터를 같은 방식으로 망가뜨려 보여주면 된다.
+
+Color, Rotate, Cut 등 수많은 증강 기법 중 무엇을 얼마나 세게 걸지 일일이 고르는 대신, **RandAugment**로 기법과 강도의 조합을 배치 단위에서 자동으로 정하게 했다.
+
+<figure>
+  <img src="/data/images/posts/naver-shopping-semisup/randaugment.webp" alt="원본 이미지에 Color(0.45)와 Rotate(15도)가 차례로 적용되는 RandAugment 예시">
+  <figcaption>기법과 강도를 배치 단위로 뽑아 적용한다 — 원본에 Color(0.45), 이어서 Rotate(15°).</figcaption>
+</figure>
+
+증강 파이프라인은 데이터 종류에 따라 갈린다.
+
+- 레이블된 데이터: 원본 이미지를 그대로 써서 ground truth로 삼는다
+- 레이블 없는 데이터: 같은 이미지에 **weak 증강과 strong 증강을 각각** 적용해 두 갈래로 만든다
+
+<figure>
+  <img src="/data/images/posts/naver-shopping-semisup/pipeline.webp" alt="레이블된 이미지는 원본 그대로, 레이블 없는 이미지는 weak 증강으로 pseudo-label을 만들고 strong 증강 예측과 맞추는 파이프라인 도해">
+  <figcaption>레이블 없는 쪽은 weak 증강본의 예측에서 가장 높은 클래스를 pseudo-label로 삼고, strong 증강본의 예측을 거기에 맞춘다.</figcaption>
+</figure>
+
+## Approach 2. MixMatch의 sharpening을 pseudo-label로 바꾸기
+
+준지도 알고리즘으로는 MixMatch를 골랐다. Entropy Minimization · Consistency Regularization · MixUp을 한데 묶은 방법이다. 다만 그대로 쓰지는 않았다.
+
+<figure>
+  <img src="/data/images/posts/naver-shopping-semisup/mixmatch.webp" alt="MixMatch 구조 — 증강과 entropy minimization으로 추정 레이블을 만들고 MixUp을 거쳐 supervised loss와 consistency loss를 계산하는 흐름">
+  <figcaption>MixMatch 전체 흐름. 추정 레이블을 만들고 MixUp을 거쳐 supervised loss와 consistency loss를 함께 계산한다.</figcaption>
+</figure>
+
+원래 MixMatch는 **sharpening**으로 레이블 없는 데이터의 예측 불확실성을 줄인다. 그런데 이 방식에는 두 가지 약점이 있었다. 증강 강도를 전혀 고려하지 않고, 정작 예측이 불확실할 때 잘 듣지 않는다는 점이다. 예측이 50%–50%면 sharpening을 걸어도 변화가 없고, 60%–40%처럼 애매하면 오히려 틀린 쪽으로 확신을 굳혀 성능을 떨어뜨릴 수 있다.
+
+그래서 sharpening 자리에 **pseudo-label**을 넣었다. 증강을 아주 약하게 적용한 이미지 — 원본에 가장 가까워 예측이 가장 믿을 만한 버전 — 의 예측값을 레이블로 삼는 방식이다.
+
+MixUp 단계에서는 레이블된 데이터와 strong 증강을 거친 레이블 없는 데이터를 섞었다. 강하게 변형된 쪽을 섞어야 MixUp 효과가 커지고, 이때 레이블은 앞서 weak 증강에서 얻은 pseudo-label을 쓴다. 다만 섞는 비율에서 레이블된 데이터가 0.5~1.0 사이를 유지하도록 해 과적합을 막았다.
+
+## Results
+
+<div class="metrics">
+  <div class="metric">
+    <div class="metric-label">top-1 accuracy</div>
+    <div class="metric-value"><span class="from">56.42</span> → <span class="to">69.62</span></div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">top-5 accuracy</div>
+    <div class="metric-value"><span class="from">78.98</span> → <span class="to">86.84</span></div>
+  </div>
+</div>
+
+한 번에 얻은 결과는 아니다. 백본을 ResNet-18에서 EfficientNet으로 바꾸고, 증강과 MixUp을 하나씩 얹으며 확인했다.
+
+| 구성 | Best top-1 | Best top-5 |
+| --- | ---: | ---: |
+| Baseline (ResNet-18) | 56.42 | 78.98 |
+| + RandAugment (ResNet-18) | 63.56 | 83.32 |
+| + MixUp (ResNet-18) | 63.44 | 83.69 |
+| RandAugment (EfficientNet) | 68.19 | 85.20 |
+| **+ MixUp (EfficientNet)** | **69.62** | **86.84** |
+
+가장 큰 폭은 **RandAugment를 넣은 순간**에 나왔다 — ResNet-18에서 top-1이 56.42에서 63.56으로 뛰었다. 촬영 노이즈를 흉내 내는 것만으로 7점을 얻은 셈이다. 백본을 EfficientNet으로 바꿔 68.19까지 올렸고, MixUp이 마지막 1.4점을 더했다.
+
+다만 ResNet-18에서는 MixUp이 top-1을 오히려 0.12점 떨어뜨렸다(63.56 → 63.44). 효과가 백본 용량에 따라 갈린 셈인데, 이 지점은 더 파고들지 못했다.
+
+## 결론
+
+의미를 정리하면 두 가지다. 노이즈가 많은 **실제 사용자 데이터를 그대로 학습에 썼다는 것**, 그리고 준지도 학습으로 **레이블이 없는 데이터까지 예측에 동원했다는 것**이다.
+
+결과는 나왔지만 실험 설계에서 아쉬운 부분이 남았다.
+
+- **비교군이 부족했다.** 완전히 같은 조건에서 레이블된 데이터로만 지도 학습을 돌린 결과와 나란히 놓고 비교했어야, 향상분이 준지도 학습 덕분이라고 분명하게 말할 수 있다.
+- **알고리즘을 하나만 시도했다.** MixMatch 외의 준지도 방법도 볼 만했다. 예를 들어 레이블된 데이터로만 teacher 모델을 만들고 student 1 → student 2로 이어가는 self-training을 붙였다면 어땠을지.
+
+## 자료
+
+- [보고서: 사용자 쇼핑 이미지 분류 자동화를 위한 준지도 모델 학습](/blog/assets/docs/2024-05-09-1/naver-shopping-semisup-report.pdf)
+- [발표자료: 사용자 쇼핑 이미지 분류 자동화를 위한 준지도 모델 학습](/blog/assets/docs/2024-05-09-1/naver-shopping-semisup-slides.pdf)
+- [코드: KAIST_NAVER_semi_sup_vision](https://github.com/jwlee3746/KAIST_NAVER_semi_sup_vision)

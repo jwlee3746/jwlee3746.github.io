@@ -29,6 +29,7 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ public: '.' });
   eleventyConfig.addPassthroughCopy({ 'jaewon-lee-resume.pdf': 'resume/jaewon-lee-resume.pdf' });
   eleventyConfig.addPassthroughCopy('data/images');
+  eleventyConfig.addPassthroughCopy({ 'data/pdf': 'blog/assets/docs' });
   // Keep public asset URLs stable while colocating source files under ui/.
   // Copy only browser assets, never TypeScript templates or helper modules.
   for (const path of globSync('ui/**/*.{css,js}')) {
