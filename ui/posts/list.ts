@@ -6,7 +6,7 @@ import { formatDate } from './date.ts';
 export interface Post {
   url: string;
   date: Date;
-  data: { title: string; category?: string; excerpt?: string; tags?: string | string[] };
+  data: { title: string; legacyUrl?: string; category?: string; excerpt?: string; tags?: string | string[] };
 }
 
 export function renderPostList(posts: readonly Post[]): string {

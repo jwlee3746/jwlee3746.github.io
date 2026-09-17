@@ -3,7 +3,7 @@ import { renderPostList, type Post } from '../list.ts';
 export const data = { layout: "page.11ty.ts" };
 
 export default function ({ collections }: { collections: { posts: Post[] } }): string {
-  return `<form class="post-search" role="search" action="/blog/posts/" hidden>
+  return `<form class="post-search" role="search" action="/posts/" hidden>
 <label for="post-query">글 검색</label>
 <div><input id="post-query" type="search" name="q" placeholder="제목·요약·분류·태그 검색" autocomplete="off">
 <button type="submit">검색</button></div></form>

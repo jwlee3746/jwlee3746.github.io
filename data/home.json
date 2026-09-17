@@ -57,7 +57,7 @@
       },
       {
         "label": "Posts",
-        "href": "/blog/posts/"
+        "href": "/posts/"
       },
       {
         "label": "Email",
@@ -67,11 +67,11 @@
     "featured": [
       {
         "label": "MVM+: 생성 모델에 metric 심기",
-        "href": "/blog/Project/mvm-plus/"
+        "href": "/posts/mvm-plus/"
       },
       {
         "label": "네이버 스니펫 오픈도메인 QA",
-        "href": "/blog/Project/naver-snippet-qa/"
+        "href": "/posts/naver-snippet-qa/"
       },
       {
         "label": "jw-agent-playbook",
@@ -214,21 +214,21 @@
     ],
     "posts": [
       {
-        "href": "/blog/Project/mvm-plus/",
+        "href": "/posts/mvm-plus/",
         "image": "/data/images/posts/mvm-plus/2d-spiral-mvm.webp",
         "category": "Project",
         "title": "MVM+: 생성 모델에 metric 심기",
         "description": "생성 모델에 metric learning을 결합하고 Average Hausdorff loss를 적용한 연구입니다."
       },
       {
-        "href": "/blog/Project/naver-shopping-semisup/",
+        "href": "/posts/naver-shopping-semisup/",
         "image": "/data/images/posts/naver-shopping-semisup/dataset.webp",
         "category": "Project",
         "title": "네이버 쇼핑 이미지 준지도 분류",
         "description": "레이블 없는 쇼핑 이미지를 활용해 분류 성능을 개선한 과정을 정리했습니다."
       },
       {
-        "href": "/blog/Project/naver-snippet-qa/",
+        "href": "/posts/naver-snippet-qa/",
         "image": "/data/images/posts/naver-snippet-qa/snippet-example.webp",
         "category": "Project",
         "title": "네이버 스니펫 오픈도메인 QA",
@@ -237,7 +237,7 @@
     ],
     "more": {
       "label": "전체 글 보기",
-      "href": "/blog/posts/"
+      "href": "/posts/"
     }
   }
 }

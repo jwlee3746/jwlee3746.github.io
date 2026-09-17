@@ -11,7 +11,7 @@ async function files(dir: string): Promise<string[]> {
     ? files(resolve(dir, entry.name)) : [relative(output, resolve(dir, entry.name))]))).flat();
 }
 const built = await files(output);
-for (const required of ['theme.css', 'index.html', '404.html', 'resume/index.html', 'resume/jaewon-lee-resume.pdf', 'favicon.svg', '.nojekyll', 'google037c167c6e0294fa.html', 'blog/Algorithm/1208/index.html', 'blog/posts/index.html']) {
+for (const required of ['theme.css', 'index.html', '404.html', 'resume/index.html', 'resume/jaewon-lee-resume.pdf', 'favicon.svg', '.nojekyll', 'google037c167c6e0294fa.html', 'posts/leetcode-1208/index.html', 'posts/index.html', 'categories/index.html', 'tags/index.html']) {
   assert(built.includes(required), `필수 산출물 누락: ${required}`);
 }
 for (const file of built) {
@@ -24,20 +24,18 @@ for (const route of built.filter(file => file.endsWith('.html'))) {
   assert(html.includes('<html') && html.includes('<body'), `문서가 비어 있음: ${route}`);
   assert(!/og:image|twitter:image/.test(html), `삭제한 OG 이미지 메타데이터가 복원됨: ${route}`);
   // Check every rendered page's local resources.
-  for (const [, url] of html.matchAll(/(?:src|href)="(\/(?:theme|data\/images|resume)\/[^"#?]*|\/theme\.css|\/favicon\.svg)"/g)) {
+  for (const [, url] of html.matchAll(/(?:src|href)="(\/(?:theme|data\/(?:images|pdf)|resume)\/[^"#?]*|\/theme\.css|\/favicon\.svg)"/g)) {
     const path = url.endsWith('/') ? `${url}index.html` : url;
     assert(built.includes(path.slice(1)), `${route}: 리소스 누락 ${url}`);
   }
   const { document } = parseHTML(html);
-  // Legacy links inside imported article bodies are migrated separately.
-  // All home links and navigation/list controls must resolve in this build.
-  const selector = route === 'index.html' || route === '404.html'
-    ? 'a[href], form[action]'
-    : '.site-nav a, .blog-panel a, .post-card a, .blog-page-heading a, .post-search';
+  // Home and posts only expose current URLs, including links in article bodies.
+  const selector = route.startsWith('resume/') ? '.site-nav a' : 'a[href], form[action]';
   for (const element of document.querySelectorAll(selector)) {
     const href = element.getAttribute('href') ?? element.getAttribute('action');
     if (!href || !/^(?:\/(?!\/)|#)/.test(href)) continue;
     const url = new URL(href, `https://jwlee3746.github.io/${route}`);
+    assert(!url.pathname.startsWith('/blog/'), `${route}: 이전 블로그 주소가 화면에 노출됨 ${href}`);
     const path = decodeURIComponent(url.pathname).replace(/^\//, '');
     const target = !path || path.endsWith('/') ? `${path}index.html` : path;
     assert(built.includes(target), `${route}: 링크 대상 누락 ${href}`);
@@ -45,6 +43,12 @@ for (const route of built.filter(file => file.endsWith('.html'))) {
       const targetHtml = target === route ? html : await readFile(resolve(output, target), 'utf8');
       assert(parseHTML(targetHtml).document.getElementById(decodeURIComponent(url.hash.slice(1))), `${route}: 앵커 누락 ${href}`);
     }
+  }
+  if (route.startsWith('blog/')) {
+    const canonical = document.querySelector('link[rel="canonical"]')?.getAttribute('href');
+    assert(canonical, `${route}: 이동 페이지 canonical 누락`);
+    const path = decodeURIComponent(new URL(canonical).pathname).slice(1);
+    assert(!path.startsWith('blog/') && built.includes(`${path}index.html`), `${route}: 이동 대상 누락 ${canonical}`);
   }
 }
 // The user-facing configuration is published as-is, without generated CSS.

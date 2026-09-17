@@ -33,6 +33,7 @@ export default async function ({ title, date, content, tags, category, page, col
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
   <title>${heading} | Jaynote</title>
+  <link rel="canonical" href="${escapeHtml(new URL(page.url, site.url).href)}">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   ${screenTheme()}
   <link rel="stylesheet" href="/theme/posts/posts.css">
@@ -40,7 +41,6 @@ export default async function ({ title, date, content, tags, category, page, col
   <link rel="stylesheet" href="/theme/posts/article.css">
   ${content.includes('class="katex"') ? '<link rel="stylesheet" href="/theme/posts/katex/katex.min.css">' : ''}
   <link rel="stylesheet" href="/theme/shared/navigation.css">
-  <script src="/theme/shared/navigation.js" defer></script>
   <script src="/theme/posts/navigation.js" defer></script>
 </head>
 <body>
@@ -50,7 +50,7 @@ export default async function ({ title, date, content, tags, category, page, col
     <header class="blog-topbar">
       <button type="button" class="blog-menu-trigger" aria-label="메뉴 열기" aria-controls="blog-sidebar" aria-expanded="false" hidden>☰</button>
       <nav class="blog-breadcrumb" aria-label="현재 위치">
-        <a href="/blog/posts/">Posts</a><span aria-hidden="true">/</span><span aria-current="page">${heading}</span>
+        <a href="/posts/">Posts</a><span aria-hidden="true">/</span><span aria-current="page">${heading}</span>
       </nav>
     </header>
     <div class="blog-grid">

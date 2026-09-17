@@ -7,7 +7,7 @@ export interface Category {
 }
 
 export function categoryUrl(name: string): string {
-  return `/blog/categories/${encodeURIComponent(name)}/`;
+  return `/categories/${encodeURIComponent(name)}/`;
 }
 
 export function groupCategories(posts: readonly Post[]): Category[] {

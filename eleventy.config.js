@@ -3,6 +3,7 @@ import Prism from 'prismjs';
 import loadLanguages from 'prismjs/components/index.js';
 import { katex } from '@mdit/plugin-katex';
 import { groupCategories } from './ui/posts/categories.ts';
+import { legacyRedirects } from './ui/posts/legacy-urls.ts';
 import { postTableOfContents } from './ui/posts/toc.ts';
 
 loadLanguages.silent = true;
@@ -32,6 +33,7 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ 'jaewon-lee-resume.pdf': 'resume/jaewon-lee-resume.pdf' });
   eleventyConfig.addPassthroughCopy('data/images');
   eleventyConfig.addPassthroughCopy({ 'data/pdf': 'blog/assets/docs' });
+  eleventyConfig.addPassthroughCopy('data/pdf');
   // Keep public asset URLs stable while colocating source files under ui/.
   // Copy only browser assets, never TypeScript templates or helper modules.
   for (const path of globSync('ui/**/*.{css,js}')) {
@@ -63,6 +65,8 @@ export default function (eleventyConfig) {
   });
   eleventyConfig.addCollection('categories', collection =>
     groupCategories(collection.getFilteredByGlob('data/posts/**/*.md')));
+  eleventyConfig.addCollection('legacyRedirects', collection =>
+    legacyRedirects(collection.getFilteredByGlob('data/posts/**/*.md')));
   // JSON is loaded by scripts; leave Eleventy's global data directory at its
   // default so data/posts remains part of the Markdown template input.
   return {
