@@ -90,3 +90,20 @@
   .post-content pre { padding: 1rem; }
   .post-table :is(th, td) { padding: .6rem .75rem; }
 }
+
+.post-pagination { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin-top: 2rem; }
+.post-pagination a { min-width: 0; padding: .75rem 1rem; border: 1px solid var(--color-card-border); border-radius: var(--radius-surface); background: var(--color-card); text-decoration: none; }
+.post-pagination a:hover, .post-pagination a:focus-visible { background: var(--color-card-hover); }
+.post-pagination a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+.post-pagination-label { display: flex; align-items: center; gap: .35rem; margin-bottom: .4rem; color: var(--color-muted); font-size: .75rem; line-height: 1.4; }
+.post-pagination-label svg { flex-shrink: 0; }
+.post-pagination-prev svg { order: -1; }
+.post-pagination-next { grid-column: 2; }
+.post-pagination-next .post-pagination-label { justify-content: flex-end; }
+.post-pagination strong { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; min-height: 2.9em; color: var(--color-heading); font-size: .9rem; font-weight: var(--weight-normal); line-height: 1.45; overflow-wrap: anywhere; }
+.post-pagination a:hover :is(strong, svg), .post-pagination a:focus-visible :is(strong, svg) { color: var(--color-link); }
+@media screen and (max-width: 620px) {
+  .post-pagination { gap: .5rem; }
+  .post-pagination a { padding: .65rem .75rem; }
+  .post-pagination strong { font-size: .85rem; }
+}

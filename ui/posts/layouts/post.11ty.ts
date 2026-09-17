@@ -1,11 +1,15 @@
 import { parseHTML } from 'linkedom';
+import { renderPostPagination } from '../pagination.ts';
+import type { Post } from '../list.ts';
 
 export default class PostLayout {
   data() {
     return { layout: 'page.11ty.ts' };
   }
 
-  render({ content }: { content: string }): string {
+  render({ content, page, collections }: {
+    content: string; page: { url: string }; collections: { posts: Post[] };
+  }): string {
     const { document } = parseHTML(`<div class="post-content">${content}</div>`);
     const body = document.querySelector('.post-content')!;
     // Keep native table semantics while making wide tables keyboard-scrollable.
@@ -18,6 +22,6 @@ export default class PostLayout {
       table.replaceWith(region);
       region.append(table);
     }
-    return body.outerHTML;
+    return body.outerHTML + renderPostPagination(collections.posts, page.url);
   }
 }
