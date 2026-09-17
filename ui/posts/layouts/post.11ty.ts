@@ -1,5 +1,6 @@
 import { parseHTML } from 'linkedom';
 import { renderPostPagination } from '../pagination.ts';
+import { renderRelatedPosts } from '../related.ts';
 import type { Post } from '../list.ts';
 
 export default class PostLayout {
@@ -22,6 +23,6 @@ export default class PostLayout {
       table.replaceWith(region);
       region.append(table);
     }
-    return body.outerHTML + renderPostPagination(collections.posts, page.url);
+    return body.outerHTML + renderRelatedPosts(collections.posts, page.url) + renderPostPagination(collections.posts, page.url);
   }
 }
