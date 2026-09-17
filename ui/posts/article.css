@@ -1,0 +1,80 @@
+/* Article presentation from the original blog, scoped away from navigation and lists. */
+.post-content {
+  font-size: 1rem;
+  line-height: 1.82;
+}
+.post-content :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--chirpy-heading);
+  font-family: var(--heading);
+  font-weight: 400;
+  letter-spacing: -.015em;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+.post-content :is(h1, h2) { margin-top: 2.25em; padding-bottom: .45rem; border-bottom: 1px solid var(--chirpy-main-border); }
+.post-content h1 { font-size: 1.75rem; }
+.post-content h2 { font-size: 1.55rem; }
+.post-content h3 { margin-top: 1.8em; font-size: 1.25rem; }
+.post-content h4 { margin-top: 1.5em; font-size: 1.08rem; }
+.post-content :is(h5, h6) { margin-top: 1.5em; font-size: 1rem; }
+.post-content > :first-child { margin-top: 0; }
+.post-content p { margin: 0 0 1.25em; }
+.post-content :is(ul, ol) { padding-inline-start: 1.5rem; margin-block: 1rem 1.5rem; }
+.post-content li + li { margin-top: .4em; }
+.post-content li :is(ul, ol) { margin-block: .5em; }
+.post-content :is(strong, b) { color: var(--chirpy-heading); }
+.post-content a { text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.post-content hr { margin-block: 2.5rem; border: 0; border-top: 1px solid var(--chirpy-main-border); }
+.post-content blockquote {
+  margin: 1.5em 0;
+  padding: 1rem 1.25rem;
+  border-left: 3px solid var(--chirpy-link);
+  border-radius: 0 8px 8px 0;
+  background: var(--blog-sidebar-bg);
+}
+.post-content blockquote > :first-child { margin-top: 0; }
+.post-content blockquote > :last-child { margin-bottom: 0; }
+
+.post-content figure { margin: 2.2em 0; }
+.post-content img { max-width: 100%; height: auto; border-radius: 12px; }
+/* White-backed figures retain the contrast of labels in the original diagrams. */
+.post-content figure img { display: block; margin-inline: auto; padding: .75rem; background: #fff; }
+.post-content figcaption { margin-top: .7em; color: var(--blog-muted); font-size: .8rem; line-height: 1.65; }
+.post-content iframe { max-width: 100%; }
+
+.post-content .metrics { display: flex; flex-wrap: wrap; gap: .75rem; margin: 1.6em 0; }
+.post-content .metric { flex: 1 1 180px; min-width: 0; padding: 1.1rem 1.3rem; border: 1px solid var(--blog-card-border); border-radius: 12px; background: var(--blog-sidebar-bg); }
+.post-content .metric-label { color: var(--blog-muted); font-size: .75rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.post-content .metric-value { margin-top: .35em; color: var(--chirpy-heading); font-size: 1.6rem; font-weight: 700; line-height: 1.3; font-variant-numeric: tabular-nums; }
+.post-content .metric-value .from { color: var(--blog-muted); font-weight: 400; }
+.post-content .metric-value .to { color: var(--chirpy-link); }
+
+.post-table { max-width: 100%; margin-block: 1.5rem; overflow-x: auto; border: 1px solid var(--blog-card-border); border-radius: 8px; }
+.post-table table { width: 100%; margin: 0; border-collapse: collapse; font-size: .88rem; }
+.post-table caption { padding: .75rem 1rem; text-align: start; color: var(--chirpy-heading); }
+.post-table :is(th, td) { padding: .65rem 1rem; text-align: start; vertical-align: top; border-bottom: 1px solid var(--chirpy-main-border); }
+.post-table th { color: var(--chirpy-heading); background: var(--blog-sidebar-bg); font-weight: 600; }
+.post-table td { font-variant-numeric: tabular-nums; }
+.post-table tbody tr:last-child td { border-bottom: 0; }
+/* Markdown's inline text-align keeps numeric columns right-aligned. */
+.post-table :is(th, td)[style*="text-align:right"],
+.post-table :is(th, td)[style*="text-align: right"] { white-space: nowrap; }
+
+.post-content pre { margin-block: 1.5rem; padding: 1.1rem 1.25rem; border-radius: 10px; background: #151517; font-size: .875rem; line-height: 1.65; overflow-wrap: normal; word-break: normal; }
+.post-content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.post-content :not(pre) > code { padding: .12em .35em; border: 1px solid var(--blog-card-border); border-radius: 4px; background: var(--blog-sidebar-bg); color: var(--chirpy-heading); font-size: .9em; }
+.post-content .math-block { margin-block: 1.25rem; padding: .5rem .25rem; }
+.post-content .math-block .katex-display { margin: .5em 0; }
+
+/* The generated TOC is navigation, not article prose. */
+.post-content .post-toc { font-size: .9rem; line-height: 1.7; }
+.post-content .post-toc ol { padding: 0; margin-bottom: 0; }
+.post-content .post-toc ol ol { margin: 0; padding-inline-start: 1rem; }
+.post-content .post-toc li + li { margin-top: 0; }
+
+@media screen and (max-width: 620px) {
+  .post-content blockquote { padding: .85rem 1rem; }
+  .post-content figure img { padding: .5rem; }
+  .post-content pre { padding: 1rem; }
+  .post-table :is(th, td) { padding: .6rem .75rem; }
+}
