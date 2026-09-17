@@ -90,3 +90,15 @@
   .post-content pre { padding: 1rem; }
   .post-table :is(th, td) { padding: .6rem .75rem; }
 }
+
+.post-pagination { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border); }
+.post-pagination a { display: block; min-width: 0; padding: 1rem 1.25rem; border: 1px solid var(--color-card-border); border-radius: var(--radius-card); background: var(--color-card); text-decoration: none; overflow-wrap: anywhere; }
+.post-pagination a:hover { background: var(--color-card-hover); }
+.post-pagination a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+.post-pagination span { display: block; margin-bottom: .5rem; color: var(--color-label); font-size: .85rem; }
+.post-pagination strong { color: var(--color-heading); font-size: 1rem; font-weight: var(--weight-normal); line-height: 1.5; }
+.post-pagination-next { grid-column: 2; text-align: right; }
+@media screen and (max-width: 620px) {
+  .post-pagination { grid-template-columns: minmax(0, 1fr); }
+  .post-pagination-next { grid-column: 1; text-align: left; }
+}

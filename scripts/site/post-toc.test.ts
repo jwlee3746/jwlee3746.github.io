@@ -37,7 +37,7 @@ test('no headings produce no TOC and body markup is preserved', () => {
 test('only front matter true enables TOC, while anchors remain available when off', () => {
   for (const toc of [undefined, false, 'true', true]) {
     const content = markdown().render('## 본문\n\n[[toc]]', { toc });
-    const html = new PostLayout().render({ content });
+    const html = new PostLayout().render({ content, page: { url: '/posts/example/' }, collections: { posts: [] } });
     const document = documentFor(html);
     assert.equal(document.querySelectorAll('.post-toc').length, toc === true ? 1 : 0);
     assert.equal(document.querySelector('h2')!.id, '본문');
