@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import { resolve, relative } from 'node:path';
 import { projectRoot } from './site/data.ts';
+import { parseHTML } from 'linkedom';
 
 const output = resolve(projectRoot, '_site');
 async function files(dir: string): Promise<string[]> {
@@ -17,15 +18,33 @@ for (const file of built) {
   assert(!/\.(?:ts|json|md)$/.test(file) && !file.endsWith('.gitignore'), `소스가 배포 산출물에 포함됨: ${file}`);
   assert(!/^(?:ui|scripts|public|data\/posts)\//.test(file), `소스 디렉터리가 배포됨: ${file}`);
 }
-for (const route of ['index.html', 'resume/index.html', '404.html', 'blog/posts/index.html', 'blog/Algorithm/1208/index.html']) {
+for (const route of built.filter(file => file.endsWith('.html'))) {
   const html = await readFile(resolve(output, route), 'utf8');
+  if (route.startsWith('google')) continue;
   assert(html.includes('<html') && html.includes('<body'), `문서가 비어 있음: ${route}`);
   assert(!/og:image|twitter:image/.test(html), `삭제한 OG 이미지 메타데이터가 복원됨: ${route}`);
-  // /blog/ links are still provided by the separate blog repo. Verify only
-  // generated local resources and the existing resume download.
+  // Check every rendered page's local resources.
   for (const [, url] of html.matchAll(/(?:src|href)="(\/(?:theme|data\/images|resume)\/[^"#?]*|\/theme\.css|\/favicon\.svg)"/g)) {
     const path = url.endsWith('/') ? `${url}index.html` : url;
     assert(built.includes(path.slice(1)), `${route}: 리소스 누락 ${url}`);
+  }
+  const { document } = parseHTML(html);
+  // Legacy links inside imported article bodies are migrated separately.
+  // All home links and navigation/list controls must resolve in this build.
+  const selector = route === 'index.html' || route === '404.html'
+    ? 'a[href], form[action]'
+    : '.site-nav a, .blog-panel a, .post-card a, .blog-page-heading a, .post-search';
+  for (const element of document.querySelectorAll(selector)) {
+    const href = element.getAttribute('href') ?? element.getAttribute('action');
+    if (!href || !/^(?:\/(?!\/)|#)/.test(href)) continue;
+    const url = new URL(href, `https://jwlee3746.github.io/${route}`);
+    const path = decodeURIComponent(url.pathname).replace(/^\//, '');
+    const target = !path || path.endsWith('/') ? `${path}index.html` : path;
+    assert(built.includes(target), `${route}: 링크 대상 누락 ${href}`);
+    if (url.hash && target.endsWith('.html')) {
+      const targetHtml = target === route ? html : await readFile(resolve(output, target), 'utf8');
+      assert(parseHTML(targetHtml).document.getElementById(decodeURIComponent(url.hash.slice(1))), `${route}: 앵커 누락 ${href}`);
+    }
   }
 }
 // The user-facing configuration is published as-is, without generated CSS.

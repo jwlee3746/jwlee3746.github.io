@@ -15,7 +15,7 @@ export function renderContent(data: Portfolio): string {
 <h3 class="project-title">${e(project.title)}</h3>
 <p class="project-impact">${e(project.impact)}</p>
 <ul class="project-points">${project.points.map(point => `<li><strong>${e(point.label)}</strong> — ${e(point.text)}</li>`).join('')}</ul>
-<div class="project-links">${project.links.map(link => externalLink(link.href, link.label)).join('\n')}</div>
+${project.links.length ? `<div class="project-links">${project.links.map(link => externalLink(link.href, link.label)).join('\n')}</div>` : ""}
 </div></article>`).join('')}</div>`) +
   section('writing', `<div class="post-list">${data.posts.map(post => `<a class="post-row" href="${e(post.href)}" target="_blank" rel="noopener">
 <div class="post-thumb"><img src="${e(post.image)}" alt="" width="256" height="160" loading="lazy" onerror="this.remove()"></div>

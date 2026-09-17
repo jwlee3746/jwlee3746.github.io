@@ -2,6 +2,7 @@ import { globSync } from 'node:fs';
 import Prism from 'prismjs';
 import loadLanguages from 'prismjs/components/index.js';
 import { katex } from '@mdit/plugin-katex';
+import { groupCategories } from './ui/posts/categories.ts';
 import { postTableOfContents } from './ui/posts/toc.ts';
 
 loadLanguages.silent = true;
@@ -60,6 +61,8 @@ export default function (eleventyConfig) {
     }
     return posts;
   });
+  eleventyConfig.addCollection('categories', collection =>
+    groupCategories(collection.getFilteredByGlob('data/posts/**/*.md')));
   // JSON is loaded by scripts; leave Eleventy's global data directory at its
   // default so data/posts remains part of the Markdown template input.
   return {

@@ -3,7 +3,7 @@
 
   // 섹션과 링크를 한 쌍으로 관리해 잘못된 앵커가 다른 링크를 활성화하지 않게 한다.
   function initScrollSpy() {
-    const items = Array.from(document.querySelectorAll('.nav-sub a[href^="#"]'))
+    const items = Array.from(document.querySelectorAll('.site-nav-sub a[href^="#"]'))
       .map(link => ({
         link,
         section: document.getElementById(link.getAttribute('href').slice(1)),
@@ -35,25 +35,53 @@
   function initSidebar() {
     const trigger = document.getElementById('sidebar-trigger');
     const mask = document.getElementById('mask');
-    if (!trigger || !mask) return;
-
-    // 표시 상태와 접근성 속성은 항상 같은 경로에서 갱신한다.
-    function setOpen(open) {
+    const sidebar = document.getElementById('site-sidebar');
+    const shell = document.querySelector('.content-shell');
+    const closeButton = document.querySelector('.sidebar-close');
+    if (!trigger || !mask || !sidebar || !shell || !closeButton) return;
+    const mobile = window.matchMedia('(max-width: 849px)');
+    let open = false;
+    function setOpen(value, restoreFocus = false) {
+      open = value && mobile.matches;
       document.body.classList.toggle('sidebar-open', open);
       trigger.setAttribute('aria-expanded', String(open));
+      sidebar.inert = mobile.matches && !open;
+      shell.inert = open;
+      if (open) closeButton.focus();
+      else if (restoreFocus) trigger.focus();
     }
-
-    const close = () => setOpen(false);
-    trigger.addEventListener('click', () => {
-      setOpen(!document.body.classList.contains('sidebar-open'));
+    closeButton.hidden = false;
+    document.body.classList.add('sidebar-ready');
+    setOpen(false);
+    trigger.addEventListener('click', () => setOpen(!open));
+    closeButton.addEventListener('click', () => setOpen(false, true));
+    mask.addEventListener('click', () => setOpen(false, true));
+    sidebar.addEventListener('click', event => {
+      if (open && event.target.closest('a')) setOpen(false, true);
     });
-    mask.addEventListener('click', close);
-    for (const link of document.querySelectorAll('.nav a')) {
-      link.addEventListener('click', close);
-    }
-    window.addEventListener('resize', () => {
-      // portfolio.css의 모바일 사이드바 경계와 맞춘다.
-      if (window.innerWidth >= 850) close();
+    mobile.addEventListener('change', () => {
+      const wasOpen = open;
+      const sidebarFocused = sidebar.contains(document.activeElement);
+      const buttonFocused = document.activeElement === trigger || document.activeElement === closeButton;
+      setOpen(false, mobile.matches && sidebarFocused);
+      if (!mobile.matches && (buttonFocused || wasOpen)) sidebar.querySelector('a').focus();
+    });
+    window.addEventListener('pageshow', () => setOpen(false));
+    document.addEventListener('keydown', event => {
+      if (!open) return;
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setOpen(false, true);
+      }
+      if (event.key === 'Tab') {
+        const controls = [...sidebar.querySelectorAll('a, button')].filter(control => control.getClientRects().length);
+        const first = controls[0], last = controls.at(-1);
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault(); last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault(); first.focus();
+        }
+      }
     });
   }
 
