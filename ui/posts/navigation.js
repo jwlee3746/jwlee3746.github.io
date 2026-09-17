@@ -30,10 +30,11 @@
     if (open && event.target.closest('a')) setOpen(false, true);
   });
   mobile.addEventListener('change', () => {
+    const wasOpen = open;
     const focusWasInSidebar = sidebar.contains(document.activeElement);
     const focusWasOnButton = document.activeElement === trigger || document.activeElement === close;
     setOpen(false, mobile.matches && focusWasInSidebar);
-    if (!mobile.matches && focusWasOnButton) sidebar.querySelector('a').focus();
+    if (!mobile.matches && (focusWasOnButton || wasOpen)) sidebar.querySelector('a').focus();
   });
   window.addEventListener('pageshow', () => setOpen(false));
   document.addEventListener('keydown', event => {
@@ -43,7 +44,7 @@
       setOpen(false, true);
     }
     if (event.key === 'Tab') {
-      const controls = [...sidebar.querySelectorAll('a, button')];
+      const controls = [...sidebar.querySelectorAll('a, button')].filter(control => control.getClientRects().length);
       const first = controls[0];
       const last = controls.at(-1);
       if (event.shiftKey && document.activeElement === first) {

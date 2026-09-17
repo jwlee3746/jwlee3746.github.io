@@ -1,10 +1,11 @@
+import { renderNavigation } from '../shared/navigation.ts';
+import type { Category } from './categories.ts';
 import type { Site, Profile } from '../../scripts/site/data.ts';
 import { escapeHtml as e } from '../shared/html.ts';
 import type { Post } from './list.ts';
 import { normalizeTags, tagUrl } from './tags.ts';
 
-export function renderSidebar(site: Site, profile: Profile, url: string): string {
-  const isTags = url === '/blog/tags/';
+export function renderSidebar(site: Site, profile: Profile, url: string, categories: readonly Category[], category?: string): string {
   return `<aside class="blog-sidebar" id="blog-sidebar" aria-label="블로그 탐색">
     <div>
       <button type="button" class="blog-menu-close" aria-label="메뉴 닫기" hidden>×</button>
@@ -14,11 +15,7 @@ export function renderSidebar(site: Site, profile: Profile, url: string): string
       <p class="blog-role">${e(profile.role)}</p>
       <p class="blog-tagline">${e(profile.tagline)}</p>
       <a class="blog-resume" href="${e(site.resume.href)}" target="_blank" rel="noopener">${e(site.resume.label)} <span aria-hidden="true">→</span><span class="sr-only"> (새 탭에서 열림)</span></a>
-      <nav class="blog-nav" aria-label="블로그">
-        <a href="/">포트폴리오</a>
-        <a href="/blog/posts/"${!isTags ? ' aria-current="' + (url === '/blog/posts/' ? 'page' : 'location') + '"' : ''}>글 목록</a>
-        <a href="/blog/tags/"${isTags ? ' aria-current="page"' : ''}>태그</a>
-      </nav>
+      ${renderNavigation(site, categories, url, category)}
     </div>
     <div class="blog-social">${site.social.map(link => `<a href="${e(link.href)}"${link.href.startsWith('mailto:') ? '' : ' target="_blank" rel="noopener"'}>${e(link.label)}${link.href.startsWith('mailto:') ? '' : '<span class="sr-only"> (새 탭에서 열림)</span>'}</a>`).join('')}</div>
   </aside>`;

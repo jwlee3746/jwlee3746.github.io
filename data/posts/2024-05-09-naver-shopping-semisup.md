@@ -1,9 +1,10 @@
 ---
+category: "Project"
 title: "[프로젝트] 네이버 쇼핑 이미지 준지도 분류"
 excerpt: "흔들리고 잘린 실사용자 쇼핑 사진을 레이블 없이 학습에 쓴다. RandAugment와 변형 MixMatch로 top-1 정확도를 56.42에서 69.62로 올렸다."
 date: 2024-05-09
 permalink: /blog/Project/naver-shopping-semisup/
-tags: ["Project", "Computer Vision", "Semi-supervised Learning", "Data Augmentation"]
+tags: ["Computer Vision", "Semi-supervised Learning", "Data Augmentation"]
 toc: true
 ---
 

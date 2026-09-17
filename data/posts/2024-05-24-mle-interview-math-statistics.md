@@ -1,9 +1,10 @@
 ---
+category: "Machine Learning"
 title: "[머신러닝] MLE 기술 면접 대비 질문 - 수학, 통계"
 excerpt: "수학, 통계, 머신러닝, 딥러닝 기술 면접을 위한 문제와 답변 해보기. 본 포스팅은 개념에 대해 깊이 있게 이해한다기 보다는 폭넓게 아는 것에 중점을 둠."
 date: 2024-05-24
 permalink: "/blog/Machine Learning/MLE기술면접대비질문/"
-tags: ["Machine Learning"]
+tags: []
 toc: true
 ---
 

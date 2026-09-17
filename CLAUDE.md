@@ -32,8 +32,9 @@
 데이터 배치는 `data/README.md`, 생성·검증 명령은 루트 `README.md`를 따른다.
 이미지는 `data/images/profile/`, `data/images/posts/<slug>/`로 나눈다. 상세 규칙은 `data/README.md`를 따른다.
 빈 디렉터리의 `.gitignore`는 자리 표시용이며 내용은 비워 둔다.
-같은 도메인의 `/blog/`는 아직 **별도 레포**(`jwlee3746/blog`, Jekyll)에서 서빙된다.
-블로그 소스는 후속 이전에서 이 구조에 반영하며 루트 `blog/`를 만들지 않는다.
+`/blog/`는 `/blog/posts/`로 이동한다. 이전한 글과 분류 페이지는 이 저장소에서 생성한다.
+글의 `category`는 큰 분류, `tags`는 세부 키워드이며 공통 메뉴는 `ui/shared/navigation.ts`를 사용한다.
+아직 이전하지 않은 글의 링크를 홈에 노출하지 않는다. 루트 `blog/` 소스 디렉터리는 만들지 않는다.
 프로필 사진은 포트폴리오와 외부 블로그 모두 `/data/images/profile/avatar.jpg`를 사용한다.
 사이트 공통 favicon 원본은 `public/favicon.svg`이며 공개 경로는 `/favicon.svg`로 유지한다.
 루트 HTML은 두지 않는다. `_site/`만 배포하며 배포 절차는 README.md를 따른다.

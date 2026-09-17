@@ -1,5 +1,5 @@
 export const data = {
-  title: "Posts",
+  title: "All Posts",
   layout: "list.11ty.ts",
   permalink: "/blog/posts/",
 };

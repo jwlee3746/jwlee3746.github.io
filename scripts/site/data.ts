@@ -21,8 +21,8 @@ const person = z.strictObject({
 });
 export const siteSchema = z.strictObject({
   title: text, description: text, socialDescription: text, url: href, schema: person,
-  resume: link, sections: z.array(link), navigation: z.array(link.extend({ icon: text })),
-  social: z.array(link), featured: z.array(link), categories: z.array(link), footer: z.array(text),
+  resume: link, sections: z.array(link),
+  social: z.array(link), featured: z.array(link), footer: z.array(text),
 });
 export const profileSchema = z.strictObject({
   name: text, nameEn: text, role: text, tagline: text, github: href, avatar: image, avatarAlt: text,

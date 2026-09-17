@@ -56,3 +56,17 @@ data/
 - `<slug>`는 글을 식별하는 고정 이름입니다. 이 폴더 이름이 공개 글 URL을 바꾸지는 않습니다.
 - 프로필 사진의 공개 주소는 `/data/images/profile/avatar.jpg`이며 포트폴리오와 별도 블로그가 공유합니다.
 - 파일을 옮길 때 HTML·메타데이터·블로그의 참조 경로도 함께 갱신합니다.
+
+## 포스팅 분류
+
+`posts/YYYY-MM-DD-slug.md`의 front matter에 다음처럼 작성합니다.
+
+```yaml
+category: "Project"
+tags: ["GAN", "Metric Learning"]
+excerpt: "목록에서 보여 줄 글 요약"
+```
+
+`category`는 하나의 큰 분류, `tags`는 세부 키워드입니다. 분류 이름에 `/`, `\`, `?`, `#`는 쓰지 않습니다.
+실제 글이 있는 분류와 글 수만 메뉴에 자동 반영됩니다. 기존 글의 `permalink`는 유지합니다.
+홈의 추천 글과 Featured 링크는 `home.json`에서 관리하며 아직 이전하지 않은 글은 노출하지 않습니다.
