@@ -1,3 +1,5 @@
+import type { Post } from './list.ts';
+
 export function normalizeTags(tags?: string | string[]): string[] {
   const names = typeof tags === 'string' ? [tags] : tags ?? [];
   return [...new Set(names.map(tag => tag.trim()).filter(Boolean))];
@@ -10,4 +12,16 @@ export function tagAnchor(tag: string): string {
 
 export function tagUrl(tag: string): string {
   return `/tags/#${tagAnchor(tag)}`;
+}
+
+export function groupPostsByTag(posts: readonly Post[]): [string, Post[]][] {
+  const groups = new Map<string, Post[]>();
+  for (const post of posts) {
+    for (const tag of normalizeTags(post.data.tags)) {
+      const tagged = groups.get(tag) ?? [];
+      tagged.push(post);
+      groups.set(tag, tagged);
+    }
+  }
+  return [...groups].sort(([a], [b]) => a.localeCompare(b, 'ko'));
 }
