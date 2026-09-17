@@ -1,15 +1,21 @@
 import { escapeHtml } from "../../shared/html.ts";
 import { formatDate } from "../date.ts";
 import { normalizeTags, tagUrl } from '../tags.ts';
+import { loadPortfolio } from '../../../scripts/site/data.ts';
+import { renderSidebar, renderPanel } from '../navigation.ts';
+import type { Post } from '../list.ts';
 
 interface PageData {
   title: string;
   date?: Date | string;
   content: string;
   tags?: string | string[];
+  page: { url: string };
+  collections: { posts: Post[] };
 }
 
-export default function ({ title, date, content, tags }: PageData): string {
+export default async function ({ title, date, content, tags, page, collections }: PageData): Promise<string> {
+  const { site, profile } = await loadPortfolio();
   const heading = escapeHtml(title);
   const published = date ? formatDate(date) : undefined;
   const labels = normalizeTags(tags).map(tag =>
@@ -22,19 +28,40 @@ export default function ({ title, date, content, tags }: PageData): string {
   <meta name="color-scheme" content="dark">
   <title>${heading} | Jaynote</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Source+Sans+Pro:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css">
+  <link rel="stylesheet" href="/theme/shared/theme.css">
   <link rel="stylesheet" href="/theme/posts/posts.css">
+  <link rel="stylesheet" href="/theme/posts/layout.css">
   ${content.includes('class="katex"') ? '<link rel="stylesheet" href="/theme/posts/katex/katex.min.css">' : ''}
+  <script src="/theme/posts/navigation.js" defer></script>
 </head>
 <body>
-  <nav aria-label="블로그">
-    <a href="/">포트폴리오</a> · <a href="/blog/posts/">글 목록</a> · <a href="/blog/tags/">태그</a>
-  </nav>
-  <main>
-    <h1>${heading}</h1>
-    ${published ? `<time datetime="${published}">${published}</time>` : ""}
-    ${labels.length ? `<ul class="post-tags" aria-label="글 태그">${labels.join('')}</ul>` : ''}
-    ${content}
-  </main>
+  <a class="skip-link" href="#blog-content">본문으로 건너뛰기</a>
+  ${renderSidebar(site, profile, page.url)}
+  <div class="blog-shell" id="blog-shell">
+    <header class="blog-topbar">
+      <button type="button" class="blog-menu-trigger" aria-label="메뉴 열기" aria-controls="blog-sidebar" aria-expanded="false" hidden>☰</button>
+      <nav class="blog-breadcrumb" aria-label="현재 위치">
+        <a href="/blog/posts/">Blog</a><span aria-hidden="true">/</span><span aria-current="page">${heading}</span>
+      </nav>
+    </header>
+    <div class="blog-grid">
+      <main id="blog-content" tabindex="-1">
+        <header class="blog-page-heading">
+          <h1>${heading}</h1>
+          ${published ? `<time datetime="${published}">${published}</time>` : ""}
+          ${labels.length ? `<ul class="post-tags" aria-label="글 태그">${labels.join('')}</ul>` : ''}
+        </header>
+        ${content}
+      </main>
+      ${renderPanel(collections.posts)}
+    </div>
+    <footer class="blog-footer">${site.footer.map(line => `<span>${escapeHtml(line)}</span>`).join('')}</footer>
+  </div>
+  <div class="blog-mask" aria-hidden="true" hidden></div>
 </body>
 </html>`;
 }
