@@ -10,7 +10,7 @@ export function renderNavigation(site: Site, categories: readonly Category[], ur
     const icon = label === 'HOME'
       ? '<path d="m2 10 10-8 10 8v12h-7v-7H9v7H2Z"/>'
       : '<path d="m16 2 6 6-12 12-8 2 2-8Z"/><path d="m14 4 6 6M4 14l6 6" fill="none" stroke="var(--color-sidebar)" stroke-width="2"/>';
-    return `<div class="site-nav-group"><div class="site-nav-heading"><a href="${href}"${active ? ` aria-current="${home ? 'page' : 'location'}"` : ''}><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${icon}</svg><span>${label}</span></a></div>
+    return `<div class="site-nav-group"><div class="site-nav-heading"><a href="${href}"${active ? ` aria-current="${home ? 'page' : 'location'}"` : ''}><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${icon}</svg><span>${label}</span></a></div>
 <div class="site-nav-sub" id="${id}">${children}</div></div>`;
   };
   return `<nav class="site-nav" aria-label="사이트 탐색">

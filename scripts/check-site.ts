@@ -3,6 +3,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import { resolve, relative } from 'node:path';
 import { projectRoot } from './site/data.ts';
 import { parseHTML } from 'linkedom';
+import { createHash } from 'node:crypto';
 
 const output = resolve(projectRoot, '_site');
 async function files(dir: string): Promise<string[]> {
@@ -23,12 +24,19 @@ for (const route of built.filter(file => file.endsWith('.html'))) {
   if (route.startsWith('google')) continue;
   assert(html.includes('<html') && html.includes('<body'), `문서가 비어 있음: ${route}`);
   assert(!/og:image|twitter:image/.test(html), `삭제한 OG 이미지 메타데이터가 복원됨: ${route}`);
-  // Check every rendered page's local resources.
-  for (const [, url] of html.matchAll(/(?:src|href)="(\/(?:theme|data\/(?:images|pdf)|resume)\/[^"#?]*|\/theme\.css|\/favicon\.svg)"/g)) {
-    const path = url.endsWith('/') ? `${url}index.html` : url;
-    assert(built.includes(path.slice(1)), `${route}: 리소스 누락 ${url}`);
-  }
   const { document } = parseHTML(html);
+  // Resource URLs can include a content hash; verify both the file and version.
+  for (const element of document.querySelectorAll('link[href], script[src], img[src]')) {
+    const href = element.getAttribute('href') ?? element.getAttribute('src');
+    if (!href?.startsWith('/') || href.startsWith('//')) continue;
+    const url = new URL(href, 'https://jwlee3746.github.io');
+    const path = decodeURIComponent(url.pathname).slice(1);
+    assert(built.includes(path), `${route}: 리소스 누락 ${href}`);
+    if (!route.startsWith('resume/') && /\.(css|js)$/.test(path)) {
+      const version = createHash('sha256').update(await readFile(resolve(output, path))).digest('hex').slice(0, 12);
+      assert.equal(url.searchParams.get('v'), version, `${route}: CSS/JS 캐시 버전 불일치 ${href}`);
+    }
+  }
   // Home and posts only expose current URLs, including links in article bodies.
   const selector = route.startsWith('resume/') ? '.site-nav a' : 'a[href], form[action]';
   for (const element of document.querySelectorAll(selector)) {

@@ -1,4 +1,6 @@
 import { globSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import Prism from 'prismjs';
 import loadLanguages from 'prismjs/components/index.js';
 import { katex } from '@mdit/plugin-katex';
@@ -36,9 +38,27 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy('data/pdf');
   // Keep public asset URLs stable while colocating source files under ui/.
   // Copy only browser assets, never TypeScript templates or helper modules.
-  for (const path of globSync('ui/**/*.{css,js}')) {
+  const browserFiles = [...globSync('ui/**/*.{css,js}')];
+  for (const path of browserFiles) {
     eleventyConfig.addPassthroughCopy({ [path]: path.replace(/^ui\//, 'theme/') });
   }
+  // New HTML must not reuse CSS/JS cached before its markup changed.
+  let assetVersions = new Map();
+  eleventyConfig.on('eleventy.before', async () => {
+    const assets = [
+      ['/theme.css', 'theme.css'],
+      ['/theme/posts/katex/katex.min.css', 'node_modules/katex/dist/katex.min.css'],
+      ...browserFiles.map(path => [`/${path.replace(/^ui\//, 'theme/')}`, path]),
+    ];
+    assetVersions = new Map(await Promise.all(assets.map(async ([url, path]) =>
+      [url, createHash('sha256').update(await readFile(path)).digest('hex').slice(0, 12)])));
+  });
+  eleventyConfig.addTransform('version-screen-assets', function (content) {
+    // The resume renderer also runs independently for PDF generation/checks.
+    if (!this.page.outputPath?.endsWith('.html') || this.page.url === '/resume/') return content;
+    return content.replace(/(<(?:link|script)\b[^>]*\b(?:href|src)=")([^"]+)(")/g, (match, start, url, end) =>
+      assetVersions.has(url) ? `${start}${url}?v=${assetVersions.get(url)}${end}` : match);
+  });
   eleventyConfig.ignores.add('**/README.md');
   eleventyConfig.ignores.add('**/AGENTS.md');
   eleventyConfig.ignores.add('CLAUDE.md');
