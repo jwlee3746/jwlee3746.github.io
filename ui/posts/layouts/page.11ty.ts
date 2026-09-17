@@ -35,6 +35,7 @@ export default async function ({ title, date, content, tags, page, collections }
   <link rel="stylesheet" href="/theme/shared/theme.css">
   <link rel="stylesheet" href="/theme/posts/posts.css">
   <link rel="stylesheet" href="/theme/posts/layout.css">
+  <link rel="stylesheet" href="/theme/posts/article.css">
   ${content.includes('class="katex"') ? '<link rel="stylesheet" href="/theme/posts/katex/katex.min.css">' : ''}
   <script src="/theme/posts/navigation.js" defer></script>
 </head>
