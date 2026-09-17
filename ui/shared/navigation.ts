@@ -19,6 +19,6 @@ ${group('home-sections', 'HOME', '/', home, site.sections.map(item =>
 ${group('posts-sections', 'POSTS', '/posts/', !home,
     link('/posts/', 'All Posts', url === '/posts/') + categories.map(item =>
       link(item.url, `${item.name} (${item.posts.length})`, category === item.name, decodeURI(url) !== decodeURI(item.url))).join('') +
-    link('/tags/', 'Tags', url === '/tags/'))}
+    link('/tags/', 'Tags', url.startsWith('/tags/'), url !== '/tags/'))}
 </nav>`;
 }

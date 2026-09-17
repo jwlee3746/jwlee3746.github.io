@@ -1,19 +1,16 @@
 import { escapeHtml } from '../shared/html.ts';
-import { renderPostList, type Post } from './list.ts';
-import { groupPostsByTag, tagAnchor, tagUrl } from './tags.ts';
+import type { Post } from './list.ts';
+import { groupPostsByTag, tagAnchor, tagUrl, normalizeTags } from './tags.ts';
 
-export const data = { title: '태그', layout: 'page.11ty.ts', permalink: '/tags/' };
+export const data = { title: 'Tags', layout: 'page.11ty.ts', permalink: '/tags/' };
 
 export default function ({ collections }: { collections: { posts: Post[] } }): string {
   const tags = groupPostsByTag(collections.posts);
   if (tags.length === 0) return '<p>태그가 지정된 글이 없습니다.</p>';
+  const taggedCount = new Set(collections.posts.filter(post => normalizeTags(post.data.tags).length).map(post => post.url)).size;
   const links = tags.map(([tag, posts]) =>
-    `<li class="post-card"><a class="post-card-title" href="${tagUrl(tag)}">${escapeHtml(tag)}</a><span>${posts.length}개의 글</span></li>`);
-  const sections = tags.map(([tag, posts]) => `<section aria-labelledby="${tagAnchor(tag)}">
-    <h2 id="${tagAnchor(tag)}">${escapeHtml(tag)}</h2>
-    ${renderPostList(posts)}
-  </section>`);
-  return `<p class="tag-summary">${collections.posts.length}개의 글 · ${tags.length}개의 태그</p>
-    <nav aria-label="태그 목록"><ul class="tag-grid">${links.join('')}</ul></nav>
-    ${sections.join('\n')}`;
+    `<li><a id="${tagAnchor(tag)}" href="${tagUrl(tag)}"><span>${escapeHtml(tag)}</span><span class="tag-count">${posts.length}<span class="sr-only">개의 글</span></span></a></li>`);
+  return `<p class="tag-summary">태그 ${tags.length}개 · 태그가 있는 글 ${taggedCount}개</p>
+    <nav aria-label="태그 목록"><ul class="tag-list">${links.join('')}</ul></nav>
+    <script src="/theme/posts/legacy-tag.js" defer></script>`;
 }

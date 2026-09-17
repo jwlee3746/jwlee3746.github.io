@@ -11,7 +11,7 @@ export function tagAnchor(tag: string): string {
 }
 
 export function tagUrl(tag: string): string {
-  return `/tags/#${tagAnchor(tag)}`;
+  return `/tags/${tagAnchor(tag)}/`;
 }
 
 export function groupPostsByTag(posts: readonly Post[]): [string, Post[]][] {
@@ -24,4 +24,9 @@ export function groupPostsByTag(posts: readonly Post[]): [string, Post[]][] {
     }
   }
   return [...groups].sort(([a], [b]) => a.localeCompare(b, 'ko'));
+}
+
+export interface TagGroup { name: string; url: string; posts: Post[] }
+export function tagPages(posts: readonly Post[]): TagGroup[] {
+  return groupPostsByTag(posts).map(([name, posts]) => ({ name, posts, url: tagUrl(name) }));
 }
