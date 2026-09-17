@@ -10,7 +10,7 @@
   /* 1. 글꼴 — 앞의 글꼴을 사용할 수 없으면 뒤의 글꼴을 사용합니다. */
   --font-body: "Source Sans Pro", "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   --font-heading: "Lato", "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-  --font-code: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --font-code: monospace;
 
   /* 2. 글자 — px는 고정 크기, rem은 브라우저 기본 글자 크기 기준입니다. */
   --text-body: 15.5px;
@@ -25,7 +25,9 @@
   --text-intro-mobile: 1rem;
   --line-height-intro: 1.9;
   --line-height-intro-mobile: 1.82;
-  --text-post-title: clamp(1.8rem, 4vw, 2.2rem);
+  --text-post-title: 2rem;
+  --text-post-title-mobile: 1.8rem;
+  --text-card-title: 1.25rem;
   --text-error-heading: clamp(2.5rem, 8vw, 4rem);
 
   /* 3. 기본 색상 — 메인·404·블로그 공통 */
@@ -49,6 +51,11 @@
   --color-topbar: rgb(27 27 30 / 64%);
   --color-tag-background: #292828;
   --color-label: #a7a7a7;
+  --color-blog-topbar: rgb(27 27 30 / 90%);
+  --color-blog-nav-active: #f2f2f2;
+  --color-card: #1e1e1e;
+  --color-card-hover: #252527;
+  --color-card-border: #343434;
   --color-border-soft: hsl(210deg 17% 18%);
 
   /* 5. 너비 — ch는 글자 폭 기준. 모바일 전환 시점은 화면별 CSS에 둡니다. */
@@ -57,7 +64,7 @@
   --content-width: 760px;
   --panel-width: 220px;
   --column-gap: 34px;
-  --article-width: 72ch;
+  --article-width: 760px;
   --error-width: 32rem;
 
   /* 6. 여백·모서리 — 메인 섹션 / 공통 페이지 / 블로그 본문 */
@@ -69,6 +76,10 @@
   --surface-padding: 1rem;
   --radius-surface: .5rem;
   --radius-control: .75rem;
+  --radius-tag: .4rem;
+  --radius-card: 10px;
+  --card-padding: 1.45rem 1.55rem;
+  --card-padding-mobile: 1.2rem;
 
   /* 7. 전환 시간 — 동작 줄이기 설정이 켜지면 화면 CSS에서 끕니다. */
   --transition-link: .25s;
