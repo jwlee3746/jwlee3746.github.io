@@ -2,7 +2,7 @@ import { escapeHtml } from '../shared/html.ts';
 import { renderPostList, type Post } from './list.ts';
 import { normalizeTags, tagAnchor, tagUrl } from './tags.ts';
 
-export const data = { title: '태그', layout: 'page.11ty.ts', permalink: '/blog/tags/' };
+export const data = { title: '태그', layout: 'page.11ty.ts', permalink: '/tags/' };
 
 export default function ({ collections }: { collections: { posts: Post[] } }): string {
   const groups = new Map<string, Post[]>();

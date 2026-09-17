@@ -4,20 +4,24 @@ import { formatDate } from "../date.ts";
 import { normalizeTags, tagUrl } from '../tags.ts';
 import { loadPortfolio } from '../../../scripts/site/data.ts';
 import { renderSidebar, renderPanel } from '../navigation.ts';
+import type { Category } from '../categories.ts';
+import { categoryUrl } from '../categories.ts';
 import type { Post } from '../list.ts';
+import { parseHTML } from 'linkedom';
 
 interface PageData {
   title: string;
   date?: Date | string;
   content: string;
   tags?: string | string[];
+  category?: string;
   page: { url: string };
-  collections: { posts: Post[] };
-  redirectTo?: string;
+  collections: { posts: Post[]; categories: Category[] };
 }
 
-export default async function ({ title, date, content, tags, page, collections, redirectTo }: PageData): Promise<string> {
+export default async function ({ title, date, content, tags, category, page, collections }: PageData): Promise<string> {
   const { site, profile } = await loadPortfolio();
+  const toc = parseHTML(content).document.querySelector('.post-content > .post-toc')?.outerHTML;
   const heading = escapeHtml(title);
   const published = date ? formatDate(date) : undefined;
   const labels = normalizeTags(tags).map(tag =>
@@ -29,36 +33,37 @@ export default async function ({ title, date, content, tags, page, collections, 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
   <title>${heading} | Jaynote</title>
-  ${redirectTo ? `<meta http-equiv="refresh" content="0;url=${escapeHtml(redirectTo)}">
-  <link rel="canonical" href="${escapeHtml(new URL(redirectTo.split('#')[0], site.url).href)}">` : ''}
+  <link rel="canonical" href="${escapeHtml(new URL(page.url, site.url).href)}">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   ${screenTheme()}
   <link rel="stylesheet" href="/theme/posts/posts.css">
   <link rel="stylesheet" href="/theme/posts/layout.css">
   <link rel="stylesheet" href="/theme/posts/article.css">
   ${content.includes('class="katex"') ? '<link rel="stylesheet" href="/theme/posts/katex/katex.min.css">' : ''}
+  <link rel="stylesheet" href="/theme/shared/navigation.css">
   <script src="/theme/posts/navigation.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#blog-content">본문으로 건너뛰기</a>
-  ${renderSidebar(site, profile, page.url)}
+  ${renderSidebar(site, profile, page.url, collections.categories, category)}
   <div class="blog-shell" id="blog-shell">
     <header class="blog-topbar">
       <button type="button" class="blog-menu-trigger" aria-label="메뉴 열기" aria-controls="blog-sidebar" aria-expanded="false" hidden>☰</button>
       <nav class="blog-breadcrumb" aria-label="현재 위치">
-        <a href="/blog/posts/">Blog</a><span aria-hidden="true">/</span><span aria-current="page">${heading}</span>
+        <a href="/posts/">Posts</a><span aria-hidden="true">/</span><span aria-current="page">${heading}</span>
       </nav>
     </header>
     <div class="blog-grid">
       <main id="blog-content" tabindex="-1">
         <header class="blog-page-heading">
           <h1>${heading}</h1>
+          ${category && published ? `<a class="post-category" href="${categoryUrl(category)}">${escapeHtml(category)}</a> · ` : ""}
           ${published ? `<time datetime="${published}">${published}</time>` : ""}
           ${labels.length ? `<ul class="post-tags" aria-label="글 태그">${labels.join('')}</ul>` : ''}
         </header>
         ${content}
       </main>
-      ${renderPanel(collections.posts)}
+      ${renderPanel(collections.posts, toc)}
     </div>
     <footer class="blog-footer">${site.footer.map(line => `<span>${escapeHtml(line)}</span>`).join('')}</footer>
   </div>

@@ -1,0 +1,88 @@
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+import { parseHTML } from 'linkedom';
+import { groupCategories } from '../../ui/posts/categories.ts';
+import { renderNavigation } from '../../ui/shared/navigation.ts';
+import { renderPostList, type Post } from '../../ui/posts/list.ts';
+import { loadPortfolio } from './data.ts';
+import { readFile } from 'node:fs/promises';
+import { runInNewContext } from 'node:vm';
+import { legacyRedirects } from '../../ui/posts/legacy-urls.ts';
+
+const post = (category: string, title = '제목'): Post => ({
+  url: '/posts/example/', date: new Date('2024-01-01'), data: { title, category, tags: ['BERT'], excerpt: '<요약>' },
+});
+
+test('categories group actual posts independently of tags and preserve Unicode names', () => {
+  const groups = groupCategories([post('Machine Learning'), post('Machine Learning'), post('한글 분류')]);
+  assert.equal(groups.length, 2);
+  assert.equal(groups.find(group => group.name === 'Machine Learning')?.posts.length, 2);
+  assert(groups.every(group => decodeURIComponent(group.url).includes(group.name)));
+  assert(!groups.some(group => group.name === 'BERT'));
+  for (const name of ['', ' ', '../x', '.', '..', 'a/b']) assert.throws(() => groupCategories([post(name)]), /category/);
+});
+
+test('navigation keeps home section destinations and selected category across page types', async () => {
+  const { site } = await loadPortfolio();
+  const groups = groupCategories([post('Machine Learning')]);
+  const home = parseHTML(renderNavigation(site, groups, '/')).document;
+  const article = parseHTML(renderNavigation(site, groups, '/posts/example/', 'Machine Learning')).document;
+  assert.equal(home.querySelector('#home-sections a')?.getAttribute('href'), '#about');
+  assert.equal(article.querySelector('#home-sections a')?.getAttribute('href'), '/#about');
+  assert.equal(article.querySelector('#posts-sections [aria-current]')?.textContent, 'Machine Learning (1)');
+  for (const document of [home, article]) {
+    assert.equal(document.querySelectorAll('.site-nav button, .site-nav [hidden]').length, 0);
+    assert(document.querySelector('#home-sections'));
+    assert(document.querySelector('#posts-sections'));
+  }
+});
+
+test('post summaries and search metadata escape content while category links remain independent', () => {
+  const html = renderPostList([post('Machine Learning', '<script>bad</script>')]);
+  const document = parseHTML(html).document;
+  assert.equal(document.querySelectorAll('script').length, 0);
+  assert.equal(document.querySelector('.post-card-excerpt')?.textContent, '<요약>');
+  assert.equal(document.querySelector('.post-card-category')?.getAttribute('href'), '/categories/Machine%20Learning/');
+  assert(document.querySelector('.post-card')?.getAttribute('data-search')?.includes('BERT'));
+});
+
+test('scroll spy selects a short last section at the page bottom and restores selection on scroll up', async () => {
+  const { site } = await loadPortfolio();
+  const ids = ['about', 'experience', 'projects', 'writing'];
+  const { document } = parseHTML(`<html><body>${renderNavigation(site, [], '/')}${ids.map(id => `<section id="${id}"></section>`).join('')}</body></html>`);
+  const listeners = new Map<string, () => void>();
+  const window = { scrollY: 0, innerHeight: 1000, addEventListener: (event: string, fn: () => void) => listeners.set(event, fn) };
+  Object.defineProperty(document.documentElement, 'scrollHeight', { value: 2500 });
+  ids.forEach((id, i) => {
+    document.getElementById(id)!.getBoundingClientRect = () => ({ top: [80, 400, 1000, 2100][i] - window.scrollY }) as DOMRect;
+  });
+  runInNewContext(await readFile(new URL('../../ui/portfolio/portfolio.js', import.meta.url), 'utf8'), { document, window });
+  const selected = () => [...document.querySelectorAll('#home-sections a.active')].map(a => a.getAttribute('href'));
+  assert.deepEqual(selected(), ['#about']);
+  window.scrollY = 300;
+  listeners.get('scroll')!();
+  assert.deepEqual(selected(), ['#experience']);
+  window.scrollY = 1500;
+  listeners.get('scroll')!();
+  assert.deepEqual(selected(), ['#writing']);
+  assert.equal(document.querySelector('#home-sections a.active')?.getAttribute('aria-current'), 'location');
+  window.scrollY = 900;
+  listeners.get('scroll')!();
+  assert.deepEqual(selected(), ['#projects']);
+  window.innerHeight = 1600;
+  listeners.get('resize')!();
+  assert.deepEqual(selected(), ['#writing']);
+});
+
+test('legacy page routes map to canonical posts and categories without duplicate old paths', () => {
+  const article = post('Machine Learning');
+  article.data.legacyUrl = '/blog/Machine Learning/기술면접/';
+  const routes = legacyRedirects([article]);
+  assert(routes.some(route => route.from === article.data.legacyUrl && route.to === article.url));
+  assert(routes.some(route => route.from === '/blog/categories/Machine%20Learning/' && route.to === '/categories/Machine%20Learning/'));
+  assert(routes.every(route => !route.to.startsWith('/blog/')));
+  assert.throws(() => legacyRedirects([article, article]), /중복/);
+  for (const path of ['/posts/new/', '/blog/../posts/', '/blog/post/#anchor']) {
+    assert.throws(() => legacyRedirects([{ ...article, data: { ...article.data, legacyUrl: path } }]), /legacyUrl/);
+  }
+});

@@ -1,9 +1,11 @@
 ---
+category: "Project"
 title: "[프로젝트] 네이버 스니펫 오픈도메인 QA"
 excerpt: "잘려 있는 검색 스니펫에서 답을 찾는 한국어 QA 모델. 학습 데이터의 90%가 unanswerable인 불균형을 증강으로 보완해 test 점수를 36.0에서 41.9로 올렸다."
 date: 2024-05-10
-permalink: /blog/Project/naver-snippet-qa/
-tags: ["Project", "NLP", "QA", "BERT", "KoELECTRA"]
+permalink: /posts/naver-snippet-qa/
+legacyUrl: "/blog/Project/naver-snippet-qa/"
+tags: ["NLP", "QA", "BERT", "KoELECTRA"]
 toc: true
 ---
 
@@ -99,5 +101,5 @@ BERT-multilingual 베이스라인이 36.0이었고, KorQuAD로 보강한 KoELECT
 
 ## 자료
 
-- [보고서: 네이버 검색 결과 데이터를 이용한 QA 모델 학습](/blog/assets/docs/2024-05-10-1/naver-snippet-qa-report.pdf)
+- [보고서: 네이버 검색 결과 데이터를 이용한 QA 모델 학습](/data/pdf/2024-05-10-1/naver-snippet-qa-report.pdf)
 - [코드: PIRL-korquad-open-cs492h](https://github.com/jwlee3746/PIRL-korquad-open-cs492h)

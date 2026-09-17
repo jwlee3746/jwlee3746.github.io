@@ -30,32 +30,20 @@
     },
     "sections": [
       {
-        "label": "HOME",
+        "label": "About",
         "href": "#about"
       },
       {
-        "label": "EXPERIENCE",
+        "label": "Experience",
         "href": "#experience"
       },
       {
-        "label": "PROJECTS",
+        "label": "Projects",
         "href": "#projects"
       },
       {
-        "label": "POSTS",
+        "label": "Selected Posts",
         "href": "#writing"
-      }
-    ],
-    "navigation": [
-      {
-        "label": "POSTS BY CATEGORY",
-        "href": "/blog/",
-        "icon": "fa-fw fas fa-stream"
-      },
-      {
-        "label": "POSTS",
-        "href": "/blog/posts/",
-        "icon": "fa-fw fas fa-pen-nib"
       }
     ],
     "social": [
@@ -69,7 +57,7 @@
       },
       {
         "label": "Posts",
-        "href": "/blog/posts/"
+        "href": "/posts/"
       },
       {
         "label": "Email",
@@ -78,42 +66,16 @@
     ],
     "featured": [
       {
-        "label": "Agent evaluation pipeline",
-        "href": "/blog/Agent/reproducible-agent-evaluation/"
+        "label": "MVM+: 생성 모델에 metric 심기",
+        "href": "/posts/mvm-plus/"
       },
       {
-        "label": "Device assistant evaluation",
-        "href": "/blog/Agent/device-assistant-evaluation/"
-      },
-      {
-        "label": "Trace-to-eval data flywheel",
-        "href": "/blog/Agent/trace-to-eval-data-flywheel/"
+        "label": "네이버 스니펫 오픈도메인 QA",
+        "href": "/posts/naver-snippet-qa/"
       },
       {
         "label": "jw-agent-playbook",
         "href": "https://github.com/jwlee3746/jw-agent-playbook"
-      }
-    ],
-    "categories": [
-      {
-        "label": "Agent",
-        "href": "/blog/categories/Agent/"
-      },
-      {
-        "label": "Project",
-        "href": "/blog/categories/Project/"
-      },
-      {
-        "label": "Paper",
-        "href": "/blog/categories/Paper/"
-      },
-      {
-        "label": "Machine Learning",
-        "href": "/blog/categories/Machine%20Learning/"
-      },
-      {
-        "label": "MLOps",
-        "href": "/blog/categories/MLOps/"
       }
     ],
     "footer": [
@@ -146,13 +108,13 @@
       "about": "About",
       "experience": "Experience",
       "projects": "Projects",
-      "writing": "Posts"
+      "writing": "Selected Posts"
     },
     "experience": [
       {
         "date": "2024.07 — 현재",
         "title": "ML 엔지니어 · 삼성전자 MX사업부 Language AI",
-        "description": "0000건 규모의 라우팅 TC로 상위 에이전트의 decision boundary를 평가하고, 실패 버킷 분석과 개선 대상·반대 영역 회귀 검증을 통해 라우팅 설명과 정책을 보강하는 반복 루프를 설계했습니다.",
+        "description": "라우팅 TC로 상위 에이전트의 decision boundary를 평가하고, 실패 버킷 분석과 개선 대상·반대 영역 회귀 검증을 통해 라우팅 설명과 정책을 보강하는 반복 루프를 설계했습니다.",
         "href": "https://www.linkedin.com/in/jwlee3746/"
       },
       {
@@ -173,7 +135,7 @@
         "date": "2024.07 — 현재",
         "category": "Routing Evaluation",
         "title": "상위 에이전트 라우팅 경계 평가·보강 루프",
-        "impact": "0000건 규모의 라우팅 TC를 결정론적으로 평가하고, 경계 실패를 분석해 설명·정책을 보강한 뒤 반대 방향 회귀까지 검증하는 루프를 구축했습니다.",
+        "impact": "라우팅 TC를 결정론적으로 평가하고, 경계 실패를 분석해 설명·정책을 보강한 뒤 반대 방향 회귀까지 검증하는 루프를 구축했습니다.",
         "points": [
           {
             "label": "경계 평가",
@@ -192,16 +154,7 @@
             "text": "현재 범위는 라우팅 판단 회귀이며, 실제 chaining·자유로운 multi-step trajectory·stateful outcome 평가는 후속 과제로 구분했습니다."
           }
         ],
-        "links": [
-          {
-            "label": "설계 시리즈 보기",
-            "href": "/blog/Agent/reproducible-agent-evaluation/"
-          },
-          {
-            "label": "디바이스 평가 회고",
-            "href": "/blog/Agent/device-assistant-evaluation/"
-          }
-        ]
+        "links": []
       },
       {
         "date": "2026.03 — 2026.07",
@@ -230,16 +183,7 @@
             "text": "Docker Compose 기반 서버 실행·배포 구성과 Agent Skill 정의 주입 구조를 구축했습니다."
           }
         ],
-        "links": [
-          {
-            "label": "구조 리서치 보기",
-            "href": "/blog/Agent/openclaw-architecture-research/"
-          },
-          {
-            "label": "컴포넌트 적용기 보기",
-            "href": "/blog/Agent/openclaw-component-application/"
-          }
-        ]
+        "links": []
       },
       {
         "date": "2024.07 — 현재",
@@ -264,40 +208,36 @@
           {
             "label": "공개 플레이북 보기",
             "href": "https://github.com/jwlee3746/jw-agent-playbook"
-          },
-          {
-            "label": "관측 설계 글 보기",
-            "href": "/blog/Agent/trace-to-eval-data-flywheel/"
           }
         ]
       }
     ],
     "posts": [
       {
-        "href": "/blog/Paper/Attention1/",
-        "image": "/data/images/posts/attention-1/thumbnail.webp",
-        "category": "논문 리뷰",
-        "title": "Attention Is All You Need [1] — Encoder · Decoder",
-        "description": "Transformer의 인코더·디코더 구조를 그림과 코드로 따라가며 정리했습니다."
+        "href": "/posts/mvm-plus/",
+        "image": "/data/images/posts/mvm-plus/2d-spiral-mvm.webp",
+        "category": "Project",
+        "title": "MVM+: 생성 모델에 metric 심기",
+        "description": "생성 모델에 metric learning을 결합하고 Average Hausdorff loss를 적용한 연구입니다."
       },
       {
-        "href": "/blog/Paper/Attention2/",
-        "image": "/data/images/posts/attention-2/thumbnail.webp",
-        "category": "논문 리뷰",
-        "title": "Attention Is All You Need [2] — Attention",
-        "description": "Self-Attention과 Multi-Head Attention을 병렬성 관점에서 뜯어봤습니다."
+        "href": "/posts/naver-shopping-semisup/",
+        "image": "/data/images/posts/naver-shopping-semisup/dataset.webp",
+        "category": "Project",
+        "title": "네이버 쇼핑 이미지 준지도 분류",
+        "description": "레이블 없는 쇼핑 이미지를 활용해 분류 성능을 개선한 과정을 정리했습니다."
       },
       {
-        "href": "/blog/Paper/Attention3/",
-        "image": "/data/images/posts/attention-3/thumbnail.webp",
-        "category": "논문 리뷰",
-        "title": "Attention Is All You Need [3] — Feed-Forward · Positional Encoding",
-        "description": "위치 정보를 인코딩하는 방식과 FFN의 역할을 정리했습니다."
+        "href": "/posts/naver-snippet-qa/",
+        "image": "/data/images/posts/naver-snippet-qa/snippet-example.webp",
+        "category": "Project",
+        "title": "네이버 스니펫 오픈도메인 QA",
+        "description": "검색 스니펫 데이터의 불균형을 증강으로 보완한 한국어 QA 프로젝트입니다."
       }
     ],
     "more": {
-      "label": "블로그 전체 보기",
-      "href": "/blog/"
+      "label": "전체 글 보기",
+      "href": "/posts/"
     }
   }
 }
