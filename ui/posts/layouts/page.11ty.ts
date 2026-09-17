@@ -1,3 +1,4 @@
+import { screenTheme } from '../../shared/head.ts';
 import { escapeHtml } from "../../shared/html.ts";
 import { formatDate } from "../date.ts";
 import { normalizeTags, tagUrl } from '../tags.ts';
@@ -22,6 +23,7 @@ export default function ({ title, date, content, tags }: PageData): string {
   <meta name="color-scheme" content="dark">
   <title>${heading} | Jaynote</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  ${screenTheme()}
   <link rel="stylesheet" href="/theme/posts/posts.css">
   ${content.includes('class="katex"') ? '<link rel="stylesheet" href="/theme/posts/katex/katex.min.css">' : ''}
 </head>

@@ -10,7 +10,7 @@ async function files(dir: string): Promise<string[]> {
     ? files(resolve(dir, entry.name)) : [relative(output, resolve(dir, entry.name))]))).flat();
 }
 const built = await files(output);
-for (const required of ['index.html', '404.html', 'resume/index.html', 'resume/jaewon-lee-resume.pdf', 'favicon.svg', '.nojekyll', 'google037c167c6e0294fa.html', 'blog/Algorithm/1208/index.html', 'blog/posts/index.html']) {
+for (const required of ['theme.css', 'index.html', '404.html', 'resume/index.html', 'resume/jaewon-lee-resume.pdf', 'favicon.svg', '.nojekyll', 'google037c167c6e0294fa.html', 'blog/Algorithm/1208/index.html', 'blog/posts/index.html']) {
   assert(built.includes(required), `필수 산출물 누락: ${required}`);
 }
 for (const file of built) {
@@ -23,10 +23,12 @@ for (const route of ['index.html', 'resume/index.html', '404.html', 'blog/posts/
   assert(!/og:image|twitter:image/.test(html), `삭제한 OG 이미지 메타데이터가 복원됨: ${route}`);
   // /blog/ links are still provided by the separate blog repo. Verify only
   // generated local resources and the existing resume download.
-  for (const [, url] of html.matchAll(/(?:src|href)="(\/(?:theme|data\/images|resume)\/[^"#?]*|\/favicon\.svg)"/g)) {
+  for (const [, url] of html.matchAll(/(?:src|href)="(\/(?:theme|data\/images|resume)\/[^"#?]*|\/theme\.css|\/favicon\.svg)"/g)) {
     const path = url.endsWith('/') ? `${url}index.html` : url;
     assert(built.includes(path.slice(1)), `${route}: 리소스 누락 ${url}`);
   }
 }
+// The user-facing configuration is published as-is, without generated CSS.
+assert.equal(await readFile(resolve(output, 'theme.css'), 'utf8'), await readFile(resolve(projectRoot, 'theme.css'), 'utf8'));
 assert.equal(await readFile(resolve(output, 'google037c167c6e0294fa.html'), 'utf8'), await readFile(resolve(projectRoot, 'public/google037c167c6e0294fa.html'), 'utf8'));
 console.log(`사이트 검증 통과: ${built.length}개 산출물, 기존 URL·리소스·소스 제외 확인`);
