@@ -7,6 +7,7 @@ import { renderSidebar, renderPanel } from '../navigation.ts';
 import type { Category } from '../categories.ts';
 import { categoryUrl } from '../categories.ts';
 import type { Post } from '../list.ts';
+import { parseHTML } from 'linkedom';
 
 interface PageData {
   title: string;
@@ -20,6 +21,7 @@ interface PageData {
 
 export default async function ({ title, date, content, tags, category, page, collections }: PageData): Promise<string> {
   const { site, profile } = await loadPortfolio();
+  const toc = parseHTML(content).document.querySelector('.post-content > .post-toc')?.outerHTML;
   const heading = escapeHtml(title);
   const published = date ? formatDate(date) : undefined;
   const labels = normalizeTags(tags).map(tag =>
@@ -61,7 +63,7 @@ export default async function ({ title, date, content, tags, category, page, col
         </header>
         ${content}
       </main>
-      ${renderPanel(collections.posts)}
+      ${renderPanel(collections.posts, toc)}
     </div>
     <footer class="blog-footer">${site.footer.map(line => `<span>${escapeHtml(line)}</span>`).join('')}</footer>
   </div>
