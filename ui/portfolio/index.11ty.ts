@@ -1,6 +1,6 @@
 import { loadPortfolio } from '../../scripts/site/data.ts';
 import { escapeHtml as e } from '../shared/html.ts';
-import { metadata } from '../shared/head.ts';
+import { metadata, screenTheme } from '../shared/head.ts';
 import { renderSidebar, renderPanel } from './sections/navigation.ts';
 import { renderContent } from './sections/content.ts';
 
@@ -11,14 +11,9 @@ export default async function renderPortfolio(): Promise<string> {
 <html lang="ko" data-theme="dark"><head>
 ${metadata(site)}
 <meta name="theme-color" content="#1b1b1e">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://cdn.jsdelivr.net">
-<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Source+Sans+Pro:wght@400;600;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css">
+${screenTheme()}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7/css/all.min.css">
 <script type="application/ld+json">${JSON.stringify(site.schema).replace(/</g, '\\u003c')}</script>
-<link rel="stylesheet" href="/theme/shared/theme.css">
 <link rel="stylesheet" href="/theme/portfolio/portfolio.css">
 <script src="/theme/portfolio/portfolio.js" defer></script></head>
 <body><div class="layout">${renderSidebar(site, profile)}

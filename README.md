@@ -7,6 +7,7 @@ Eleventy로 생성한 `_site/`만 GitHub Pages에 배포합니다. Node.js 24 �
 
 | 경로 | 역할 |
 | --- | --- |
+| `theme.css` | 메인·404·블로그의 공통 화면 설정 |
 | `data/home.json` | 메인 소개·경력 요약·프로젝트·메뉴·메타데이터 |
 | `data/resume/` | 이력서 프로필·경력·학력·프로젝트·메타데이터 |
 | `data/error.json` | 404 문구 |
@@ -35,7 +36,8 @@ Eleventy로 생성한 `_site/`만 GitHub Pages에 배포합니다. Node.js 24 �
 - 메인 문구·목록·메뉴·메타데이터: `data/home.json` (`profile`, `content`, `site`)
 - 404 문구: `data/error.json`
 - 카드나 섹션의 HTML 구조: `ui/portfolio/sections/`
-- 메인·404 공통 색상·글꼴: `ui/shared/theme.css`
+- 메인·404·블로그 공통 화면 설정: 루트 [`theme.css`](theme.css)
+- 웹폰트 다운로드 주소: `ui/shared/head.ts`의 `screenTheme()`
 - 메인 레이아웃·모바일 메뉴: `ui/portfolio/`
 - 404 레이아웃·버튼: `ui/shared/404.css`
 - 이력서: `data/resume/`의 프로필·경력·학력·프로젝트 데이터
@@ -55,6 +57,19 @@ JSON의 문자열은 일반 텍스트로 이스케이프합니다. About의 강�
 연결 설정은 `ui/posts/toc.ts`, 기존 HTML 제목·명시적 ID와의 호환 처리는 `ui/posts/html-headings.ts`에 있습니다.
 일반 Markdown 제목은 렌더링 전 토큰으로 처리합니다. HTML 제목은 호환 어댑터가 플러그인에 전달하며,
 본문의 명시적 ID는 자동 앵커와 충돌하지 않도록 예약합니다.
+
+## 화면 설정 한눈에 보기
+
+루트 [`theme.css`](theme.css)에서 글꼴, 주요 글자 크기·줄 높이, 색상, 사이드바·본문 너비,
+섹션 여백, 모서리, 전환 시간, 코드 강조 색상을 조절합니다. 파일 안에 용도별 한국어 설명을 붙였습니다.
+예를 들어 `--font-body`는 본문 글꼴, `--color-link`는 링크 색상, `--article-width`는 블로그 본문 너비입니다.
+
+- `npm run dev` 실행 중 `theme.css`를 저장하면 미리보기에 자동 반영됩니다.
+- 메인·404·블로그 목록·본문·태그 페이지가 `/theme.css`를 함께 읽습니다. CSS를 그대로 복사하므로 `.env`나 변환 도구가 없습니다.
+- 현재 웹폰트 로딩 주소는 공통 `ui/shared/head.ts`에 있습니다. 새로운 웹폰트를 쓰려면 로딩 주소와 `theme.css`의 글꼴 이름을 함께 변경하세요. 선택한 굵기도 해당 폰트에서 지원해야 합니다.
+- 화면별 세부 배치와 모바일 전환 기준은 `ui/`의 CSS에 남깁니다. 일반 CSS 변수는 미디어쿼리 조건에 직접 사용할 수 없습니다.
+- 이력서 화면·인쇄 및 KaTeX 수식 글꼴은 이 설정의 적용 대상이 아닙니다.
+- 블로그의 사이드바·상단바·목록 카드도 공통 설정을 사용합니다. 메인의 본문 너비는 `--content-width`, 블로그의 본문 너비는 `--article-width`로 각각 조절합니다.
 
 ## 실행·검증
 

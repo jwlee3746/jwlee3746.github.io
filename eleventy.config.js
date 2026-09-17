@@ -27,6 +27,7 @@ export default function (eleventyConfig) {
   // Node 24 executes erasable TypeScript; type checking is a separate build check.
   eleventyConfig.addExtension('11ty.ts', { key: '11ty.js' });
   eleventyConfig.addPassthroughCopy({ public: '.' });
+  eleventyConfig.addPassthroughCopy('theme.css');
   eleventyConfig.addPassthroughCopy({ 'jaewon-lee-resume.pdf': 'resume/jaewon-lee-resume.pdf' });
   eleventyConfig.addPassthroughCopy('data/images');
   eleventyConfig.addPassthroughCopy({ 'data/pdf': 'blog/assets/docs' });
@@ -39,10 +40,13 @@ export default function (eleventyConfig) {
   eleventyConfig.ignores.add('**/AGENTS.md');
   eleventyConfig.ignores.add('CLAUDE.md');
   eleventyConfig.ignores.add('docs/**');
+  // Eleventy's JS dependency parser cannot parse native TypeScript imports.
+  // Explicit watch targets below cover those modules and their data instead.
+  eleventyConfig.setWatchJavaScriptDependencies(false);
   // Render functions load validated data and partials themselves. Watch both,
   // even when a newly added JSON file was not a dependency of the last render.
   eleventyConfig.addWatchTarget('data/**/*.json');
-  eleventyConfig.addWatchTarget('ui/**/*.ts');
+  eleventyConfig.addWatchTarget('ui/**/*.ts', { resetConfig: true });
   eleventyConfig.addWatchTarget('scripts/site/**/*.ts');
   eleventyConfig.addWatchTarget('scripts/resume/data.ts');
   eleventyConfig.addCollection('posts', collection => {

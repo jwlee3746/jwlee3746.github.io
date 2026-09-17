@@ -4,6 +4,7 @@
 
 | 경로 | 내용 |
 |---|---|
+| `theme.css` | 메인·404·블로그 공통 화면 설정 (변환 없이 `/theme.css`로 배포) |
 | `data/home.json` | 메인 콘텐츠·메타데이터 (`profile`, `content`, `site`) |
 | `ui/portfolio/` | 메인 문서·섹션 조립 |
 | `ui/404.11ty.ts`, `data/error.json` | 오류 페이지 조립·문구 |
@@ -11,7 +12,7 @@
 | `ui/portfolio/portfolio.css` | 메인 페이지 스타일·반응형 레이아웃 |
 | `ui/portfolio/portfolio.js` | 스크롤 스파이·모바일 메뉴·검색 입력 처리 (바닐라 JS) |
 | `ui/resume/resume.css` | 이력서 화면·인쇄 스타일 |
-| `ui/shared/` | 공용 다크 테마·404 스타일 |
+| `ui/shared/` | 공용 렌더링·웹폰트 로딩·404 스타일 |
 | `ui/posts/` | 글 목록·본문 템플릿과 CSS |
 | `data/posts/` | 이전한 포스팅 Markdown 원본 |
 | `_site/resume/index.html` | 자동 생성 HTML. 직접 편집·커밋하지 않는다 |
@@ -24,6 +25,7 @@
 | `scripts/install-resume-hook.sh` | PDF 자동 재생성 pre-commit 훅 설치 (클론 후 1회) |
 | `data/images/posts/<slug>/thumbnail.webp` | 글 섹션 썸네일 축소판 (256×160 WebP) |
 
+공통 화면 설정은 루트 `theme.css`, 웹폰트 로딩은 `ui/shared/head.ts`의 `screenTheme()`에서 관리한다. 이력서 인쇄와 수식 글꼴은 분리한다.
 문서 조립·스타일·브라우저 동작은 화면별 `ui/`, 콘텐츠는 `data/`, 이미지는 `data/images/`, 관리 도구는 `scripts/`에 둔다.
 `ui/`의 CSS·JavaScript는 기존 `/theme/` 주소로 배포하며 TypeScript 원본은 배포하지 않는다.
 메인은 `data/home.json`, 이력서는 `data/resume/`, 404 문구는 `data/error.json`에서 관리한다.

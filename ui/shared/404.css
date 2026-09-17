@@ -1,28 +1,29 @@
 * { box-sizing: border-box; }
-html { background: var(--chirpy-main-bg); }
+html { background: var(--color-background); }
 body {
   margin: 0;
   min-height: 100vh;
   min-height: 100svh;
   display: grid;
   place-items: center;
-  padding: 2rem 1rem;
-  background: var(--chirpy-main-bg);
-  color: var(--chirpy-text);
-  font-family: var(--sans);
-  font-size: 15.5px;
-  line-height: 1.72;
+  padding: 2rem var(--page-padding-mobile);
+  background: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: var(--weight-normal);
+  line-height: var(--line-height-body);
   -webkit-font-smoothing: antialiased;
   word-break: keep-all;
   overflow-wrap: anywhere;
 }
-main { width: 100%; max-width: 32rem; text-align: center; }
+main { width: 100%; max-width: var(--error-width); text-align: center; }
 h1 {
   margin: 0 0 .5rem;
-  color: var(--chirpy-heading);
-  font-family: var(--heading);
-  font-size: clamp(2.5rem, 8vw, 4rem);
-  font-weight: 400;
+  color: var(--color-heading);
+  font-family: var(--font-heading);
+  font-size: var(--text-error-heading);
+  font-weight: var(--weight-normal);
   line-height: 1.2;
 }
 p.lead { margin: 0 0 1.75rem; }
@@ -33,15 +34,15 @@ a.cta {
   gap: .5rem;
   min-height: 44px;
   padding: .6rem 1.2rem;
-  border: 1px solid var(--chirpy-btn-border);
-  border-radius: .75rem;
-  color: var(--chirpy-link);
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-control);
+  color: var(--color-link);
   text-decoration: none;
-  font-weight: 600;
-  transition: border-color .15s ease;
+  font-weight: var(--weight-semibold);
+  transition: border-color var(--transition-control) ease;
 }
-a.cta:hover { border-color: var(--chirpy-link); }
-a.cta:focus-visible { outline: 2px solid var(--chirpy-link); outline-offset: 3px; }
+a.cta:hover { border-color: var(--color-link); }
+a.cta:focus-visible { outline: 2px solid var(--color-link); outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) {
   a.cta { transition: none; }
 }

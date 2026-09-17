@@ -1,3 +1,4 @@
+import { screenTheme } from '../../shared/head.ts';
 import { escapeHtml } from "../../shared/html.ts";
 import { formatDate } from "../date.ts";
 import { normalizeTags, tagUrl } from '../tags.ts';
@@ -28,11 +29,7 @@ export default async function ({ title, date, content, tags, page, collections }
   <meta name="color-scheme" content="dark">
   <title>${heading} | Jaynote</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Source+Sans+Pro:wght@400;600;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css">
-  <link rel="stylesheet" href="/theme/shared/theme.css">
+  ${screenTheme()}
   <link rel="stylesheet" href="/theme/posts/posts.css">
   <link rel="stylesheet" href="/theme/posts/layout.css">
   ${content.includes('class="katex"') ? '<link rel="stylesheet" href="/theme/posts/katex/katex.min.css">' : ''}

@@ -1,0 +1,98 @@
+/*
+ * 사이트 화면 설정 — 이 파일을 수정하면 메인·404·블로그에 적용됩니다.
+ * CSS 그대로 /theme.css에 배포합니다. 변환 도구나 .env가 필요하지 않습니다.
+ * 새 웹폰트 로딩 주소: ui/shared/head.ts의 screenTheme()
+ * 이력서 인쇄와 수식 전용 글꼴(KaTeX)은 별도로 관리합니다.
+ */
+:root {
+  color-scheme: dark;
+
+  /* 1. 글꼴 — 앞의 글꼴을 사용할 수 없으면 뒤의 글꼴을 사용합니다. */
+  --font-body: "Source Sans Pro", "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-heading: "Lato", "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-code: monospace;
+
+  /* 2. 글자 — px는 고정 크기, rem은 브라우저 기본 글자 크기 기준입니다. */
+  --text-body: 15.5px;
+  --text-small: 14.5px;
+  --text-section: 1.54rem;
+  --weight-normal: 400;
+  --weight-semibold: 600;
+  --line-height-body: 1.72;
+  --text-intro-heading: 2rem;
+  --text-intro-heading-mobile: 1.8rem;
+  --text-intro: 1.04rem;
+  --text-intro-mobile: 1rem;
+  --line-height-intro: 1.9;
+  --line-height-intro-mobile: 1.82;
+  --text-post-title: 2rem;
+  --text-post-title-mobile: 1.8rem;
+  --text-card-title: 1.25rem;
+  --text-error-heading: clamp(2.5rem, 8vw, 4rem);
+
+  /* 3. 기본 색상 — 메인·404·블로그 공통 */
+  --color-background: #1b1b1e;
+  --color-text: #afb0b1;
+  --color-heading: #ccc;
+  --color-muted: #868686;
+  --color-link: #8ab4f8;
+  --color-border: #2c2d2d;
+  --color-control-border: #2e2f31;
+  --color-focus: hsl(168deg 76% 65%);
+
+  /* 4. 보조 영역 — 사이드바·메뉴·상단바 */
+  --color-sidebar: #1e1e1e;
+  --color-sidebar-border: #292929;
+  --color-nav-active: rgb(255 255 255 / 95%);
+  --color-nav-hover: #262626;
+  --color-nav-emphasis: hsl(168deg 55% 85%);
+  --color-icon-background: #232328;
+  --color-avatar-border: rgb(206 206 206 / 90%);
+  --color-topbar: rgb(27 27 30 / 64%);
+  --color-tag-background: #292828;
+  --color-label: #a7a7a7;
+  --color-blog-topbar: rgb(27 27 30 / 90%);
+  --color-blog-nav-active: #f2f2f2;
+  --color-card: #1e1e1e;
+  --color-card-hover: #252527;
+  --color-card-border: #343434;
+  --color-border-soft: hsl(210deg 17% 18%);
+
+  /* 5. 너비 — ch는 글자 폭 기준. 모바일 전환 시점은 화면별 CSS에 둡니다. */
+  --sidebar-width: 260px;
+  --sidebar-width-wide: 300px;
+  --content-width: 760px;
+  --panel-width: 220px;
+  --column-gap: 34px;
+  --article-width: 760px;
+  --error-width: 32rem;
+
+  /* 6. 여백·모서리 — 메인 섹션 / 공통 페이지 / 블로그 본문 */
+  --page-padding: 24px;
+  --page-padding-mobile: 1rem;
+  --section-gap: 5.75rem;
+  --section-gap-mobile: 4.5rem;
+  --paragraph-gap: 1rem;
+  --surface-padding: 1rem;
+  --radius-surface: .5rem;
+  --radius-control: .75rem;
+  --radius-tag: .4rem;
+  --radius-card: 10px;
+  --card-padding: 1.45rem 1.55rem;
+  --card-padding-mobile: 1.2rem;
+
+  /* 7. 전환 시간 — 동작 줄이기 설정이 켜지면 화면 CSS에서 끕니다. */
+  --transition-link: .25s;
+  --transition-control: .15s;
+  --transition-menu: .4s;
+
+  /* 8. 코드 블록 — 수식의 글꼴·배치는 KaTeX가 관리합니다. */
+  --color-code-background: #1b1b1e;
+  --color-code-text: #e4e4e7;
+  --color-code-comment: #a1a1aa;
+  --color-code-keyword: #c5a5ef;
+  --color-code-string: #a7d88a;
+  --color-code-number: #f5bd76;
+  --color-code-function: #93c5fd;
+  --color-code-operator: #7dd3fc;
+}
