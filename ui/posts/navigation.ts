@@ -24,7 +24,8 @@ export function renderSidebar(site: Site, profile: Profile, url: string): string
   </aside>`;
 }
 
-export function renderPanel(posts: readonly Post[]): string {
+export function renderPanel(posts: readonly Post[], toc?: string): string {
+  if (toc) return `<aside class="blog-panel blog-toc-panel" aria-label="본문 목차">${toc}</aside>`;
   const recent = [...posts].reverse().slice(0, 5);
   const tags = [...new Set(posts.flatMap(post => normalizeTags(post.data.tags)))].sort((a, b) => a.localeCompare(b, 'ko'));
   return `<aside class="blog-panel" aria-label="글 바로가기">
