@@ -18,7 +18,7 @@ toc: true
 
 ## 잘못 세운 대립부터 수정하기
 
-처음에는 TC 기반과 simulator 기반을 서로 대체하는 평가 방식으로 생각하기 쉽다. 하지만 Anthropic의 agent eval 가이드([원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) · 한국어 번역·요약)와 공개 benchmark를 보면 simulator 평가에도 task가 있다. Instruction, 초기 database 상태, 사용 가능한 tool, policy와 성공 기준을 정하고 그 안에서 user simulator와 agent가 동적으로 대화한다.
+처음에는 TC 기반과 simulator 기반을 서로 대체하는 평가 방식으로 생각하기 쉽다. 하지만 Anthropic의 agent eval 가이드([원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) · [한국어 번역·요약](/posts/demystifying-agent-evals-korean/))와 공개 benchmark를 보면 simulator 평가에도 task가 있다. Instruction, 초기 database 상태, 사용 가능한 tool, policy와 성공 기준을 정하고 그 안에서 user simulator와 agent가 동적으로 대화한다.
 
 반대로 TC도 반드시 mock response만 replay해야 하는 것은 아니다. 같은 task를 실제 sandbox와 tool server에서 실행할 수 있다.
 
@@ -99,7 +99,7 @@ Stateful TC에서는 exact output 대신 initial state, user response policy, al
 
 정상 path가 여러 개여도 path마다 모델을 새로 호출해 하나가 맞을 때까지 시도해서는 안 된다. 한 trial에서 생성된 실제 trajectory 하나를 모든 허용 outcome과 비교해야 한다. 그렇지 않으면 alternative 수가 많을수록 성공 기회가 늘어나는 숨은 `pass@k`가 된다.
 
-이 문제를 실제 기기와 비가역 동작까지 확장한 내용은 디바이스 어시스턴트 평가는 왜 어려운가에서 별도로 다룬다.
+이 문제를 실제 기기와 비가역 동작까지 확장한 내용은 [디바이스 어시스턴트 평가는 왜 어려운가](/posts/device-assistant-evaluation/)에서 별도로 다룬다.
 
 ## 한 번 통과했다는 말은 부족하다
 
@@ -135,7 +135,7 @@ TC 기반을 채택한 것 자체는 합리적이다. 반성할 부분이 있다
 
 ## 참고 자료
 
-- Anthropic — Demystifying evals for AI agents: [원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) · 한국어 번역·요약
+- Anthropic — Demystifying evals for AI agents: [원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) · [한국어 번역·요약](/posts/demystifying-agent-evals-korean/)
 - [τ-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains](https://arxiv.org/abs/2406.12045)
 - [τ-bench, ICLR 2025 paper](https://openreview.net/forum?id=roNSXZpUDN)
 - [Inspect AI — Tasks](https://inspect.aisi.org.uk/tasks.html)
