@@ -1,0 +1,146 @@
+---
+title: '[Agent Eval 2] TC 기반 vs Simulator 기반 평가는 무엇이 다른가'
+excerpt: 고정 replay test case와 interactive simulator를 재현성, 현실성, oracle, 비용과 비결정성 관점에서 비교한다.
+date: '2026-08-31'
+category: Evaluation
+tags:
+- Agent
+- LLM Evaluation
+- Test Case
+- Simulator
+- Benchmark
+permalink: /posts/test-case-vs-simulator-evaluation/
+legacyUrl: /blog/Agent/test-case-vs-simulator-evaluation/
+toc: true
+---
+
+[시리즈 허브](/posts/reproducible-agent-evaluation/) · 본편 2/4
+
+## 잘못 세운 대립부터 수정하기
+
+처음에는 TC 기반과 simulator 기반을 서로 대체하는 평가 방식으로 생각하기 쉽다. 하지만 Anthropic의 agent eval 가이드([원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) · [한국어 번역·요약](/posts/demystifying-agent-evals-korean/))와 공개 benchmark를 보면 simulator 평가에도 task가 있다. Instruction, 초기 database 상태, 사용 가능한 tool, policy와 성공 기준을 정하고 그 안에서 user simulator와 agent가 동적으로 대화한다.
+
+반대로 TC도 반드시 mock response만 replay해야 하는 것은 아니다. 같은 task를 실제 sandbox와 tool server에서 실행할 수 있다.
+
+그래서 더 정확한 비교 축은 다음과 같다.
+
+- **Fixed interaction**: 입력, history 또는 tool evidence를 고정해 특정 판단을 재현한다.
+- **Interactive execution**: agent의 행동에 따라 user와 environment가 실행 중 반응한다.
+
+Task/test case는 양쪽에 모두 존재한다. 차이는 **상호작용의 어느 부분을 고정하고 어느 부분을 실행하느냐**다.
+
+![고정 TC와 interactive simulator가 공통 task와 grader를 공유하는 비교 블록 다이어그램](/data/images/posts/test-case-vs-simulator-evaluation/tc-vs-simulator.svg)
+
+## 비교표
+
+| 관점 | 고정 TC / replay | Interactive simulator |
+| --- | --- | --- |
+| 재현성 | 같은 입력과 fixture로 높게 유지 | simulator·agent의 비결정성 때문에 반복 측정 필요 |
+| 디버깅 | 실패 step과 입력을 고정하기 쉬움 | user·agent·environment 중 원인을 분리하기 어려움 |
+| 분기 탐색 | 작성된 path와 alternative에 한정 | agent 행동에 따라 새로운 branch가 나타날 수 있음 |
+| 환경 현실성 | stale fixture와 생략된 상태 변화 위험 | 실제 API·database를 모사하면 높아질 수 있음 |
+| Oracle | exact action·rule 비교가 명확 | final state, policy와 복수 조건을 설계해야 함 |
+| 안정성 | PR gate에 쓰기 쉬움 | flaky result와 simulator failure를 관리해야 함 |
+| 실행 비용 | 상대적으로 낮고 병렬화가 단순 | multi-turn·sandbox·반복 trial로 비용이 큼 |
+| 유지보수 | fixture와 canonical path 갱신 비용 | 환경·simulator prompt·policy drift 관리 비용 |
+| 잘 잡는 문제 | 알려진 회귀, contract, 특정 edge case | negotiation, recovery, 장기 상태 변화, 미지의 분기 |
+
+Simulator가 무조건 현실적인 것도 아니다. 실제 사용자를 대신한 또 다른 모델이 지나치게 협조적이거나, 필요한 정보를 먼저 제공하거나, 반대로 task 자체를 제대로 수행하지 못할 수 있다. 이 경우 측정값은 agent 성능과 simulator 품질이 섞인 결과다.
+
+## 고정 TC가 여전히 강한 영역
+
+### 회귀 검증
+
+원인이 확인된 production failure는 입력과 관련 상태를 최소화해 고정하면 좋다. 수정 전에는 실패하고 수정 후에는 통과하는 사례는 PR마다 빠르게 돌릴 수 있다.
+
+### Contract와 policy
+
+Tool name, parameter type, 금지 action, 반드시 필요한 확인 step처럼 명확한 규칙은 deterministic test가 가장 설명 가능하다. 여기에 LLM judge를 먼저 쓰면 평가 자체의 불확실성만 늘어난다.
+
+### 실패 재현과 bisect
+
+Prompt, model, tool contract 중 어느 revision에서 문제가 생겼는지 찾으려면 입력 조건이 고정돼야 한다. Simulator의 새로운 대화가 매번 생성되면 원인 비교가 어려워진다.
+
+### 저비용의 넓은 기본선
+
+모든 변경에 expensive simulator suite를 돌릴 수는 없다. 작고 안정적인 TC bank는 빠른 feedback을 제공하는 첫 번째 방어선이다.
+
+## Simulator가 필요한 영역
+
+### Agent 행동이 다음 상태를 바꾸는 task
+
+예약, 취소, 권한 변경과 같이 tool call이 environment를 바꾸고 그 결과가 다음 선택에 영향을 주면 recorded output만으로는 중요한 상호작용을 놓칠 수 있다.
+
+### 정보가 한 번에 주어지지 않는 대화
+
+사용자가 필요한 정보를 점진적으로 제공하거나 정정하고, agent가 적절한 질문을 해야 하는 task는 single-turn TC로 축약할수록 본래 난도가 사라진다.
+
+### 복구와 정책 준수
+
+Tool error, conflicting request, 비협조적 user와 예상하지 못한 순서에서 agent가 어떻게 회복하는지는 동적 환경에서 더 잘 드러난다.
+
+### 성공 경로를 하나로 고정하기 어려운 task
+
+정상 trajectory가 많은 경우 중간 step을 exact match하기보다 최종 database state, 부작용 없음과 policy invariant를 확인하는 편이 타당하다.
+
+## Tool output을 누가 만드는가
+
+고정 replay와 interactive execution을 가르는 가장 실질적인 경계는 다음 step에 넣을 tool output의 생성 주체다.
+
+| 실행 방식 | Tool output의 출처 | 평가 질문 |
+| --- | --- | --- |
+| Replay | TC에 저장된 observation | 올바른 중간 결과가 주어졌을 때 다음 판단을 잘하는가 |
+| Stateful simulator | 가상 상태가 실제 action에 반응해 생성 | 처음부터 끝까지 허용된 상태 전이를 만드는가 |
+| Sandbox integration | 격리된 실제 서비스가 생성 | 실제 contract와 비동기 동작까지 포함해 성공하는가 |
+
+Evaluator가 tool을 실행하지 않고 simulator도 소유하지 않는다면 recorded output을 사용하는 것 외에는 방법이 없다. 이때 이전 step의 expected action과 output을 다음 history에 넣는 것은 유효한 **teacher-forced decision replay**다. 다만 모델의 실제 첫 행동이 다음 상태를 만들지는 않으므로 end-to-end trajectory라고 부를 수는 없다.
+
+Stateful TC에서는 exact output 대신 initial state, user response policy, allowed transition과 forbidden effect를 정의한다. 모델의 실제 action을 environment에 전달하고, 그 environment가 반환한 observation만 다음 turn에 넣어야 인과적인 episode가 된다.
+
+정상 path가 여러 개여도 path마다 모델을 새로 호출해 하나가 맞을 때까지 시도해서는 안 된다. 한 trial에서 생성된 실제 trajectory 하나를 모든 허용 outcome과 비교해야 한다. 그렇지 않으면 alternative 수가 많을수록 성공 기회가 늘어나는 숨은 `pass@k`가 된다.
+
+이 문제를 실제 기기와 비가역 동작까지 확장한 내용은 [디바이스 어시스턴트 평가는 왜 어려운가](/posts/device-assistant-evaluation/)에서 별도로 다룬다.
+
+## 한 번 통과했다는 말은 부족하다
+
+Agent와 simulator가 비결정적이면 task당 한 번의 결과는 우연에 민감하다. 반복 trial을 통해 최소한 두 종류의 질문을 나눠야 한다.
+
+- **한 번이라도 풀 수 있는가?** 여러 시도 중 성공 가능성을 보는 `pass@k`
+- **매번 안정적으로 풀 수 있는가?** 여러 시도가 모두 성공하는지를 보는 `pass^k`
+
+사용자에게 반복적으로 맡길 production agent라면 평균 점수뿐 아니라 성공률의 분산, worst slice와 일관성이 중요하다. Model, temperature, seed, simulator revision과 environment revision은 artifact에 함께 남겨야 한다.
+
+## 추천하는 혼합 구조
+
+| 실행 시점 | 중심 방식 | 목적 |
+| --- | --- | --- |
+| 코드 변경 / PR | contract·component TC | 빠른 오류와 명백한 회귀 차단 |
+| 지속적 regression | trace-derived replay TC | 알려진 production failure 재발 방지 |
+| 정기 실행 | sandbox task + repeated trials | 실제 상태 변화와 비결정성 측정 |
+| release 전 | simulated user·adversarial scenario | 긴 대화, 복구, 정책 경계 탐색 |
+| production | online score·feedback·trace review | 분포 변화와 알려지지 않은 실패 발견 |
+
+핵심은 모든 TC를 simulator로 바꾸는 것이 아니다. **실패 위험과 interaction depth가 큰 task만 더 비싼 실행 모드로 승격**한다.
+
+## 기존 TC 중심 설계를 어떻게 회고할까
+
+TC 기반을 채택한 것 자체는 합리적이다. 반성할 부분이 있다면 다음에 가깝다.
+
+- 관측된 trajectory 전체를 canonical answer처럼 고정해 alternative를 과소평가했다.
+- 실제 environment state 대신 tool output fixture를 늘려 현실성을 유지하는 비용이 커졌다.
+- 한 번의 execution 결과를 model quality처럼 해석했다.
+- trace를 TC로 옮기는 수작업에 비해 failure discovery 자동화가 약했다.
+
+즉 문제는 **TC냐 simulator냐**가 아니라, 모든 위험을 하나의 replay abstraction으로 해결하려 한 데 있을 수 있다. 고정 TC의 재현성은 유지하고, 상태와 대화가 중요한 영역만 simulator와 sandbox로 넘기는 것이 더 현실적인 다음 단계다.
+
+## 참고 자료
+
+- Anthropic — Demystifying evals for AI agents: [원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) · [한국어 번역·요약](/posts/demystifying-agent-evals-korean/)
+- [τ-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains](https://arxiv.org/abs/2406.12045)
+- [τ-bench, ICLR 2025 paper](https://openreview.net/forum?id=roNSXZpUDN)
+- [Inspect AI — Tasks](https://inspect.aisi.org.uk/tasks.html)
+- [Harbor — Tasks](https://www.harborframework.com/docs/tasks)
+
+이전: [1. Trace에서 평가 데이터로](/posts/trace-to-eval-data-flywheel/)
+
+다음: [3. Evaluation harness의 공통 구조](/posts/agent-evaluation-harness-landscape/)

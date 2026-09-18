@@ -1,0 +1,129 @@
+---
+title: '[Agent Eval 구현 노트 1] 평가 계약과 검증 경계'
+excerpt: Trace를 평가 계약으로 구조화하고 CI와 runtime이 같은 validator를 공유하도록 설계하는 방법.
+date: '2026-08-31'
+category: Evaluation
+tags:
+- Agent
+- LLM Evaluation
+- JSON Schema
+- Validation
+- CI
+permalink: /posts/evaluation-contract-validation/
+legacyUrl: /blog/Agent/evaluation-contract-validation/
+toc: true
+---
+
+[시리즈 허브](/posts/reproducible-agent-evaluation/) · 구현 노트 1/4
+
+## Trace와 평가 계약은 다르다
+
+관측 도구의 trace에는 실제 요청, 모델 응답, tool call과 latency가 남는다. 실패를 조사하거나 평가 후보를 찾을 때 매우 유용하다. 하지만 trace를 그대로 평가의 source of truth로 삼으면 다음 문제가 생긴다.
+
+- 외부 보관 정책이나 수정에 따라 내용이 바뀔 수 있다.
+- 어떤 필드가 필수이고 무엇이 정답인지 명확하지 않다.
+- schema와 scoring policy 변경을 동일한 revision으로 묶기 어렵다.
+- 특정 시점의 평가 population을 다시 만들기 어렵다.
+- 개인정보나 실행 환경 값이 그대로 포함될 수 있다.
+
+따라서 trace는 **evidence와 import source**이고, 검토가 끝난 test case가 **versioned contract**다.
+
+## 계약에 함께 들어갈 것
+
+Test case 하나에는 최소한 다음 정보가 필요하다.
+
+1. 사용자 입력과 locale·시간·기기 같은 request context
+2. 예상하는 action, tool name과 parameters
+3. Replay mode에서 다음 step을 재현하는 데 필요한 검증된 tool output
+4. 복수 정답이 존재할 때의 alternative path
+5. 출처와 변환 근거를 추적할 provenance
+
+Tool output은 편의를 위해 임의로 만들지 않는다. 다음 판단이나 최종 응답을 재현하는 데 필요하고, trace 또는 공식 계약으로 근거를 확인할 수 있을 때만 fixture로 고정한다.
+
+다만 이 계약은 decision replay를 위한 것이다. Stateful episode에서는 tool output을 정답으로 저장하기보다 initial world state, user response policy와 success invariant를 계약에 넣고, 실제 output은 simulator나 sandbox가 생성해야 한다. 두 mode를 한 schema에 담더라도 output의 소유권은 명시적으로 구분해야 한다.
+
+## Validation reference architecture
+
+![평가 계약과 공유 validation core의 블록 다이어그램](/data/images/posts/evaluation-contract-validation/contract-validation-block.svg)
+
+핵심은 merge 전 CI와 평가 실행 전 preflight가 **같은 validation core**를 호출한다는 점이다.
+
+- CI는 잘못된 평가 자산이 기준 branch에 들어오는 것을 막는다.
+- Preflight는 선택 정책까지 적용한 뒤 runtime 호출 가능 여부를 결정한다.
+- Validator core는 어느 호출자에게도 자동 수정 기능을 제공하지 않는다.
+
+CI 전용 script와 evaluator 전용 script가 각자 규칙을 복제하면 시간이 지날수록 결과가 갈라진다. 검증 규칙은 한 곳에 두고, 각 경계는 실패했을 때의 처리만 다르게 한다.
+
+## Schema와 관계 규칙을 분리한다
+
+JSON Schema는 값과 object shape를 정의하는 source of truth로 사용한다. 전체 계약을 TypeScript interface나 별도 model class로 다시 복제하지 않는다.
+
+다만 모든 규칙을 JSON Schema에 넣는 것도 좋은 선택은 아니다. 다음처럼 여러 필드 또는 파일 사이의 관계는 validator service가 맡는 편이 명확하다.
+
+- response reference가 이미 완료된 step을 가리키는가
+- expected function이 선택된 agent의 계약과 일치하는가
+- 같은 locale 안에서 ID가 중복되지 않는가
+- 파일 경로와 expected action이 repository topology와 일치하는가
+
+검증 순서는 아래처럼 단순한 경계에서 관계 경계로 진행한다.
+
+```text
+파일 읽기
+  → JSON parse
+  → JSON Schema
+  → canonical format
+  → 파일 내부 관계
+  → repository topology
+  → 파일 간 identifier
+```
+
+Schema가 실패한 값을 억지로 cast해 관계 검사를 계속하지 않는다. 상위 계약이 깨졌다면 그 오류를 먼저 해결하게 해야 issue가 불필요하게 증폭되지 않는다.
+
+## 자동 수정하지 않는 이유
+
+Validator가 formatting이나 legacy field를 자동으로 고치면 편해 보인다. 그러나 evaluation asset에서는 다음 문제가 생긴다.
+
+- 작성자가 제출한 값과 실제 평가한 값이 달라진다.
+- 오류가 조용히 누적돼 source contract의 문제를 발견하기 어렵다.
+- 동일 revision을 checkout해도 validator 버전에 따라 입력이 달라질 수 있다.
+
+그래서 validator는 issue의 위치와 이유만 반환한다. 변환 도구가 필요하다면 명시적인 command로 분리하고, 결과 diff를 review한다.
+
+## Preflight가 반환해야 할 것
+
+단순한 `valid: true`보다 다음 population을 구분해 반환하는 것이 좋다.
+
+- 발견한 전체 case 수
+- schema와 관계 검사를 통과한 수
+- invalid 수와 issue 목록
+- device·locale 같은 selection으로 제외된 수
+- 실제 실행할 case와 반복 횟수
+- single-step과 multi-step 구성
+
+이 수치가 있어야 “accuracy가 올랐다”가 사실은 invalid case가 빠져 population이 바뀐 결과인지 확인할 수 있다.
+
+## 실패 정책
+
+다음 조건에서는 runtime을 호출하기 전에 멈춘다.
+
+- 요청한 locale 또는 dataset 구조가 없다.
+- Valid case 비율이 validation policy의 최소 threshold보다 낮다.
+- 선택된 유효 case가 하나도 없다.
+- schema source가 compile되지 않는다.
+
+평가가 비싸기 때문만은 아니다. Invalid input으로 얻은 결과는 나중에 신뢰할 수 없고, 잘못된 artifact가 비교 기준으로 재사용될 위험이 더 크다.
+
+## 설계 체크리스트
+
+- [ ] Trace와 versioned test case의 역할이 분리돼 있는가
+- [ ] Dataset·schema·validator 변경을 같은 review에서 볼 수 있는가
+- [ ] CI와 runtime preflight가 같은 validation core를 호출하는가
+- [ ] Schema와 repository 관계 규칙의 책임이 나뉘어 있는가
+- [ ] Validator가 입력을 조용히 수정하지 않는가
+- [ ] Preflight가 discovered·valid·selected population을 구분하는가
+
+이 계약이 안정돼야 다음 단계인 multi-step replay에서 무엇을 request로 만들고 무엇을 정답으로 숨길지 명확해진다.
+
+이전: [시리즈 허브](/posts/reproducible-agent-evaluation/)
+
+다음: [구현 노트 2. Multi-step replay의 경계와 teacher forcing](/posts/multi-step-agent-evaluation/)
