@@ -52,7 +52,7 @@ Agent evaluation
 3. 현재 agent evaluation harness는 무엇을 공통 단위로 삼고 있는가?
 4. TC에서 고정 tool output을 제거한다면 다음 observation은 누가 만들어야 하는가?
 
-공식 문서와 공개 benchmark를 다시 살펴본 결론은 **TC 기반 평가가 낡은 것은 아니라는 것**이다. Anthropic의 개념 모델([원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) · 한국어 번역·요약), Inspect AI와 Harbor 모두 여전히 task 또는 test case를 실행과 채점의 기본 단위로 둔다. 달라진 점은 그 task가 고정 fixture에만 머물지 않고 sandbox, 동적 환경, simulated user, 반복 trial과 상태 기반 grader를 포함한다는 데 있다.
+공식 문서와 공개 benchmark를 다시 살펴본 결론은 **TC 기반 평가가 낡은 것은 아니라는 것**이다. Anthropic의 개념 모델([원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) · [한국어 번역·요약](/posts/demystifying-agent-evals-korean/)), Inspect AI와 Harbor 모두 여전히 task 또는 test case를 실행과 채점의 기본 단위로 둔다. 달라진 점은 그 task가 고정 fixture에만 머물지 않고 sandbox, 동적 환경, simulated user, 반복 trial과 상태 기반 grader를 포함한다는 데 있다.
 
 따라서 회고의 초점도 바뀌었다. “TC를 선택한 것이 잘못이었나?”보다 “관측 trace를 canonical TC로 만드는 데 비용을 얼마나 썼고, 그 TC가 실제 환경의 상태 변화와 분기를 얼마나 보존했나?”가 더 생산적인 질문이다.
 
@@ -134,12 +134,12 @@ Pinned history와 structured action을 비교한 값은 decision 또는 path con
 
 | 글 | 역할 |
 | --- | --- |
-| Anthropic이 정리한 AI 에이전트 평가의 기본 구조 | Task, trial, grader, transcript와 outcome의 공통 용어 기준 |
-| 디바이스 어시스턴트 평가는 왜 어려운가 | 부분적으로 관측되는 상태, confirmation, tool output ownership과 실제 effect 검증 |
+| [Anthropic이 정리한 AI 에이전트 평가의 기본 구조](/posts/demystifying-agent-evals-korean/) | Task, trial, grader, transcript와 outcome의 공통 용어 기준 |
+| [디바이스 어시스턴트 평가는 왜 어려운가](/posts/device-assistant-evaluation/) | 부분적으로 관측되는 상태, confirmation, tool output ownership과 실제 effect 검증 |
 
 ## 참고한 공개 기준
 
-- Anthropic, Demystifying evals for AI agents — [원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) · 한국어 번역·요약
+- Anthropic, Demystifying evals for AI agents — [원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) · [한국어 번역·요약](/posts/demystifying-agent-evals-korean/)
 - [Inspect AI — Tasks](https://inspect.aisi.org.uk/tasks.html)
 - [Harbor — Core concepts](https://www.harborframework.com/docs/core-concepts)
 - [Langfuse — Observability data model](https://langfuse.com/docs/observability/data-model)

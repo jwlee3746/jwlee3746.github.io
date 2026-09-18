@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Device assistant evaluation episode</title>
+  <desc id="desc">A user request and initial world state flow through interpretation, target resolution, human interaction, execution, and independent post-state verification.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#475569"/></marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0f172a" flood-opacity=".12"/></filter>
+    <style>.title{font:700 30px system-ui,sans-serif;fill:#0f172a}.sub{font:16px system-ui,sans-serif;fill:#64748b}.lane{font:700 15px system-ui,sans-serif;fill:#475569;letter-spacing:1px}.label{font:700 18px system-ui,sans-serif;fill:#0f172a}.small{font:14px system-ui,sans-serif;fill:#475569}.tiny{font:13px system-ui,sans-serif;fill:#64748b}.box{fill:#fff;stroke:#cbd5e1;stroke-width:2;rx:16;filter:url(#shadow)}.blue{fill:#eff6ff;stroke:#2563eb}.cyan{fill:#ecfeff;stroke:#0f766e}.amber{fill:#fffbeb;stroke:#b45309}.violet{fill:#f5f3ff;stroke:#7c3aed}.red{fill:#fef2f2;stroke:#dc2626}.line{stroke:#475569;stroke-width:2.5;fill:none;marker-end:url(#arrow)}.dash{stroke:#7c3aed;stroke-width:2.3;stroke-dasharray:8 6;fill:none;marker-end:url(#arrow)}</style>
+  </defs>
+  <rect width="1200" height="720" rx="24" fill="#f8fafc"/>
+  <text x="55" y="56" class="title">Device Assistant Evaluation — One Stateful Episode</text>
+  <text x="55" y="86" class="sub">평가 단위는 tool call이 아니라 초기 상태에서 검증된 최종 상태까지의 transition이다.</text>
+
+  <rect x="40" y="125" width="1120" height="115" rx="20" fill="#eff6ff" opacity=".72"/><text x="65" y="142" class="lane">INPUT &amp; WORLD</text>
+  <rect x="40" y="260" width="1120" height="150" rx="20" fill="#ecfeff" opacity=".72"/><text x="65" y="293" class="lane">DECISION &amp; INTERACTION</text>
+  <rect x="40" y="430" width="1120" height="150" rx="20" fill="#f5f3ff" opacity=".72"/><text x="65" y="463" class="lane">EXECUTION &amp; VERIFICATION</text>
+
+  <rect x="150" y="150" width="220" height="70" class="box blue"/><text x="260" y="180" text-anchor="middle" class="label">User Request</text><text x="260" y="205" text-anchor="middle" class="small">utterance · conversation</text>
+  <rect x="470" y="150" width="300" height="70" class="box blue"/><text x="620" y="180" text-anchor="middle" class="label">Initial World State S₀</text><text x="620" y="205" text-anchor="middle" class="small">time · device · screen · service objects</text>
+  <rect x="870" y="150" width="210" height="70" class="box blue"/><text x="975" y="180" text-anchor="middle" class="label">Risk Policy</text><text x="975" y="205" text-anchor="middle" class="small">impact · permission</text>
+
+  <rect x="120" y="310" width="215" height="75" class="box cyan"/><text x="227" y="341" text-anchor="middle" class="label">Interpret</text><text x="227" y="367" text-anchor="middle" class="small">intent · context</text>
+  <rect x="395" y="310" width="215" height="75" class="box cyan"/><text x="502" y="341" text-anchor="middle" class="label">Resolve Target</text><text x="502" y="367" text-anchor="middle" class="small">search · alternatives</text>
+  <rect x="670" y="310" width="215" height="75" class="box amber"/><text x="777" y="341" text-anchor="middle" class="label">User Interaction</text><text x="777" y="367" text-anchor="middle" class="small">clarify · select · confirm</text>
+  <rect x="945" y="310" width="185" height="75" class="box red"/><text x="1037" y="341" text-anchor="middle" class="label">Authorization</text><text x="1037" y="367" text-anchor="middle" class="small">bind target + state</text>
+
+  <path d="M260 220V270H227V310" class="line"/><path d="M620 220V270H502V310" class="line"/><path d="M975 220V270H1037V310" class="line"/>
+  <path d="M335 347H395" class="line"/><path d="M610 347H670" class="line"/><path d="M885 347H945" class="line"/>
+
+  <rect x="150" y="480" width="230" height="75" class="box violet"/><text x="265" y="511" text-anchor="middle" class="label">Service Execution</text><text x="265" y="537" text-anchor="middle" class="small">API · state mutation</text>
+  <rect x="485" y="480" width="230" height="75" class="box violet"/><text x="600" y="511" text-anchor="middle" class="label">Device Effect</text><text x="600" y="537" text-anchor="middle" class="small">OS · app · actuator</text>
+  <rect x="820" y="480" width="230" height="75" class="box cyan"/><text x="935" y="511" text-anchor="middle" class="label">Independent Verify</text><text x="935" y="537" text-anchor="middle" class="small">post-state S₁ · receipt</text>
+  <path d="M1037 385V430H265V480" class="line"/><path d="M380 517H485" class="line"/><path d="M715 517H820" class="line"/>
+
+  <rect x="330" y="620" width="540" height="65" class="box amber"/><text x="600" y="648" text-anchor="middle" class="label">Outcome + Safety Invariants</text><text x="600" y="671" text-anchor="middle" class="small">correct target · exactly once · no forbidden effect · truthful response</text>
+  <path d="M935 555V590H600V620" class="line"/>
+  <path d="M330 652H85V347H120" class="dash"/>
+  <text x="55" y="705" class="tiny">일반화한 reference model · 실제 제품 topology가 아님</text>
+</svg>
