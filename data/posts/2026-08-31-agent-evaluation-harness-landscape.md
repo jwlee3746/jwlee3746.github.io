@@ -1,0 +1,182 @@
+---
+title: '[Agent Eval 3] Evaluation Harness는 무엇을 표준화하는가'
+excerpt: Anthropic의 개념 모델, Inspect AI, Harbor와 τ-bench를 비교해 agent evaluation harness가 표준화하는 실행 경계와 남겨 두는 제품 책임을 정리한다.
+date: '2026-08-31'
+category: Evaluation
+tags:
+- Agent
+- LLM Evaluation
+- Evaluation Harness
+- Inspect AI
+- Harbor
+permalink: /posts/agent-evaluation-harness-landscape/
+legacyUrl: /blog/Agent/agent-evaluation-harness-landscape/
+toc: true
+---
+
+[시리즈 허브](/posts/reproducible-agent-evaluation/) · 본편 3/4
+
+## 하나의 업계 표준은 아직 없다
+
+Agent evaluation에는 OpenTelemetry처럼 하나의 wire-level 표준이 정착했다고 말하기 어렵다. 대신 공개된 framework, benchmark와 engineering guide는 비슷한 구성 요소로 수렴한다. Anthropic의 용어와 실무 로드맵은 [원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)과 한국어 번역·요약을 나란히 보면 편하다.
+
+- 평가할 **task 또는 sample**
+- task를 수행하는 **agent / solver**
+- tool과 상태를 제공하는 **environment / sandbox**
+- 성공과 품질을 판정하는 **scorer / grader**
+- 비결정성을 측정하는 **trial / epoch**
+- 전 과정을 남기는 **trace, log와 artifact**
+
+즉 최근 harness가 TC를 없앤 것이 아니라, 단순한 input-output row를 **실행 가능한 task package**로 확장했다고 보는 편이 정확하다.
+
+![현재 agent evaluation harness에서 공통으로 나타나는 구성 요소의 블록 다이어그램](/data/images/posts/agent-evaluation-harness-landscape/harness-common-model.svg)
+
+## 공개 도구와 benchmark의 공통점
+
+| 기준 | 평가 단위 | 실행 환경 | 판정과 반복 |
+| --- | --- | --- | --- |
+| Anthropic engineering guide | task·trial·transcript·outcome | agent harness와 stable isolated environment | grader, 여러 trial, pass@k·pass^k |
+| Inspect AI | dataset·solver·scorer를 묶은 Task | tool, sandbox, setup·cleanup | scorer, epochs, limits와 eval log |
+| Harbor | instruction·environment·verifier를 가진 Task | containerized environment, multi-step shared state | trial reward, verifier와 job 단위 실행 |
+| τ-bench | scenario·policy·initial DB state | tool API, database, user simulator | final state와 communication을 반영한 reward |
+| LangSmith / Langfuse | dataset item과 production trace | application runtime 또는 experiment runner | offline evaluator, online score, annotation feedback |
+
+용어는 다르지만 경계는 유사하다. Task는 “질문 한 줄”보다 크고, environment와 scorer는 task에서 교체 가능한 실행 구성 요소가 된다.
+
+## Observability와 harness는 다른 층이다
+
+OpenTelemetry와 Langfuse는 execution을 관측하고 trace를 탐색하는 데 강하다. 그러나 trace schema가 있다고 해서 task의 성공 조건, 초기 환경 상태와 반복 정책까지 자동으로 정의되지는 않는다.
+
+반대로 Inspect와 Harbor 같은 harness가 task를 잘 실행해도 production failure를 자동으로 대표하는 dataset이 생기지는 않는다. 두 층을 연결해야 한다.
+
+```text
+Observability plane
+  spans · traces · sessions · online scores
+                    │ candidate + lineage
+                    ▼
+Evaluation plane
+  tasks · environments · agents · graders · trials
+                    │ result + trace reference
+                    └──────────────────────────────►
+```
+
+공통 identifier와 provenance를 쓰되 저장 목적은 분리한다. Observability plane은 운영 분포의 탐색과 진단을, evaluation plane은 고정된 조건의 비교와 release decision을 담당한다.
+
+## Harness가 책임질 것
+
+좋은 harness는 평가 내용보다 **실행의 공통 문제**를 맡는다.
+
+### Task loading과 selection
+
+Dataset revision, slice, locale와 capability 조건을 적용하고 discovered·valid·selected population을 구분한다.
+
+### Isolation과 lifecycle
+
+Trial마다 environment를 초기화하고 timeout, retry, concurrency와 resource limit를 일관되게 적용한다. Task 사이에 database나 file state가 새지 않아야 한다.
+
+### Agent adapter
+
+서로 다른 model provider나 agent runtime을 동일한 task protocol에 연결한다. Adapter가 prompt와 tool contract를 조용히 바꾸지 않도록 revision을 기록한다.
+
+### Environment와 tool execution boundary
+
+Harness가 multi-step episode를 실행하려면 agent가 만든 실제 tool call을 environment에 전달하고, 그 결과를 다음 observation으로 돌려주는 경계가 필요하다. Replay fixture, stateful simulator, service sandbox와 실제 장치를 같은 interface 뒤에 둘 수 있으면 task의 의도는 유지하면서 실행 fidelity를 바꿀 수 있다.
+
+이 경계가 없으면 harness는 고정된 이전 output을 주입하는 decision replay까지만 수행할 수 있다. 이는 유효한 component eval이지만 environment state를 바꾼 end-to-end trial과는 구분해야 한다.
+
+### Grading과 aggregation
+
+Rule, state check, model grader와 human label을 조합하고, grader별 근거와 실패 유형을 보존한다. 평균 하나로 줄이기 전에 task와 slice 단위 결과를 남긴다.
+
+### Trials와 recovery
+
+반복 실행, seed, checkpoint와 resume를 지원한다. Infrastructure failure와 agent failure를 별도 상태로 기록해 모델 점수를 오염시키지 않는다.
+
+### Artifact와 provenance
+
+Dataset·environment·agent·scorer revision, runtime option과 trace reference를 함께 보존한다. 이 경계가 있어야 서로 다른 실행을 비교할 수 있다.
+
+## Harness가 대신 결정하면 안 되는 것
+
+Framework를 도입해도 다음은 평가 설계자의 책임으로 남는다.
+
+- 실제 사용자 분포를 대표하는 task인가?
+- 성공 조건이 제품의 의도와 맞는가?
+- 한 canonical path만 정답으로 강제하지 않는가?
+- Simulator가 task를 제대로 수행하는가?
+- Tool output과 final state를 누가 생성하고 검증하는가?
+- Grader가 개선하려는 행동과 상관관계가 있는가?
+- Dataset contamination과 selection bias가 관리되는가?
+
+Anthropic도 harness보다 task와 grader 설계에 투자하라고 강조한다. 잘못된 task를 안정적으로 병렬 실행하는 것은 평가 신뢰도를 높이지 않는다.
+
+## 최소 portability contract
+
+특정 framework에 평가 자산이 잠기지 않으려면 내부 모델을 거대한 공통 schema로 만들기보다 작은 portability boundary를 두는 편이 낫다.
+
+```yaml
+task:
+  id: stable-id
+  instruction_ref: versioned-content
+  initial_state_ref: fixture-or-environment
+  tools_ref: capability-contract
+  interaction_mode: replay | sandbox | simulated-user
+  graders:
+    - state
+    - policy
+
+trial:
+  agent_revision: opaque-revision
+  environment_revision: opaque-revision
+  repetition: trial-index
+
+artifact:
+  status: completed | infrastructure-error | agent-error
+  outcome_ref: immutable-result
+  trace_ref: observability-link
+  scores: grader-results
+```
+
+이 예시의 목적은 모든 framework를 같은 JSON으로 통합하는 것이 아니다. **Task, 실행 구성과 결과 artifact 사이의 adapter 경계**를 명확히 하는 것이다. Inspect나 Harbor를 시험할 때 dataset 전체를 다시 만들지 않고 loader, environment와 scorer adapter만 바꿀 수 있어야 한다.
+
+## Harness도 평가해야 한다
+
+Harness가 점수를 만든다고 해서 harness가 항상 맞는 것은 아니다. 최소한 다음 검증이 필요하다.
+
+- 작은 hand-checked task에서 예상 pass/fail을 재현하는가
+- reference solution과 명백히 잘못된 baseline을 구분하는가
+- grader가 task input이나 hidden answer를 agent에 노출하지 않는가
+- environment reset 후 상태가 완전히 같아지는가
+- 같은 artifact를 재채점했을 때 deterministic scorer 결과가 같은가
+- Simulator failure와 agent failure를 분리하는가
+- 일부 transcript를 사람이 정기적으로 audit하는가
+
+평가 결과가 의사결정에 쓰일수록 evaluator 자체의 test와 calibration이 필요하다.
+
+## 도입 판단
+
+현재 시스템에 schema validation, execution, scoring과 checkpoint가 이미 있다면 최신 harness를 보았다는 이유만으로 전면 교체할 필요는 없다. 먼저 공통 모델과의 gap을 찾는다.
+
+1. Task와 environment가 분리돼 있는가?
+2. 같은 task를 여러 trial로 돌릴 수 있는가?
+3. Final state와 trajectory grader를 함께 붙일 수 있는가?
+4. 실제 action으로부터 다음 tool observation을 생성할 environment adapter가 있는가?
+5. Trace와 artifact를 외부 관측 도구에 연결할 수 있는가?
+6. Infrastructure failure를 평가 실패와 분리하는가?
+
+Gap이 execution isolation과 sandbox라면 Harbor나 Inspect adapter의 가치가 크다. 병목이 production trace 탐색과 dataset curation이라면 harness 교체보다 observability feedback loop가 먼저다.
+
+## 참고 자료
+
+- Anthropic — Demystifying evals for AI agents: [원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) · 한국어 번역·요약
+- [Inspect AI — Tasks](https://inspect.aisi.org.uk/tasks.html)
+- [Inspect AI — API reference](https://inspect.aisi.org.uk/reference/inspect_ai.html)
+- [Harbor — Core concepts](https://www.harborframework.com/docs/core-concepts)
+- [Harbor — Tasks](https://www.harborframework.com/docs/tasks)
+- [τ-bench paper](https://arxiv.org/abs/2406.12045)
+- [LangSmith — Evaluation types](https://docs.langchain.com/langsmith/evaluation-types)
+- [Langfuse — Evaluation overview](https://langfuse.com/docs/evaluation/overview)
+
+이전: [2. TC 기반 vs simulator 기반 평가](/posts/test-case-vs-simulator-evaluation/)
+
+다음: [4. 회고와 hybrid evaluation architecture](/posts/hybrid-agent-evaluation-strategy/)

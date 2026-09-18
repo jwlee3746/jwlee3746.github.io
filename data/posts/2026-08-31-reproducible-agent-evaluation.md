@@ -66,10 +66,10 @@ Agent evaluation
 
 | 편 | 주제 | 핵심 질문 | 다이어그램 |
 | --- | --- | --- | --- |
-| 1. Trace에서 평가 데이터로 | OTel · Search · Curation | 관측 데이터를 어떻게 검색·선별·버전화하는가? | Flywheel block diagram |
-| 2. TC 기반 vs simulator 기반 | Replay · Simulation · Trials | 재현성과 현실성 사이에서 무엇을 어디에 쓰는가? | Comparative block diagram |
-| 3. Evaluation harness의 공통 구조 | Task · Environment · Scorer | 실행 환경과 tool output의 책임을 어디서 나누는가? | Harness block diagram |
-| 4. 회고와 hybrid evaluation architecture | Cost · Coverage · Feedback loop | 같은 공수로 더 많은 위험을 잡으려면 어떻게 재설계하는가? | Layered feedback loop |
+| [1. Trace에서 평가 데이터로](/posts/trace-to-eval-data-flywheel/) | OTel · Search · Curation | 관측 데이터를 어떻게 검색·선별·버전화하는가? | Flywheel block diagram |
+| [2. TC 기반 vs simulator 기반](/posts/test-case-vs-simulator-evaluation/) | Replay · Simulation · Trials | 재현성과 현실성 사이에서 무엇을 어디에 쓰는가? | Comparative block diagram |
+| [3. Evaluation harness의 공통 구조](/posts/agent-evaluation-harness-landscape/) | Task · Environment · Scorer | 실행 환경과 tool output의 책임을 어디서 나누는가? | Harness block diagram |
+| [4. 회고와 hybrid evaluation architecture](/posts/hybrid-agent-evaluation-strategy/) | Cost · Coverage · Feedback loop | 같은 공수로 더 많은 위험을 잡으려면 어떻게 재설계하는가? | Layered feedback loop |
 
 ## 한 문장으로 정리한 결론
 
@@ -150,4 +150,4 @@ Pinned history와 structured action을 비교한 값은 decision 또는 path con
 
 처음 읽는다면 본편 1→4 순서가 가장 자연스럽다. 용어 기준이 필요하면 Anthropic 번역·요약을 먼저 보고, 실제 구현 선택은 구현 노트 1→4에서 확인할 수 있다. 비가역 동작과 실제 상태를 다루는 문제는 마지막 디바이스 어시스턴트 글로 이어진다.
 
-다음 글: 1. Trace에서 평가 데이터로
+다음 글: [1. Trace에서 평가 데이터로](/posts/trace-to-eval-data-flywheel/)
