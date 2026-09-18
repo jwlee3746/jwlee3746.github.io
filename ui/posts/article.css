@@ -107,3 +107,9 @@
   .post-pagination a { padding: .65rem .75rem; }
   .post-pagination strong { font-size: .85rem; }
 }
+
+.post-related { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border); }
+.post-related h2 { margin: 0 0 .5rem; font-size: 1rem; font-weight: var(--weight-semibold); }
+.post-related ul { margin: 0; padding: 0; list-style: none; }
+.post-related a { display: block; padding: .6rem 0; color: var(--color-text); font-size: .9rem; line-height: 1.5; text-decoration: none; }
+.post-related a:hover, .post-related a:focus-visible { color: var(--color-link); text-decoration: underline; }
