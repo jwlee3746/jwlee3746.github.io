@@ -1,0 +1,163 @@
+---
+title: '[Agent Eval 4] TC 중심 설계를 돌아본 Hybrid Evaluation Architecture'
+excerpt: 고정 TC의 재현성은 유지하면서 trace feedback, executable environment와 simulator를 비용 대비 효과에 맞게 결합하는 설계 회고.
+date: '2026-08-31'
+category: Evaluation
+tags:
+- Agent
+- LLM Evaluation
+- Hybrid Evaluation
+- MLOps
+- Architecture
+permalink: /posts/hybrid-agent-evaluation-strategy/
+legacyUrl: /blog/Agent/hybrid-agent-evaluation-strategy/
+toc: true
+---
+
+[시리즈 허브](/posts/reproducible-agent-evaluation/) · 본편 4/4
+
+## 결론부터: TC를 버리는 것이 답은 아니다
+
+TC 중심 평가를 설계한 선택은 재현성, 회귀 검증과 디버깅이라는 분명한 문제를 해결했다. Schema와 validation boundary를 세우고, multi-step history에서 기대값을 분리하고, deterministic scoring과 checkpoint를 만든 일도 Anthropic이 정리한 현재의 eval 구조([원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) · 한국어 번역·요약)와 어긋나지 않는다.
+
+다만 고정된 이전 tool output을 다음 step에 주입하는 multi-step replay는 실제 trajectory가 아니다. 올바른 중간 observation이 주어졌을 때 다음 판단을 분리해 검사하는 component eval이다. 이 결과를 end-to-end task completion으로 해석하지 않는 것이 회고의 출발점이다.
+
+다만 평가 자산을 늘리는 공수에 비해 새 실패를 발견하는 속도가 충분했는지는 별도 질문이다. 특히 recorded trace를 정교한 canonical TC로 옮기는 데 집중하면 세 가지 비용이 커진다.
+
+- Production에서 후보를 찾고 payload를 정리하는 수작업
+- Tool과 environment가 바뀔 때 fixture를 다시 맞추는 유지보수
+- 하나의 관측 trajectory를 기대 경로로 고정하면서 생기는 false negative
+
+그래서 다음 구조는 TC를 폐기하는 방향이 아니라 **TC가 가장 잘하는 역할을 좁고 강하게 유지하고, 나머지 위험을 다른 평가 층으로 보낸다**.
+
+## Hybrid feedback loop
+
+![Production trace, replay TC, simulator와 online evaluation을 연결한 hybrid feedback loop](/data/images/posts/hybrid-agent-evaluation-strategy/hybrid-evaluation-loop.svg)
+
+이 구조에는 네 개의 실행 층이 있다.
+
+### Contract layer
+
+Schema, tool contract, deterministic component test와 scorer self-test를 매 변경에 실행한다. 가장 빠르고 실패 원인이 명확해야 한다.
+
+### Regression layer
+
+Production incident와 중요한 edge case를 최소화한 고정 TC를 실행한다. 알려진 실패를 다시 만들지 않는 것이 목적이며, canonical trajectory보다 반드시 지켜야 할 action과 outcome을 우선한다.
+
+### Interactive layer
+
+상태 변화, 긴 대화, recovery와 복수 경로가 중요한 task를 sandbox 또는 simulated user에서 반복 실행한다. Final state, policy invariant와 일관성을 측정한다.
+
+이 층에서는 agent의 실제 action을 environment가 실행하고, 그 결과로 만들어진 observation만 다음 turn에 전달한다. TC는 recorded output 대신 initial state, user policy와 success invariant를 제공한다. 실행 backend는 stateful simulator, service sandbox 또는 제한된 hardware environment가 될 수 있다.
+
+### Online layer
+
+Production trace, feedback, anomaly와 cost signal을 지속해서 본다. Offline suite가 놓친 실패를 candidate queue로 보내고, 수정된 task의 online 결과를 다시 확인한다.
+
+각 층은 별도 dataset을 만드는 것이 아니라 **같은 task intent를 서로 다른 interaction mode와 비용으로 실행할 수 있는 구조**가 이상적이다.
+
+## 어떤 task를 어디에 둘 것인가
+
+| 질문 | 그렇다면 우선할 실행 모드 |
+| --- | --- |
+| 입력과 기대 action을 완전히 고정할 수 있는가? | replay TC |
+| Tool call이 다음 environment state를 바꾸는가? | sandbox / executable environment |
+| 사용자의 추가 정보와 반응이 성공을 좌우하는가? | user simulator |
+| 정상 trajectory가 많고 final state가 명확한가? | outcome grader + repeated trials |
+| 정책 위반처럼 한 번의 실패도 중요한가? | deterministic invariant + consistency metric |
+| 실제 분포와 drift가 핵심인가? | online evaluation + trace sampling |
+| Oracle이 불명확한 자연어 품질 문제인가? | calibrated model grader + human audit |
+
+한 task가 여러 행에 해당할 수 있다. 예를 들어 예약 변경 task는 parameter contract TC, sandbox state test와 simulated conversation을 모두 가질 수 있다. 중요한 것은 task를 한 형태로만 복제하지 않고 risk마다 grader와 실행 모드를 조합하는 것이다.
+
+## 공수 대비 효과를 다시 계산하기
+
+TC 수 자체를 성과로 삼으면 유지비가 낮고 발견력이 높은 사례와, 비싸지만 거의 같은 경로를 반복하는 사례가 구분되지 않는다. 각 후보의 우선순위를 아래처럼 생각할 수 있다.
+
+```text
+우선순위 ∝ 실패 영향 × 발생 가능성 × 재현 가능성 × 현재 coverage gap
+           ───────────────────────────────────────────────
+                 작성 비용 + 환경 비용 + 유지 비용
+```
+
+정확한 수식이라기보다 review 질문이다.
+
+- 이 TC가 없으면 어떤 release decision이 달라지는가?
+- 같은 failure cluster의 기존 사례와 무엇이 다른가?
+- Fixture를 갱신하는 대신 state grader 하나로 일반화할 수 있는가?
+- Production trace를 더 잘 검색하면 수작업 작성 자체를 줄일 수 있는가?
+- 비싼 simulator task는 실제로 replay가 못 잡는 분기를 발견하는가?
+
+Dataset에는 case count뿐 아니라 최근 실패 탐지 여부, 중복 cluster, 마지막 검토 시점과 environment 호환성을 남겨 pruning 근거를 만든다.
+
+## 다음 설계의 우선순위
+
+### Trace discovery를 먼저 자동화한다
+
+OTel attribute와 score를 정리하고, failure·rare path·drift queue를 만든다. Trace에서 곧바로 TC 파일을 생성하기보다 candidate layer에서 redaction, clustering과 promotion review를 수행한다.
+
+### Trajectory보다 outcome oracle에 투자한다
+
+정확한 tool action이 제품 계약인 곳은 그대로 검사한다. 정상 경로가 다양한 곳은 final state와 invariant를 deterministic하게 판정할 수 있는 작은 verifier를 우선 만든다.
+
+허용 path가 여러 개라면 한 번 실행한 trajectory를 모든 허용 outcome과 비교한다. Path별 재호출 후 하나라도 맞으면 통과시키는 방식은 alternative를 모델의 추가 시도로 바꾸므로 사용하지 않는다.
+
+### 위험한 일부만 executable environment로 옮긴다
+
+모든 fixture를 실제 환경으로 바꾸지 않는다. 상태 전이, 외부 부작용과 recovery가 품질을 좌우하는 task부터 isolated sandbox로 승격한다.
+
+첫 vertical slice는 전체 서비스를 복제하기보다 검색, 복수 후보 선택, confirmation, mutation과 retry를 가진 작은 world-state simulator로 시작한다. 기존 replay executor는 유지하고, 같은 tool execution interface에 simulator backend를 추가하면 자산을 폐기하지 않고 평가 범위를 넓힐 수 있다.
+
+### 반복 trial과 uncertainty를 결과에 포함한다
+
+한 번의 pass/fail이 아니라 trial 수, 성공 분산, consistency와 infrastructure error를 함께 기록한다. Model, agent, simulator와 environment revision을 비교 경계로 둔다.
+
+### Harness는 adapter로 검증한다
+
+기존 자산을 전면 변환하기 전에 일부 representative task를 Inspect 또는 Harbor 같은 실행 모델에 adapter로 연결한다. Isolation, portability와 운영 편익이 실제 병목을 줄이는지 확인한 뒤 범위를 넓힌다.
+
+## 유지할 설계와 바꿀 설계
+
+| 유지할 것 | 바꿀 것 |
+| --- | --- |
+| Versioned schema와 validation core | Trace 수작업 복사를 candidate pipeline으로 전환 |
+| Expected value를 request에서 분리 | Canonical path 중심에서 outcome 중심으로 이동 |
+| Deterministic structured scoring | 모든 상호작용을 fixture로 고정하는 방식 축소 |
+| Checkpoint와 provenance | 단일 실행 점수를 repeated trial distribution으로 확장 |
+| 실패 taxonomy와 비교 가능한 artifact | Harness·environment adapter 경계 추가 |
+
+이렇게 정리하면 기존 작업은 폐기 대상이 아니라 hybrid architecture의 regression backbone이 된다. 아쉬웠던 부분도 “최신 방식을 몰랐다”가 아니라, 당시 가장 명확했던 재현성 문제를 깊게 해결한 뒤 **coverage와 curation economics를 다음 최적화 문제로 발견했다**는 서사가 된다.
+
+## 완료 조건
+
+새 구조가 효과적인지는 framework 도입 여부가 아니라 다음 변화로 확인한다.
+
+- Production failure에서 representative candidate를 찾는 시간이 줄었다.
+- 새 regression asset의 중복률과 수작업 변환 단계가 줄었다.
+- Replay에서는 보이지 않던 stateful failure를 interactive suite가 실제로 찾는다.
+- Grader 근거와 environment revision으로 결과 차이를 설명할 수 있다.
+- Offline failure가 production에서 개선됐는지 다시 추적된다.
+- 같은 비용 안에서 더 다양한 failure mode와 중요한 slice를 검증한다.
+
+## 마치며
+
+현재의 agent evaluation은 TC 기반에서 simulator 기반으로 단순 이동하는 흐름이 아니다. Task는 여전히 중심이고, 그 주변에 environment, repeated trials, outcome grader와 online feedback loop가 두꺼워지고 있다.
+
+따라서 다음 질문은 “TC를 계속할까?”가 아니다.
+
+> 어떤 위험은 고정해 재현하고, 어떤 상호작용은 실행하며, production에서 발견한 실패를 얼마나 적은 공수로 다시 평가 자산으로 만들 것인가?
+
+이 질문을 기준으로 보면 trace observability, simulator와 harness는 경쟁 관계가 아니라 하나의 evaluation system을 완성하는 서로 다른 층이다.
+
+## 참고 자료
+
+- Anthropic — Demystifying evals for AI agents: [원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) · 한국어 번역·요약
+- [Langfuse — Evaluation overview](https://langfuse.com/docs/evaluation/overview)
+- [LangSmith — Evaluation concepts](https://docs.langchain.com/langsmith/evaluation-concepts)
+- [Inspect AI — Tasks](https://inspect.aisi.org.uk/tasks.html)
+- [Harbor — Core concepts](https://www.harborframework.com/docs/core-concepts)
+- [τ-bench paper](https://arxiv.org/abs/2406.12045)
+
+이전: [3. Evaluation harness의 공통 구조](/posts/agent-evaluation-harness-landscape/)
+
+처음으로: [시리즈 허브](/posts/reproducible-agent-evaluation/)
