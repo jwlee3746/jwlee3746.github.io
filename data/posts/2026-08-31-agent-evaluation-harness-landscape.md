@@ -18,7 +18,7 @@ toc: true
 
 ## 하나의 업계 표준은 아직 없다
 
-Agent evaluation에는 OpenTelemetry처럼 하나의 wire-level 표준이 정착했다고 말하기 어렵다. 대신 공개된 framework, benchmark와 engineering guide는 비슷한 구성 요소로 수렴한다. Anthropic의 용어와 실무 로드맵은 [원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)과 한국어 번역·요약을 나란히 보면 편하다.
+Agent evaluation에는 OpenTelemetry처럼 하나의 wire-level 표준이 정착했다고 말하기 어렵다. 대신 공개된 framework, benchmark와 engineering guide는 비슷한 구성 요소로 수렴한다. Anthropic의 용어와 실무 로드맵은 [원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)과 [한국어 번역·요약](/posts/demystifying-agent-evals-korean/)을 나란히 보면 편하다.
 
 - 평가할 **task 또는 sample**
 - task를 수행하는 **agent / solver**
@@ -168,7 +168,7 @@ Gap이 execution isolation과 sandbox라면 Harbor나 Inspect adapter의 가치�
 
 ## 참고 자료
 
-- Anthropic — Demystifying evals for AI agents: [원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) · 한국어 번역·요약
+- Anthropic — Demystifying evals for AI agents: [원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) · [한국어 번역·요약](/posts/demystifying-agent-evals-korean/)
 - [Inspect AI — Tasks](https://inspect.aisi.org.uk/tasks.html)
 - [Inspect AI — API reference](https://inspect.aisi.org.uk/reference/inspect_ai.html)
 - [Harbor — Core concepts](https://www.harborframework.com/docs/core-concepts)

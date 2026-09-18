@@ -18,7 +18,7 @@ toc: true
 
 ## 결론부터: TC를 버리는 것이 답은 아니다
 
-TC 중심 평가를 설계한 선택은 재현성, 회귀 검증과 디버깅이라는 분명한 문제를 해결했다. Schema와 validation boundary를 세우고, multi-step history에서 기대값을 분리하고, deterministic scoring과 checkpoint를 만든 일도 Anthropic이 정리한 현재의 eval 구조([원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) · 한국어 번역·요약)와 어긋나지 않는다.
+TC 중심 평가를 설계한 선택은 재현성, 회귀 검증과 디버깅이라는 분명한 문제를 해결했다. Schema와 validation boundary를 세우고, multi-step history에서 기대값을 분리하고, deterministic scoring과 checkpoint를 만든 일도 Anthropic이 정리한 현재의 eval 구조([원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) · [한국어 번역·요약](/posts/demystifying-agent-evals-korean/))와 어긋나지 않는다.
 
 다만 고정된 이전 tool output을 다음 step에 주입하는 multi-step replay는 실제 trajectory가 아니다. 올바른 중간 observation이 주어졌을 때 다음 판단을 분리해 검사하는 component eval이다. 이 결과를 end-to-end task completion으로 해석하지 않는 것이 회고의 출발점이다.
 
@@ -151,7 +151,7 @@ OTel attribute와 score를 정리하고, failure·rare path·drift queue를 만�
 
 ## 참고 자료
 
-- Anthropic — Demystifying evals for AI agents: [원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) · 한국어 번역·요약
+- Anthropic — Demystifying evals for AI agents: [원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) · [한국어 번역·요약](/posts/demystifying-agent-evals-korean/)
 - [Langfuse — Evaluation overview](https://langfuse.com/docs/evaluation/overview)
 - [LangSmith — Evaluation concepts](https://docs.langchain.com/langsmith/evaluation-concepts)
 - [Inspect AI — Tasks](https://inspect.aisi.org.uk/tasks.html)
