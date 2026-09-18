@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Layered hybrid evaluation feedback loop</title>
+  <desc id="desc">Contract, regression, interactive, and online layers form a feedback loop from production observations back to curated evaluation tasks.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#475569"/></marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0f172a" flood-opacity=".12"/></filter>
+    <style>.title{font:700 30px system-ui,sans-serif;fill:#0f172a}.sub{font:16px system-ui,sans-serif;fill:#64748b}.level{font:700 18px system-ui,sans-serif;fill:#0f172a}.label{font:700 17px system-ui,sans-serif;fill:#0f172a}.small{font:14px system-ui,sans-serif;fill:#475569}.tiny{font:13px system-ui,sans-serif;fill:#64748b}.box{fill:#fff;stroke:#cbd5e1;stroke-width:2;rx:16;filter:url(#shadow)}.cyan{fill:#ecfeff;stroke:#0f766e}.blue{fill:#eff6ff;stroke:#2563eb}.amber{fill:#fffbeb;stroke:#b45309}.violet{fill:#f5f3ff;stroke:#7c3aed}.line{stroke:#475569;stroke-width:2.5;fill:none;marker-end:url(#arrow)}.loop{stroke:#7c3aed;stroke-width:2.5;stroke-dasharray:8 6;fill:none;marker-end:url(#arrow)}</style>
+  </defs>
+  <rect width="1200" height="720" rx="24" fill="#f8fafc"/>
+  <text x="55" y="56" class="title">Hybrid Evaluation — Layered Feedback Loop</text><text x="55" y="86" class="sub">빠른 deterministic gate부터 production feedback까지 위험에 맞는 비용으로 실행한다.</text>
+
+  <text x="55" y="145" class="level">FAST · DETERMINISTIC</text><text x="1145" y="145" text-anchor="end" class="tiny">낮은 실행 비용 / 높은 원인 격리</text>
+  <rect x="130" y="165" width="940" height="90" class="box blue"/><text x="175" y="202" class="label">1 · Contract</text><text x="175" y="230" class="small">schema · tool contract · component tests · scorer self-tests</text><text x="985" y="215" text-anchor="end" class="small">every change</text>
+
+  <rect x="200" y="285" width="800" height="90" class="box amber"/><text x="245" y="322" class="label">2 · Regression</text><text x="245" y="350" class="small">trace-derived replay TC · known failures · deterministic invariants</text><text x="915" y="335" text-anchor="end" class="small">PR / continuous</text>
+
+  <rect x="270" y="405" width="660" height="90" class="box cyan"/><text x="315" y="442" class="label">3 · Interactive</text><text x="315" y="470" class="small">sandbox · simulated user · state graders · repeated trials</text><text x="845" y="455" text-anchor="end" class="small">scheduled / release</text>
+
+  <rect x="340" y="525" width="520" height="90" class="box violet"/><text x="385" y="562" class="label">4 · Online</text><text x="385" y="590" class="small">trace · feedback · drift · human review</text><text x="775" y="575" text-anchor="end" class="small">production</text>
+  <text x="55" y="665" class="level">REAL DISTRIBUTION</text><text x="1145" y="665" text-anchor="end" class="tiny">높은 현실성 / 더 많은 불확실성과 비용</text>
+
+  <path d="M1070 210H1120V570H860" class="line"/><text x="1140" y="390" transform="rotate(90 1140 390)" text-anchor="middle" class="small">release confidence</text>
+  <path d="M340 570H85V210H130" class="loop"/><text x="70" y="390" transform="rotate(-90 70 390)" text-anchor="middle" class="small">candidate · incident · drift feedback</text>
+  <path d="M600 255V285" class="line"/><path d="M600 375V405" class="line"/><path d="M600 495V525" class="line"/>
+  <text x="600" y="698" text-anchor="middle" class="sub">같은 task intent를 복제하기보다 risk에 맞는 interaction mode와 grader로 승격한다.</text>
+</svg>

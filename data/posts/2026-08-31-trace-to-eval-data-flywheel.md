@@ -1,0 +1,153 @@
+---
+title: '[Agent Eval 1] 관측에서 평가 자산으로: Trace-to-Eval Data Flywheel'
+excerpt: OpenTelemetry와 Langfuse 계열 trace를 검색·선별·정제해 재현 가능한 평가 데이터로 승격하는 파이프라인.
+date: '2026-08-31'
+category: Evaluation
+tags:
+- Agent
+- LLM Evaluation
+- OpenTelemetry
+- Langfuse
+- Observability
+permalink: /posts/trace-to-eval-data-flywheel/
+legacyUrl: /blog/Agent/trace-to-eval-data-flywheel/
+toc: true
+---
+
+[시리즈 허브](/posts/reproducible-agent-evaluation/) · 본편 1/4
+
+## 수집보다 어려운 것은 다시 찾는 일이다
+
+LLM 애플리케이션에 OpenTelemetry instrumentation을 붙이면 model call, tool call, latency와 exception을 trace로 남길 수 있다. Langfuse 같은 플랫폼은 observation을 trace와 session으로 묶고, filter와 score를 제공한다. 여기까지는 관측 가능성의 문제다.
+
+평가 데이터로 만드는 순간에는 다른 질문이 시작된다.
+
+- 어떤 trace를 다시 테스트할 가치가 있는가?
+- 비슷한 실패 수백 개 중 대표 사례는 무엇인가?
+- 성공한 trajectory를 정답으로 봐도 되는가?
+- 개인정보와 시점 의존적인 tool output은 어떻게 제거하는가?
+- dataset에 들어간 뒤 원래 trace와 변환 이유를 어떻게 추적하는가?
+
+그래서 목표를 “trace를 많이 모은다”가 아니라 **실패와 희귀 행동을 검색 가능한 후보로 만들고, 검토된 일부만 versioned evaluation asset으로 승격한다**로 잡았다.
+
+## Trace-to-Eval flywheel
+
+![OpenTelemetry trace가 평가 데이터셋과 production feedback으로 순환하는 블록 다이어그램](/data/images/posts/trace-to-eval-data-flywheel/trace-data-flywheel.svg)
+
+이 흐름은 세 영역으로 나뉜다.
+
+1. **Observe**: runtime에서 trace와 outcome signal을 남긴다.
+2. **Curate**: 검색·분류·중복 제거·redaction·annotation으로 후보를 정제한다.
+3. **Evaluate**: versioned task를 반복 실행하고 결과를 다시 production 관측과 연결한다.
+
+Langfuse는 trace나 observation을 dataset item의 source로 연결하고, dataset을 실행한 experiment의 item·trace·observation·score를 다시 조회하는 기능을 제공한다. LangSmith도 production run을 filter해 dataset으로 보내고, offline evaluation 결과를 online monitoring과 연결하는 흐름을 문서화한다. 중요한 점은 버튼 자체가 아니라 그 사이에 있는 **승격 정책**이다.
+
+## 먼저 검색할 수 있는 공통 차원을 만든다
+
+Trace payload 전체를 자유 검색하는 것만으로는 반복적인 데이터 확보가 어렵다. Instrumentation 단계에서 아래 차원을 안정적인 attribute로 남겨야 한다.
+
+| 차원 | 예시 의미 | 평가에서의 용도 |
+| --- | --- | --- |
+| Release | application·prompt·tool contract revision | 회귀가 시작된 변경점 찾기 |
+| Context | locale·channel·capability class | 특정 조건에서만 발생하는 실패 분리 |
+| Interaction | turn 수·tool sequence signature·retry 수 | 희귀 경로와 loop 탐색 |
+| Outcome | success flag·error taxonomy·final state summary | 후보 우선순위와 deterministic grader |
+| Feedback | 사용자·운영자·자동 evaluator score | 실패 후보와 hard positive 발굴 |
+| Cost | latency·token·tool count | 품질은 같지만 비효율적인 경로 탐지 |
+| Provenance | trace·session·parent observation ID | 원본 조사와 변환 이력 추적 |
+
+사용자 원문이나 tool result 전체를 attribute에 복제하지 않는다. 검색용 dimension과 원본 payload를 분리해야 cardinality, 보관 정책과 개인정보 경계를 관리하기 쉽다.
+
+OpenTelemetry의 GenAI semantic conventions는 공통 언어를 제공하지만 별도 저장소로 이동해 발전 중이고, signal과 attribute마다 안정화 수준도 같지 않다. 따라서 collector와 저장소가 내보내는 convention version과 opt-in mode를 기록하고, 제품 고유 attribute는 별도 namespace로 격리하는 편이 안전하다.
+
+## 후보는 여러 queue로 나눈다
+
+“실패 trace만 모으기”는 직관적이지만 dataset을 한쪽으로 치우치게 만든다. 최소한 다음 queue를 따로 운영한다.
+
+### Regression queue
+
+명시적 오류, 낮은 feedback, 정책 위반과 알려진 incident를 모은다. 수정 후 같은 실패가 돌아오지 않는지 확인하는 가장 직접적인 데이터다.
+
+### Coverage queue
+
+낮은 빈도의 tool sequence, 긴 multi-turn, fallback과 recovery처럼 성공 여부와 무관하게 드문 경로를 모은다. 현재 production 분포에 없는 설계상 중요 시나리오는 사람이 별도로 추가한다.
+
+### Drift queue
+
+특정 release 이후 급증한 cluster, 새 error taxonomy, latency와 tool count의 분포 변화를 모은다. 개별 trace보다 군집 단위로 보는 것이 중복 작업을 줄인다.
+
+### Calibration queue
+
+명확한 성공과 명확한 실패를 함께 담는다. 자동 grader나 LLM judge가 실제 기준과 맞는지 정기적으로 보정하는 용도다.
+
+## Dataset 승격 gate
+
+관측 trace를 클릭 한 번으로 dataset에 추가할 수 있어도, 곧바로 source of truth가 되지는 않는다. 다음 gate를 통과한 경우에만 고정 자산으로 승격한다.
+
+1. **Privacy**: 개인·보안 정보와 환경별 identifier를 제거하거나 대체했다.
+2. **Representativeness**: 같은 원인의 중복 사례를 cluster 또는 fingerprint로 줄였다.
+3. **Oracle**: 성공 조건이 결과 상태, 규칙 또는 검토된 reference로 설명된다.
+4. **Minimization**: 실패와 무관한 history와 tool payload를 제거했다.
+5. **Reproducibility**: 외부 상태를 fixture로 고정할지 executable environment로 만들지 결정했다.
+6. **Lineage**: 원본 trace, 선택 이유, 변환 도구와 reviewer를 추적할 수 있다.
+7. **Versioning**: task, scorer와 environment revision을 함께 고정했다.
+
+이 과정을 자동화한다고 해서 review가 사라지는 것은 아니다. 자동화의 목표는 사람이 payload를 복사하는 시간을 줄이고, **어떤 후보를 왜 고정할지 판단하는 데 집중하게 하는 것**이다.
+
+## Trace와 TC 사이에 candidate layer를 둔다
+
+운영 저장소에서 곧바로 test case JSON을 생성하면 trace schema와 evaluator schema가 강하게 결합한다. 중간에 candidate record를 두면 역할을 분리할 수 있다.
+
+```yaml
+candidate_id: generated-id
+source:
+  trace_ref: opaque-reference
+  observed_at: timestamp
+signals:
+  outcome: failure-class
+  feedback: reviewed
+  path_signature: normalized-sequence
+curation:
+  privacy_status: checked
+  cluster_key: normalized-fingerprint
+  promotion_reason: regression
+target:
+  interaction_mode: replay | sandbox | simulated-user
+  grader_kind: state | rule | model | human
+```
+
+이 record는 실제 schema가 아니라 경계 설명을 위한 예시다. 핵심은 raw trace, curation decision, executable task를 한 object로 섞지 않는 것이다.
+
+여기서 `interaction_mode`는 단순한 실행 옵션이 아니다. Replay로 승격한 task는 trace에 기록된 tool output을 고정 observation으로 사용한다. Sandbox나 simulated-user task는 초기 상태와 성공 조건을 고정하고, tool output은 실행 environment가 만들어야 한다. 이 결정을 생략하면 trace의 과거 output을 실제 세계의 정답처럼 취급하게 된다.
+
+## 쉽게 만든다는 것의 기준
+
+좋은 workflow는 trace 한 건을 빨리 복사하는 기능보다 아래 시간을 줄인다.
+
+- 실패 cluster에서 대표 trace를 찾는 시간
+- 개인정보와 불필요한 payload를 제거하는 시간
+- 성공 조건과 grader를 합의하는 시간
+- 이미 존재하는 TC인지 확인하는 시간
+- dataset 변경이 어떤 production signal에서 왔는지 조사하는 시간
+
+따라서 개선 지표도 “수집한 trace 수”보다 `후보 → 검토`, `검토 → 실행 가능한 task`, `회귀 탐지 → 원인 trace`의 lead time과 중복률로 잡는 편이 낫다.
+
+## 남는 한계
+
+Production trace만으로 dataset을 만들면 이미 사용자에게 노출된 경로와 현재 모델이 선택한 경로에 편향된다. 아직 발생하지 않은 위험, 드물지만 치명적인 상태 변화와 비협조적 사용자는 trace에서 충분히 나오지 않는다.
+
+이 지점부터 고정 TC와 simulator의 역할을 나눠야 한다. 다음 글에서는 두 방식을 양자택일이 아니라 서로 다른 uncertainty를 통제하는 실행 모드로 비교한다.
+
+## 참고 자료
+
+- [OpenTelemetry — Semantic conventions for generative AI](https://opentelemetry.io/docs/specs/semconv/gen-ai/)
+- [Langfuse — Observability data model](https://langfuse.com/docs/observability/data-model)
+- [Langfuse — Datasets](https://langfuse.com/docs/evaluation/experiments/datasets)
+- [Langfuse — Evaluation overview](https://langfuse.com/docs/evaluation/overview)
+- [Langfuse — Query via SDK](https://langfuse.com/docs/api-and-data-platform/features/query-via-sdk)
+- [LangSmith — Evaluation concepts](https://docs.langchain.com/langsmith/evaluation-concepts)
+- [LangSmith — Manage datasets](https://docs.langchain.com/langsmith/manage-datasets-in-application)
+
+이전: [시리즈 허브](/posts/reproducible-agent-evaluation/)
+
+다음: [2. TC 기반 vs simulator 기반 평가](/posts/test-case-vs-simulator-evaluation/)
