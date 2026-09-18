@@ -1,0 +1,153 @@
+---
+title: '[Agent] 재현 가능한 LLM 에이전트 평가 파이프라인 설계'
+excerpt: Trace에서 평가 자산을 만드는 흐름, TC와 simulator의 관계, tool output을 생성하는 environment boundary와 hybrid 평가 구조를 다시 검토한 시리즈.
+date: '2026-08-31'
+category: Evaluation
+tags:
+- Agent
+- LLM Evaluation
+- Evaluation Architecture
+- MLOps
+permalink: /posts/reproducible-agent-evaluation/
+legacyUrl: /blog/Agent/reproducible-agent-evaluation/
+toc: true
+---
+
+## Agent evaluation은 왜 어려운가
+
+흔히 single-turn evaluation이라고 부르는 **단일 응답 중심의 model evaluation**은 비교적 경계가 분명하다. 입력을 모델에 전달하고, 한 번의 응답을 받은 뒤 reference, rubric 또는 model grader로 품질을 판정한다.
+
+Agent evaluation에서는 사용자 입력이 한 번이어도 실행은 한 번에 끝나지 않는다. 모델이 action을 선택하면 tool이나 environment가 observation을 반환하고, 에이전트는 바뀐 상태에서 다시 판단한다. 이 과정은 목표를 달성하거나, 실패하거나, 정해진 실행 한도에 도달할 때까지 이어진다.
+
+```text
+Single-response model evaluation
+  input → model response → score
+
+Agent evaluation
+  task → action → observation → action → ... → outcome
+                    ↑                       |
+                    └──── environment ─────┘
+```
+
+따라서 평가 대상도 최종 응답 하나에서 전체 interaction으로 넓어진다.
+
+| 어려움 | 평가에서 확인할 문제 |
+| --- | --- |
+| 정상 경로가 여러 개다 | 하나의 reference trajectory와 다르더라도 성공일 수 있다. |
+| 다음 입력이 미리 정해져 있지 않다 | Agent의 action에 따라 tool, 사용자와 environment의 다음 반응이 달라진다. |
+| 오류 원인이 분산된다 | 모델 판단, tool 실행, 외부 서비스와 평가 환경의 실패를 구분해야 한다. |
+| 실행이 비결정적이다 | 같은 task를 여러 trial로 반복하고 성공률과 실패 분포를 봐야 한다. |
+| 실제 상태가 변할 수 있다 | 최종 답변뿐 아니라 outcome, 부작용과 안전 조건을 검증해야 한다. |
+
+결국 Agent evaluation의 핵심은 “좋은 답변을 생성했는가?”만이 아니다. **주어진 task에서 환경과 상호작용해 허용된 방식으로 목표 상태를 만들었는가**를 재현 가능하게 실행하고 판정해야 한다.
+
+## 평가기를 만든 뒤 다시 던진 질문
+
+처음에는 평가 데이터의 schema, multi-step replay, 경로 채점과 checkpoint를 잘 구조화하는 것이 가장 큰 문제라고 봤다. 실제로 이 구조들은 알려진 실패를 반복 실행하고 변경 전후를 비교하는 데 필요했다.
+
+하지만 구현을 마친 뒤 돌아보니, 재현성을 높이기 위해 상호작용을 고정할수록 실제 episode와 멀어지는 문제가 보였다. 다음 observation을 미리 기록해 두면 모델의 판단은 비교할 수 있지만, 그 판단이 환경을 어떻게 바꾸는지는 검증하지 못한다. 여기서 더 근본적인 네 질문이 남았다.
+
+1. OpenTelemetry 기반 trace를 어떻게 쉽게 탐색하고 평가 데이터 후보로 모을 것인가?
+2. 고정된 test case와 interactive simulator는 각각 어떤 실패를 잘 잡는가?
+3. 현재 agent evaluation harness는 무엇을 공통 단위로 삼고 있는가?
+4. TC에서 고정 tool output을 제거한다면 다음 observation은 누가 만들어야 하는가?
+
+공식 문서와 공개 benchmark를 다시 살펴본 결론은 **TC 기반 평가가 낡은 것은 아니라는 것**이다. Anthropic의 개념 모델([원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) · 한국어 번역·요약), Inspect AI와 Harbor 모두 여전히 task 또는 test case를 실행과 채점의 기본 단위로 둔다. 달라진 점은 그 task가 고정 fixture에만 머물지 않고 sandbox, 동적 환경, simulated user, 반복 trial과 상태 기반 grader를 포함한다는 데 있다.
+
+따라서 회고의 초점도 바뀌었다. “TC를 선택한 것이 잘못이었나?”보다 “관측 trace를 canonical TC로 만드는 데 비용을 얼마나 썼고, 그 TC가 실제 환경의 상태 변화와 분기를 얼마나 보존했나?”가 더 생산적인 질문이다.
+
+특히 고정된 이전 tool output을 다음 step에 넣는 방식은 정답 누출을 피한 decision replay이지 실제 trajectory가 아니다. 이 구조는 알려진 중간 상태에서의 판단 회귀에는 강하지만, 모델의 실제 action이 다음 상태와 observation을 만드는 end-to-end episode를 증명하지 않는다.
+
+이 시리즈는 그 질문을 본편 네 편으로 다룬다. 기존의 schema, replay, scoring, checkpoint 설계는 구현 노트로 남겨 구체적인 설계 선택을 함께 볼 수 있게 했다.
+
+![Trace, 고정 TC, simulator와 online evaluation이 연결된 일반화한 평가 아키텍처](/data/images/posts/reproducible-agent-evaluation/series-overview-v2.svg)
+
+## 본편 구성
+
+| 편 | 주제 | 핵심 질문 | 다이어그램 |
+| --- | --- | --- | --- |
+| 1. Trace에서 평가 데이터로 | OTel · Search · Curation | 관측 데이터를 어떻게 검색·선별·버전화하는가? | Flywheel block diagram |
+| 2. TC 기반 vs simulator 기반 | Replay · Simulation · Trials | 재현성과 현실성 사이에서 무엇을 어디에 쓰는가? | Comparative block diagram |
+| 3. Evaluation harness의 공통 구조 | Task · Environment · Scorer | 실행 환경과 tool output의 책임을 어디서 나누는가? | Harness block diagram |
+| 4. 회고와 hybrid evaluation architecture | Cost · Coverage · Feedback loop | 같은 공수로 더 많은 위험을 잡으려면 어떻게 재설계하는가? | Layered feedback loop |
+
+## 한 문장으로 정리한 결론
+
+> 고정 TC는 decision regression과 디버깅의 중심으로 유지하되, 상태 변화가 중요한 시나리오는 actual action을 실행해 다음 observation을 만드는 environment에서 별도 episode로 검증한다.
+
+TC와 simulator는 양자택일이 아니다. Simulator 기반 평가에도 시작 조건, 성공 기준과 task가 필요하며, 고정 TC도 실제 sandbox에서 실행할 수 있다. 구분해야 할 축은 **task의 존재 여부**가 아니라 **상호작용을 고정해 replay하는가, 실행 중 환경과 사용자가 동적으로 반응하는가**다.
+
+## 구현 노트
+
+본편의 판단을 실제 evaluator 설계로 내리는 과정은 아래 네 글에 남겼다.
+
+| 구현 노트 | 다루는 문제 |
+| --- | --- |
+| 평가 계약과 검증 경계 | Trace와 versioned contract의 분리, shared validation |
+| Multi-step replay의 경계와 teacher forcing | pinned history의 재현성과 실제 trajectory의 차이 |
+| 경로 채점의 함정과 discovery continuation | 복수 정상 경로, trial semantics와 structured scoring |
+| 장시간 평가의 복구와 provenance | checkpoint, resume, 비교 가능한 artifact |
+
+## 공통 용어
+
+- **Task / test case**: instruction, 시작 상태와 성공 기준을 가진 평가 단위. 고정 fixture 또는 동적 환경에서 실행할 수 있다.
+- **Trace / trajectory**: 한 trial에서 관측한 model·tool·environment 상호작용 기록
+- **Trial**: 같은 task를 한 번 실행한 표본. 비결정성을 보기 위해 여러 번 반복할 수 있다.
+- **Observation**: Agent의 action에 대해 tool 또는 environment가 반환해 다음 판단의 입력이 되는 결과
+- **Simulator**: user 또는 environment의 반응을 실행 중 동적으로 생성하는 구성 요소
+- **Harness**: task를 agent와 environment에 연결하고 실행·기록·채점·집계하는 실행 골격
+- **Turn**: 한 번의 사용자 입력에서 시작하는 대화 단위
+- **Step**: 에이전트가 action을 결정하는 한 번의 판단 단위
+- **Path**: 한 turn 안에서 허용되는 step sequence
+- **Projection**: 검증된 test case를 runtime request와 expected path로 분리하는 과정
+- **Artifact**: 실행 조건, 실제 결과, 판정과 provenance를 함께 담은 결과물
+
+## 전체 설계 원칙
+
+### Trace는 평가 자산의 후보이지 자동으로 정답은 아니다
+
+Trace 검색, 필터와 annotation을 통해 실패와 희귀 경로를 빠르게 후보군으로 모은다. 개인정보 제거, 중복 제거, oracle 검토와 최소화를 거친 뒤에만 versioned dataset으로 승격한다.
+
+### 검증 경계는 공유한다
+
+CI와 실제 평가가 서로 다른 validator를 쓰면 규칙이 갈라진다. 같은 validation core를 merge 전과 runtime preflight에서 재사용한다.
+
+### Task와 interaction mode를 분리한다
+
+같은 task도 고정 replay, sandbox 실행, simulated user와의 대화로 돌릴 수 있어야 한다. 데이터 모델이 특정 실행 방식에 묶이면 평가 전략을 바꿀 때 평가 자산까지 다시 만들어야 한다.
+
+Replay mode의 tool output은 검증된 fixture가 소유한다. Episode mode의 tool output은 agent의 actual action을 받은 simulator나 sandbox가 생성한다. Output 생성 주체가 없는데 fixture만 제거하면 multi-step 실행은 이어질 수 없다.
+
+### 가능한 한 outcome을 판정하고 trajectory는 진단에 쓴다
+
+Tool name과 parameter처럼 반드시 지켜야 할 계약은 deterministic하게 채점한다. 다만 정상 경로가 여러 개인 task에서 하나의 canonical trajectory만 강제하면 실제 성공을 오답으로 만들 수 있다. 최종 환경 상태와 불변 조건을 우선 판정하고, trajectory는 정책 위반과 실패 원인을 설명하는 근거로 사용한다.
+
+### 실행 조건도 결과의 일부다
+
+Dataset·schema·model·runtime·scoring policy가 다르면 같은 accuracy라도 직접 비교할 수 없다. 결과 artifact에 비교 조건을 함께 남긴다.
+
+### 평가 범위에 맞는 이름을 붙인다
+
+Pinned history와 structured action을 비교한 값은 decision 또는 path conformance다. Final state를 관측하지 않았다면 end-to-end completion이나 product reliability로 부르지 않는다. 측정하지 않은 품질을 aggregate accuracy가 대표한다고 해석하지 않는 것도 evaluator 설계의 일부다.
+
+## 확장 및 참고 글
+
+| 글 | 역할 |
+| --- | --- |
+| Anthropic이 정리한 AI 에이전트 평가의 기본 구조 | Task, trial, grader, transcript와 outcome의 공통 용어 기준 |
+| 디바이스 어시스턴트 평가는 왜 어려운가 | 부분적으로 관측되는 상태, confirmation, tool output ownership과 실제 effect 검증 |
+
+## 참고한 공개 기준
+
+- Anthropic, Demystifying evals for AI agents — [원문](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) · 한국어 번역·요약
+- [Inspect AI — Tasks](https://inspect.aisi.org.uk/tasks.html)
+- [Harbor — Core concepts](https://www.harborframework.com/docs/core-concepts)
+- [Langfuse — Observability data model](https://langfuse.com/docs/observability/data-model)
+- [LangSmith — Evaluation concepts](https://docs.langchain.com/langsmith/evaluation-concepts)
+- [τ-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains](https://arxiv.org/abs/2406.12045)
+
+## 권장 읽기 순서
+
+처음 읽는다면 본편 1→4 순서가 가장 자연스럽다. 용어 기준이 필요하면 Anthropic 번역·요약을 먼저 보고, 실제 구현 선택은 구현 노트 1→4에서 확인할 수 있다. 비가역 동작과 실제 상태를 다루는 문제는 마지막 디바이스 어시스턴트 글로 이어진다.
+
+다음 글: 1. Trace에서 평가 데이터로
