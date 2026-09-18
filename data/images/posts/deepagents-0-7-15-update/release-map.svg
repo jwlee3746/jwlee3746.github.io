@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">deepagents 0.7.9 through 0.7.15 release map</title>
+  <desc id="desc">A timeline groups seven releases into evaluation, file tools, conversation fork, and long-run recovery improvements.</desc>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0f172a" flood-opacity=".12"/></filter>
+    <style>.title{font:700 30px system-ui,sans-serif;fill:#0f172a}.sub{font:16px system-ui,sans-serif;fill:#64748b}.ver{font:700 18px system-ui,sans-serif;fill:#0f172a}.label{font:700 15px system-ui,sans-serif}.small{font:14px system-ui,sans-serif;fill:#475569}.date{font:13px system-ui,sans-serif;fill:#64748b}.card{fill:#fff;stroke-width:2;rx:16;filter:url(#shadow)}.blue{stroke:#2563eb}.cyan{stroke:#0f766e}.amber{stroke:#b45309}.violet{stroke:#7c3aed}.blueText{fill:#1d4ed8}.cyanText{fill:#0f766e}.amberText{fill:#b45309}.violetText{fill:#7c3aed}.axis{stroke:#94a3b8;stroke-width:4;stroke-linecap:round}.dot{stroke:#f8fafc;stroke-width:5}</style>
+  </defs>
+  <rect width="1200" height="620" rx="24" fill="#f8fafc"/>
+  <text x="55" y="58" class="title">0.7.9 → 0.7.15: 기능보다 실행 경계를 다듬은 업데이트</text>
+  <text x="55" y="88" class="sub">평가 완결성, 파일 도구 계약, subagent 문맥, 긴 실행 복구가 일곱 릴리스에 걸쳐 보강됐다.</text>
+  <path d="M105 215H1095" class="axis"/>
+
+  <circle cx="120" cy="215" r="12" fill="#7c3aed" class="dot"/><circle cx="280" cy="215" r="12" fill="#0f766e" class="dot"/><circle cx="440" cy="215" r="12" fill="#7c3aed" class="dot"/><circle cx="600" cy="215" r="12" fill="#2563eb" class="dot"/><circle cx="760" cy="215" r="12" fill="#2563eb" class="dot"/><circle cx="920" cy="215" r="12" fill="#b45309" class="dot"/><circle cx="1080" cy="215" r="12" fill="#b45309" class="dot"/>
+  <text x="120" y="172" text-anchor="middle" class="ver">0.7.9</text><text x="120" y="257" text-anchor="middle" class="date">08-25</text>
+  <text x="280" y="172" text-anchor="middle" class="ver">0.7.10</text><text x="280" y="257" text-anchor="middle" class="date">08-28</text>
+  <text x="440" y="172" text-anchor="middle" class="ver">0.7.11</text><text x="440" y="257" text-anchor="middle" class="date">08-28</text>
+  <text x="600" y="172" text-anchor="middle" class="ver">0.7.12</text><text x="600" y="257" text-anchor="middle" class="date">09-01</text>
+  <text x="760" y="172" text-anchor="middle" class="ver">0.7.13</text><text x="760" y="257" text-anchor="middle" class="date">09-02</text>
+  <text x="920" y="172" text-anchor="middle" class="ver">0.7.14</text><text x="920" y="257" text-anchor="middle" class="date">09-14</text>
+  <text x="1080" y="172" text-anchor="middle" class="ver">0.7.15</text><text x="1080" y="257" text-anchor="middle" class="date">09-16</text>
+
+  <rect x="55" y="330" width="255" height="190" class="card violet"/><text x="80" y="370" class="label violetText">EVALUATION</text><text x="80" y="407" class="ver">rubric 완결성과 hook</text><text x="80" y="442" class="small">모든 criterion 평가 요구</text><text x="80" y="472" class="small">관측용 on_evaluation</text><text x="80" y="500" class="date">0.7.9 · 0.7.11</text>
+  <rect x="335" y="330" width="255" height="190" class="card cyan"/><text x="360" y="370" class="label cyanText">FILE TOOLS</text><text x="360" y="407" class="ver">결과 계약을 명확하게</text><text x="360" y="442" class="small">빈 결과 ≠ backend 실패</text><text x="360" y="472" class="small">read / edit 출력 보강</text><text x="360" y="500" class="date">0.7.10 · 0.7.14</text>
+  <rect x="615" y="330" width="255" height="190" class="card blue"/><text x="640" y="370" class="label blueText">SUBAGENT CONTEXT</text><text x="640" y="407" class="ver">isolated 또는 fork</text><text x="640" y="442" class="small">부모 대화 복사 선택</text><text x="640" y="472" class="small">handoff 이름 정리</text><text x="640" y="500" class="date">0.7.12 · 0.7.13</text>
+  <rect x="895" y="330" width="250" height="190" class="card amber"/><text x="920" y="370" class="label amberText">LONG-RUN RECOVERY</text><text x="920" y="407" class="ver">실패 전파와 복구 보강</text><text x="920" y="442" class="small">compaction · partial call</text><text x="920" y="472" class="small">offload · state propagation</text><text x="920" y="500" class="date">0.7.14 · 0.7.15</text>
+  <text x="55" y="576" class="sub">핵심 질문: “무엇을 더 할 수 있나?”보다 “어떤 문맥과 실패 상태에서 실행됐나?”</text>
+</svg>

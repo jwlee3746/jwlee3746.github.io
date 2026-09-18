@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="570" viewBox="0 0 1200 570" role="img" aria-labelledby="title desc">
+  <title id="title">Conversation session and external workflow references</title>
+  <desc id="desc">The session preserves conversation history while a separate request reference connects a confirmation answer to the prior external execution.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#475569"/></marker><style>.title{font:700 30px system-ui,sans-serif;fill:#0f172a}.sub{font:16px system-ui,sans-serif;fill:#64748b}.head{font:700 18px system-ui,sans-serif;fill:#0f172a}.text{font:14px system-ui,sans-serif;fill:#475569}.lane{stroke:#cbd5e1;stroke-width:2}.line{stroke:#475569;stroke-width:2.3;fill:none;marker-end:url(#arrow)}.ref{stroke:#7c3aed;stroke-width:2.3;stroke-dasharray:8 6;fill:none;marker-end:url(#arrow)}.note{fill:#f5f3ff;stroke:#7c3aed;stroke-width:2;rx:14}</style></defs>
+  <rect width="1200" height="570" rx="24" fill="#f8fafc"/>
+  <text x="55" y="58" class="title">두 종류의 연속성을 분리한다</text>
+  <text x="55" y="88" class="sub">Session은 대화를 잇고, request reference는 외부 workflow의 정확한 실행을 잇는다.</text>
+  <text x="135" y="142" text-anchor="middle" class="head">사용자</text><text x="430" y="142" text-anchor="middle" class="head">Session / Agent</text><text x="755" y="142" text-anchor="middle" class="head">Custom Tool</text><text x="1060" y="142" text-anchor="middle" class="head">외부 시스템</text>
+  <path d="M135 165V500M430 165V500M755 165V500M1060 165V500" class="lane"/>
+  <path d="M135 205H430" class="line"/><text x="282" y="194" text-anchor="middle" class="text">“메시지 보내줘”</text>
+  <path d="M430 250H755" class="line"/><text x="592" y="239" text-anchor="middle" class="text">query + session identity</text>
+  <path d="M755 295H1060" class="line"/><text x="907" y="284" text-anchor="middle" class="text">첫 실행</text>
+  <path d="M1060 340H755" class="line"/><text x="907" y="329" text-anchor="middle" class="text">확인 질문 + request ref R1</text>
+  <path d="M755 385H430" class="line"/><path d="M430 420H135" class="line"/><text x="282" y="409" text-anchor="middle" class="text">“이대로 보낼까요?”</text>
+  <path d="M135 455H430" class="line"/><text x="282" y="444" text-anchor="middle" class="text">“응”</text>
+  <path d="M430 490H755" class="ref"/><text x="592" y="479" text-anchor="middle" class="text">사용자 답변 + R1</text>
+  <rect x="690" y="515" width="425" height="38" class="note"/><text x="902" y="540" text-anchor="middle" class="text">history만 추측하지 않고 명시적 reference로 continuation</text>
+</svg>
