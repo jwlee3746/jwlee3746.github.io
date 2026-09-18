@@ -35,16 +35,9 @@ PoC의 질문은 단순했다.
 | 예약·조건부 실행 | Cron/Automation | 실행 시점, session target과 결과 delivery 연결 |
 | 서버 실행 | Gateway + Docker Compose | 장시간 실행되는 runtime과 workspace/Skill mount |
 
-```text
-사용자 요청
-  → Gateway / Session
-  → Agent가 관련 Skill 확인
-  → target Agent와 실행 query 결정
-  → custom Tool 호출
-  → 외부 기능 실행
-  → event filtering / normalization
-  → model이 결과 또는 후속 질문 생성
-```
+![서버형 Bixby 에이전트 PoC에서 Skill, Tool, Hook, Session이 맡은 책임과 요청 처리 흐름](/data/images/posts/openclaw-component-application/component-boundaries.svg)
+
+요청은 Session에서 대화 문맥을 얻고, Skill이 capability 선택을 안내한 뒤, Tool을 통해 외부 기능으로 나간다. 돌아온 event는 model이 다음 판단에 필요한 정보만 남도록 정규화했다. Hook은 이 주 경로를 대신하지 않고 metadata와 관측 정보를 보강한다.
 
 ## 1. 하나의 Tool과 여러 Skill을 조합했다
 
@@ -111,6 +104,8 @@ Tool 구현 안에 모든 정책을 넣으면 다른 tool과 공통으로 적용
 예를 들어 첫 실행이 “이 항목으로 진행할까요?” 또는 “여러 후보 중 무엇을 선택할까요?”를 반환하면, 다음 사용자 답변을 새 요청으로 보내지 않고 이전 turn을 가리키게 했다. 동시에 model이 사용자가 말하지 않은 “예”, “전송” 같은 확인을 임의로 만들어내지 않도록 Tool description과 workspace rule에 제한을 넣었다.
 
 이 분리가 중요한 이유는 chat history만으로는 외부 workflow의 continuation을 보장할 수 없기 때문이다. Session은 대화 문맥을 유지하지만, 외부 시스템이 요구하는 turn identifier까지 자동으로 추론해 주지는 않는다.
+
+![Session이 대화 문맥을 유지하고 별도의 request reference가 외부 workflow의 확인 응답을 잇는 시퀀스](/data/images/posts/openclaw-component-application/session-continuity.svg)
 
 [Session management](https://docs.openclaw.ai/concepts/session)도 session을 단순 transcript가 아니라 inbound source, isolation과 background routing을 결정하는 경계로 다룬다.
 
