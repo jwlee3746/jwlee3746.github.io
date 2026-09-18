@@ -1,3 +1,4 @@
+import { postMetadata } from '../metadata.ts';
 import { screenTheme } from '../../shared/head.ts';
 import { escapeHtml } from "../../shared/html.ts";
 import { formatDate } from "../date.ts";
@@ -12,6 +13,7 @@ import { parseHTML } from 'linkedom';
 
 interface PageData {
   title: string;
+  excerpt?: string;
   date?: Date | string;
   content: string;
   tags?: string | string[];
@@ -20,7 +22,7 @@ interface PageData {
   collections: { posts: Post[]; categories: Category[] };
 }
 
-export default async function ({ title, date, content, tags, category, page, collections }: PageData): Promise<string> {
+export default async function ({ title, excerpt, date, content, tags, category, page, collections }: PageData): Promise<string> {
   const { site, profile } = await loadPortfolio();
   const toc = parseHTML(content).document.querySelector('.post-content > .post-toc')?.outerHTML;
   const tagPage = page.url.startsWith('/tags/');
@@ -40,6 +42,7 @@ export default async function ({ title, date, content, tags, category, page, col
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
   <title>${heading} | Jaynote</title>
+  ${postMetadata({ title, description: excerpt || site.description, url: new URL(page.url, site.url).href, author: profile.name, date })}
   <link rel="canonical" href="${escapeHtml(new URL(page.url, site.url).href)}">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   ${screenTheme()}
