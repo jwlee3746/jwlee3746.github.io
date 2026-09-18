@@ -83,10 +83,10 @@ TC와 simulator는 양자택일이 아니다. Simulator 기반 평가에도 시�
 
 | 구현 노트 | 다루는 문제 |
 | --- | --- |
-| 평가 계약과 검증 경계 | Trace와 versioned contract의 분리, shared validation |
-| Multi-step replay의 경계와 teacher forcing | pinned history의 재현성과 실제 trajectory의 차이 |
-| 경로 채점의 함정과 discovery continuation | 복수 정상 경로, trial semantics와 structured scoring |
-| 장시간 평가의 복구와 provenance | checkpoint, resume, 비교 가능한 artifact |
+| [평가 계약과 검증 경계](/posts/evaluation-contract-validation/) | Trace와 versioned contract의 분리, shared validation |
+| [Multi-step replay의 경계와 teacher forcing](/posts/multi-step-agent-evaluation/) | pinned history의 재현성과 실제 trajectory의 차이 |
+| [경로 채점의 함정과 discovery continuation](/posts/agent-path-scoring/) | 복수 정상 경로, trial semantics와 structured scoring |
+| [장시간 평가의 복구와 provenance](/posts/evaluation-checkpoint-provenance/) | checkpoint, resume, 비교 가능한 artifact |
 
 ## 공통 용어
 

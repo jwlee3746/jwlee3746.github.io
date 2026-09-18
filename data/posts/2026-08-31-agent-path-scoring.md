@@ -1,0 +1,147 @@
+---
+title: '[Agent Eval 구현 노트 3] 경로 채점의 함정과 discovery continuation'
+excerpt: 복수 정답 path와 structured action을 채점하는 방법, alternative 재호출·중복 제거·전역 argument 무시 정책이 만드는 오판 가능성.
+date: '2026-08-31'
+category: Evaluation
+tags:
+- Agent
+- LLM Evaluation
+- Deterministic Scoring
+- Tool Calling
+- Skills
+permalink: /posts/agent-path-scoring/
+legacyUrl: /blog/Agent/agent-path-scoring/
+toc: true
+---
+
+[시리즈 허브](/posts/reproducible-agent-evaluation/) · 구현 노트 3/4
+
+## 결과 한 줄보다 실행 경로가 중요하다
+
+최종 자연어 응답이 같아도 내부 경로는 다를 수 있다.
+
+- 기대한 tool을 직접 호출했다.
+- 올바른 skill을 읽은 뒤 같은 tool을 호출했다.
+- 잘못된 skill을 읽었지만 우연히 최종 action은 맞았다.
+- 잘못된 action을 호출했지만 응답 문장은 그럴듯했다.
+
+제품에서 안정성을 보려면 최종 텍스트뿐 아니라 구조화된 action과 경로를 함께 평가해야 한다.
+
+## Deterministic path scoring
+
+![복수 정답 경로와 structured action을 채점하는 흐름](/data/images/posts/agent-path-scoring/path-scoring-flow.svg)
+
+Tool call처럼 구조화된 결과는 가능한 한 deterministic하게 비교한다.
+
+- action 또는 tool name
+- 선택한 agent 또는 capability
+- function
+- parameters
+- step 사이의 path 순서
+- tier나 skill 사용 여부 같은 별도 평가 차원
+
+자연어 의미나 helpfulness처럼 규칙으로 표현하기 어려운 영역에만 LLM judge를 사용한다. Structured action까지 judge에 맡기면 같은 결과가 반복 실행마다 달라지고, failure analysis도 어려워진다.
+
+## 여러 정상 path를 표현하는 법
+
+동일한 요청에 정상 경로가 여러 개라면 request를 복제해 별도 test case로 만들기보다 한 case의 alternative path로 표현한다.
+
+```text
+TestCase
+├── preferred path
+│   └── action A → action B
+└── alternatives
+    └── action A → action C
+```
+
+허용 path는 실행 계획이 아니라 oracle 집합으로 다루는 편이 안전하다.
+
+1. 동일한 초기 상태에서 actual trial을 한 번 실행한다.
+2. 생성된 tool call, transcript와 outcome을 preferred path와 비교한다.
+3. 일치하지 않으면 같은 actual trial을 alternatives와 비교한다.
+4. 하나의 허용 oracle과 일치하면 PASS, 모두 다르면 FAIL이다.
+
+Preferred 실패 후 alternative마다 agent를 새로 실행하면 여러 정답을 허용하는 것이 아니라 여러 번의 성공 기회를 주게 된다. 초기 구현의 순차 path 재호출은 replay fixture를 각각 진단할 때는 쓸 수 있지만, case accuracy에는 별도 trial로 집계하거나 제거해야 한다.
+
+## Discovery step은 항상 최종 action이 아니다
+
+Agent가 tool을 바로 호출하지 않고 capability나 skill을 먼저 찾는 runtime이 있다. Discovery-only 응답을 곧바로 mismatch로 처리하면 정상적인 내부 orchestration을 오답으로 분류한다.
+
+![Discovery-only 응답을 이어서 최종 action을 평가하는 시퀀스](/data/images/posts/agent-path-scoring/discovery-continuation-sequence.svg)
+
+예상하지 않은 discovery-only 응답이 오면 evaluator는 runtime이 반환한 resolved message와 snapshot을 그대로 다음 request에 연결한다. Evaluator가 별도로 registry를 조회하거나 결과를 만들어내지 않는다. Runtime이 실제로 해석한 state를 이어받아야 같은 orchestration을 재현할 수 있기 때문이다.
+
+## Continuation의 안전 규칙
+
+Continuation은 무제한으로 허용하지 않는다.
+
+- 최대 횟수 budget을 둔다.
+- Discovery와 final action이 비정상적으로 같은 응답에 섞이면 실패한다.
+- Resolved tool result 또는 snapshot이 누락되면 execution error로 본다.
+- 다른 non-discovery action이 나오면 일반 mismatch로 끝낸다.
+- Test case가 discovery 자체를 기대한다면 continuation하지 않고 exact scoring한다.
+
+마지막 규칙이 중요하다. 어떤 test는 최종 action만 평가하고, 어떤 test는 특정 skill이 실제로 로드됐는지 평가한다. 둘은 match field로 명시적으로 구분해야 한다.
+
+## 결과 taxonomy
+
+단순 PASS/FAIL 외에 다음과 같은 경로 verdict를 남기면 triage가 쉬워진다.
+
+| Verdict | 의미 |
+| --- | --- |
+| `direct-action` | Discovery 없이 expected action 일치 |
+| `skill-assisted` | 기대한 discovery 이후 expected action 일치 |
+| `unexpected-skill` | 다른 capability 또는 skill을 선택 |
+| `skill-load-failed` | 요청했지만 결과를 load하지 못함 |
+| `downstream-action-failed` | Discovery는 성공했지만 최종 action 불일치 |
+| `mixed-call` | Discovery와 final action이 허용되지 않은 형태로 혼합 |
+| `execution-error` | 결과 누락, malformed event, timeout 등 실행 실패 |
+
+이 taxonomy를 accuracy 계산과 분리해서 보관하면 “모델이 action을 잘못 골랐는가”와 “orchestration이 중간 상태를 잃었는가”를 구분할 수 있다.
+
+## Scoring field는 목적에 맞게 고른다
+
+항상 모든 field를 exact match할 필요는 없다.
+
+- Routing 실험: agent·function 중심
+- Action correctness: tool·parameters 중심
+- Skill adoption: action + loaded skill
+- End-to-end behavior: path + final response
+
+중요한 것은 실행 후 마음에 드는 field를 골라 결과를 해석하지 않는 것이다. Run 시작 전에 scoring policy를 고정하고 artifact에 기록해야 한다.
+
+## 현재 deterministic scorer에서 먼저 고칠 것
+
+Deterministic하다는 사실만으로 scorer가 올바른 것은 아니다. 구현을 다시 보면 다음 정책은 device action이나 stateful task에서 false positive를 만들 수 있다.
+
+### 동일 호출을 하나로 축약하지 않는다
+
+동일한 tool call을 set처럼 정규화하면 기대 1회, 실제 2회 호출도 같은 값이 된다. Read-only lookup에서는 허용할 수 있어도 mutation에서는 duplicate effect를 놓친다. Multiset count와 operation identity를 보존하고, 순서가 계약인 tool은 ordered comparison을 사용해야 한다.
+
+### 전역 argument denylist를 tool별 정책으로 바꾼다
+
+`query`나 `message` 같은 자유 텍스트를 모든 tool에서 일괄 제외하면 표현 차이는 흡수할 수 있지만, 검색 대상이나 실행 대상 자체가 달라도 통과할 수 있다. Tool contract별로 exact, normalized, semantic, ignored field를 선언하는 comparator가 필요하다.
+
+### Status와 action을 별도 차원으로 본다
+
+같은 tool call을 반환해도 `completed`와 `incompleted`는 의미가 다를 수 있다. 실행 상태, 사용자 응답과 structured action을 분리해 채점해야 한다. 이름만 다른 match field가 같은 내부 비교 결과를 가리키면 지표도 실제 의미에 맞게 합치거나 구현을 분리해야 한다.
+
+### NLG exact match는 품질 grader가 아니다
+
+자연어를 문자열 완전 일치로 비교하면 정상 paraphrase를 실패시키고, NLG 평가를 끄면 실제 outcome과 사용자 안내가 충돌해도 놓친다. Truthfulness처럼 구조화 가능한 조건은 rule로, 자연스러움과 설명 품질은 calibrated model 또는 human rubric으로 분리한다.
+
+## LLM judge를 어디에 둘 것인가
+
+Judge를 추가한다면 deterministic scorer 뒤에 두는 편이 좋다. 현재 structured scorer의 결과를 model grader가 덮어쓰게 하지 않는다.
+
+```text
+Structured path mismatch ──▶ deterministic FAIL
+Structured path match
+  └── 자연어 품질 평가가 필요한 경우만 LLM judge
+```
+
+잘못된 tool을 호출한 실행을 최종 문장이 그럴듯하다는 이유로 통과시키지 않는다. Judge의 역할은 구조화된 계약을 대체하는 것이 아니라 그 계약이 표현하지 못하는 품질 차원을 보완하는 것이다.
+
+이전: [구현 노트 2. Multi-step replay의 경계와 teacher forcing](/posts/multi-step-agent-evaluation/)
+
+다음: [구현 노트 4. 장시간 평가의 복구와 provenance](/posts/evaluation-checkpoint-provenance/)
