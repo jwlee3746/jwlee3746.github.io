@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+  <title id="title">Hybrid LLM agent evaluation reference architecture</title>
+  <desc id="desc">Production traces become curated task candidates, then run as fixed replay or interactive simulation through a common evaluation harness.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#475569"/></marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0f172a" flood-opacity=".12"/></filter>
+    <style>.title{font:700 30px system-ui,sans-serif;fill:#0f172a}.sub{font:16px system-ui,sans-serif;fill:#64748b}.label{font:700 18px system-ui,sans-serif;fill:#0f172a}.small{font:14px system-ui,sans-serif;fill:#475569}.tiny{font:13px system-ui,sans-serif;fill:#64748b}.box{fill:#fff;stroke:#cbd5e1;stroke-width:2;rx:16;filter:url(#shadow)}.cyan{fill:#ecfeff;stroke:#0f766e}.blue{fill:#eff6ff;stroke:#2563eb}.amber{fill:#fffbeb;stroke:#b45309}.violet{fill:#f5f3ff;stroke:#7c3aed}.line{stroke:#475569;stroke-width:2.5;fill:none;marker-end:url(#arrow)}.dash{stroke:#64748b;stroke-width:2;stroke-dasharray:7 6;fill:none;marker-end:url(#arrow)}</style>
+  </defs>
+  <rect width="1200" height="650" rx="24" fill="#f8fafc"/>
+  <text x="55" y="56" class="title">LLM Agent Evaluation — Hybrid Reference Architecture</text>
+  <text x="55" y="86" class="sub">Trace → curated task → replay / simulation → outcome → feedback · 일반화 모델</text>
+
+  <rect x="50" y="170" width="175" height="130" class="box blue"/><text x="137" y="210" text-anchor="middle" class="label">Production</text><text x="137" y="235" text-anchor="middle" class="label">Interactions</text><text x="137" y="265" text-anchor="middle" class="small">sessions · feedback</text><text x="137" y="287" text-anchor="middle" class="small">outcomes · incidents</text>
+  <rect x="270" y="170" width="175" height="130" class="box cyan"/><text x="357" y="210" text-anchor="middle" class="label">OTel Trace</text><text x="357" y="235" text-anchor="middle" class="label">Discovery</text><text x="357" y="265" text-anchor="middle" class="small">filter · cluster</text><text x="357" y="287" text-anchor="middle" class="small">score · sample</text>
+  <rect x="490" y="170" width="175" height="130" class="box"/><text x="577" y="210" text-anchor="middle" class="label">Candidate</text><text x="577" y="235" text-anchor="middle" class="label">Curation</text><text x="577" y="265" text-anchor="middle" class="small">redact · dedupe</text><text x="577" y="287" text-anchor="middle" class="small">oracle · lineage</text>
+  <rect x="710" y="170" width="175" height="130" class="box violet"/><text x="797" y="210" text-anchor="middle" class="label">Versioned</text><text x="797" y="235" text-anchor="middle" class="label">Task Bank</text><text x="797" y="265" text-anchor="middle" class="small">intent · initial state</text><text x="797" y="287" text-anchor="middle" class="small">graders · policy</text>
+  <path d="M225 235H270" class="line"/><path d="M445 235H490" class="line"/><path d="M665 235H710" class="line"/>
+
+  <rect x="705" y="385" width="185" height="112" class="box amber"/><text x="797" y="423" text-anchor="middle" class="label">Fixed Replay</text><text x="797" y="451" text-anchor="middle" class="small">fast regression</text><text x="797" y="474" text-anchor="middle" class="small">deterministic fixtures</text>
+  <rect x="930" y="385" width="220" height="112" class="box cyan"/><text x="1040" y="423" text-anchor="middle" class="label">Interactive Run</text><text x="1040" y="451" text-anchor="middle" class="small">sandbox · simulator</text><text x="1040" y="474" text-anchor="middle" class="small">repeated trials</text>
+  <path d="M797 300V385" class="line"/><path d="M835 300V342H1040V385" class="line"/>
+
+  <rect x="930" y="170" width="220" height="130" class="box blue"/><text x="1040" y="210" text-anchor="middle" class="label">Common Harness</text><text x="1040" y="240" text-anchor="middle" class="small">agent · environment</text><text x="1040" y="263" text-anchor="middle" class="small">scorer · trial control</text><text x="1040" y="286" text-anchor="middle" class="small">trace · artifacts</text>
+  <path d="M890 441H915V300H965" class="line"/><path d="M1040 385V300" class="line"/>
+
+  <rect x="270" y="420" width="330" height="100" class="box violet"/><text x="435" y="457" text-anchor="middle" class="label">Comparable Outcomes</text><text x="435" y="485" text-anchor="middle" class="small">state · policy · consistency · provenance</text>
+  <path d="M930 280V340H635V420" class="line"/><path d="M435 420V350H137V300" class="dash"/>
+  <text x="55" y="608" class="sub">핵심: task는 유지하되, 위험에 따라 fixed replay와 interactive execution을 선택하고 결과를 production 관측으로 되돌린다.</text>
+</svg>
