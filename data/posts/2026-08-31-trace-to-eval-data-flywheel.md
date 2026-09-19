@@ -2,7 +2,7 @@
 title: '[Agent Eval 1] 관측에서 평가 자산으로: Trace-to-Eval Data Flywheel'
 excerpt: OpenTelemetry와 Langfuse 계열 trace를 검색·선별·정제해 재현 가능한 평가 데이터로 승격하는 파이프라인.
 date: '2026-08-31'
-category: Evaluation
+category: 기타
 tags:
 - Agent
 - LLM Evaluation

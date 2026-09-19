@@ -2,7 +2,7 @@
 title: '[Agent Eval 2] TC 기반 vs Simulator 기반 평가는 무엇이 다른가'
 excerpt: 고정 replay test case와 interactive simulator를 재현성, 현실성, oracle, 비용과 비결정성 관점에서 비교한다.
 date: '2026-08-31'
-category: Evaluation
+category: 기타
 tags:
 - Agent
 - LLM Evaluation

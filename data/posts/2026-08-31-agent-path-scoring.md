@@ -2,7 +2,7 @@
 title: '[Agent Eval 구현 노트 3] 경로 채점의 함정과 discovery continuation'
 excerpt: 복수 정답 path와 structured action을 채점하는 방법, alternative 재호출·중복 제거·전역 argument 무시 정책이 만드는 오판 가능성.
 date: '2026-08-31'
-category: Evaluation
+category: 기타
 tags:
 - Agent
 - LLM Evaluation

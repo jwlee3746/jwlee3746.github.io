@@ -2,7 +2,7 @@
 title: '[Agent Eval 구현 노트 2] Multi-step replay의 경계와 teacher forcing'
 excerpt: 검증된 test case를 runtime request와 expected path로 분리하는 방법, pinned history가 제공하는 재현성과 실제 trajectory를 만들지 못하는 한계.
 date: '2026-08-31'
-category: Evaluation
+category: 기타
 tags:
 - Agent
 - LLM Evaluation

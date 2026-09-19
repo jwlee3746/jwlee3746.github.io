@@ -2,7 +2,7 @@
 title: '[Agent] 재현 가능한 LLM 에이전트 평가 파이프라인 설계'
 excerpt: Trace에서 평가 자산을 만드는 흐름, TC와 simulator의 관계, tool output을 생성하는 environment boundary와 hybrid 평가 구조를 다시 검토한 시리즈.
 date: '2026-08-31'
-category: Evaluation
+category: 기타
 tags:
 - Agent
 - LLM Evaluation

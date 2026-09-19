@@ -2,7 +2,7 @@
 title: '[Agent Eval 구현 노트 4] 장시간 평가의 복구와 provenance'
 excerpt: Checkpoint, resume identity, 실행 budget과 provenance를 이용해 대규모 평가를 운영 가능한 작업으로 만드는 방법.
 date: '2026-08-31'
-category: Evaluation
+category: 기타
 tags:
 - Agent
 - LLM Evaluation
