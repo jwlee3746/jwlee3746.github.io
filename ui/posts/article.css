@@ -65,6 +65,9 @@
 .post-table th { color: var(--color-heading); background: var(--color-card); font-weight: 600; }
 .post-table td { font-variant-numeric: tabular-nums; }
 .post-table tbody tr:last-child td { border-bottom: 0; }
+/* Keep this article's dense comparisons readable inside the existing scroll region. */
+.post-content .eval-comparison table { min-width: 42rem; overflow-wrap: normal; }
+.post-content .eval-comparison :is(th, td):first-child { min-width: 7rem; }
 /* Markdown's inline text-align keeps numeric columns right-aligned. */
 .post-table :is(th, td)[style*="text-align:right"],
 .post-table :is(th, td)[style*="text-align: right"] { white-space: nowrap; }
