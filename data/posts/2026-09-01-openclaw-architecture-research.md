@@ -20,9 +20,9 @@ toc: true
 
 ## 먼저 결론: OpenClaw는 model이 아니라 runtime이다
 
-[![CLI·UI와 채널이 Gateway에 연결되고 Session, Agent loop, Scheduler가 문맥·도구·모델을 연결하는 블록 다이어그램](/data/images/posts/openclaw-architecture-research/openclaw-runtime-map.svg)](/data/images/posts/openclaw-architecture-research/openclaw-runtime-map.svg)
+![CLI·UI와 채널이 Gateway에 연결되고 Session, Agent loop, Scheduler가 문맥·도구·모델을 연결하는 블록 다이어그램](/data/images/posts/openclaw-architecture-research/openclaw-runtime-map.svg)
 
-그림 1. Gateway 내부의 실행 책임과 외부 연결. 이미지를 선택하면 원본 크기로 볼 수 있다.
+그림 1. Gateway 내부의 실행 책임과 외부 연결. 좁은 화면에서는 도표 영역을 가로로 스크롤해 볼 수 있다.
 
 | 경계 | 받는 것 → 내보내는 것 | 맡는 책임 |
 | --- | --- | --- |
@@ -71,7 +71,7 @@ agent 요청의 접수 확인 ≠ agent run의 실행 완료
 
 예시 요청은 “서울 날씨를 알려줘”다. model이 날씨 도구를 선택하면 runtime이 실행하고, model은 도구 결과를 받아 답을 만든다. 도구가 필요 없는 요청은 도구 호출 구간을 건너뛴다.
 
-[![Gateway, Agent loop, Model, Tool 사이의 추론·도구 호출·결과 반영·응답 전달 시퀀스 다이어그램](/data/images/posts/openclaw-architecture-research/agent-tool-sequence.svg)](/data/images/posts/openclaw-architecture-research/agent-tool-sequence.svg)
+![Gateway, Agent loop, Model, Tool 사이의 추론·도구 호출·결과 반영·응답 전달 시퀀스 다이어그램](/data/images/posts/openclaw-architecture-research/agent-tool-sequence.svg)
 
 그림 2. 한 번의 도구 호출을 펼친 실행 순서. 도구 호출과 재추론은 여러 번 반복될 수 있다. Streaming과 transcript 갱신은 실행 중에도 일어난다.
 
@@ -106,7 +106,7 @@ with session_lane(session_key):
 
 ## Tool, Skill, Plugin을 구분하는 기준
 
-[![Skill은 Agent loop에 지침을 제공하고 Plugin이 등록한 Tool과 Hook이 외부 API 실행을 담당하는 블록 다이어그램](/data/images/posts/openclaw-architecture-research/capability-boundaries.svg)](/data/images/posts/openclaw-architecture-research/capability-boundaries.svg)
+![Skill은 Agent loop에 지침을 제공하고 Plugin이 등록한 Tool과 Hook이 외부 API 실행을 담당하는 블록 다이어그램](/data/images/posts/openclaw-architecture-research/capability-boundaries.svg)
 
 그림 3. 같은 날씨 조회 기능에서도 판단 절차, 실제 호출, 등록과 배포는 서로 다른 책임이다.
 
@@ -234,7 +234,7 @@ Typed Plugin Hook은 `api.on(...)`으로 등록한다. `HOOK.md` 기반 내부 h
 
 “내일 아침 서울에 비가 오면 알려줘”는 **시점에 맞춰 깨우기**와 **그때 날씨를 조회해 판단하기**로 나뉜다.
 
-[![Scheduler가 예약 상태를 보존하고 Agent run을 깨운 뒤 실행 결과와 전달 결과를 따로 확인하는 시퀀스 다이어그램](/data/images/posts/openclaw-architecture-research/automation-sequence.svg)](/data/images/posts/openclaw-architecture-research/automation-sequence.svg)
+![Scheduler가 예약 상태를 보존하고 Agent run을 깨운 뒤 실행 결과와 전달 결과를 따로 확인하는 시퀀스 다이어그램](/data/images/posts/openclaw-architecture-research/automation-sequence.svg)
 
 그림 4. 예약 실행의 책임 순서. 실제 session 선택과 전달 방식은 job 설정에 따라 달라진다.
 

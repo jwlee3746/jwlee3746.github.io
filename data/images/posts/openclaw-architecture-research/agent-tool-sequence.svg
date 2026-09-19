@@ -1,42 +1,42 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="640" height="928" viewBox="0 0 640 928" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" data-article-diagram="true" class="article-diagram-art" width="560" height="696" viewBox="0 0 560 696" role="img" aria-labelledby="title desc">
 <title id="title">02 / 한 turn의 도구 호출</title><desc id="desc">Gateway가 요청을 받아 세션 실행 순서를 정하면 agent loop가 문맥을 구성한다. 모델의 도구 호출 요청을 실행하고 결과로 다시 추론한다. 도구 호출은 필요할 때 반복되며 이벤트와 기록은 실행 중에도 발생한다.</desc>
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#475569"/></marker></defs>
-<style>text{font-family:system-ui,-apple-system,sans-serif;fill:#172b42}.heading{font-size:28px;font-weight:700}.label{font-size:23px;font-weight:650}.body{font-size:23px}.note{font-size:21px;fill:#475569}.edge{fill:none;stroke:#475569;stroke-width:2.3;marker-end:url(#arrow)}.return{stroke-dasharray:7 5}.life{stroke:#94a3b8;stroke-width:1.5;stroke-dasharray:6 6}</style>
-<rect width="640" height="928" rx="18" fill="#f8fafc"/>
-<text x="28" y="44" class="heading" text-anchor="start">02 / 한 turn의 도구 호출</text>
-<rect x="16" y="78" width="132" height="55" rx="12" fill="#eaf3ff" stroke="#90b5de" stroke-width="2"/>
-<text x="82.0" y="112" class="label" text-anchor="middle">Gateway</text>
-<path d="M82 133V841" class="life"/>
-<rect x="175" y="78" width="132" height="55" rx="12" fill="#eaf3ff" stroke="#90b5de" stroke-width="2"/>
-<text x="241.0" y="112" class="label" text-anchor="middle">Agent loop</text>
-<path d="M241 133V841" class="life"/>
-<rect x="334" y="78" width="132" height="55" rx="12" fill="#eaf3ff" stroke="#90b5de" stroke-width="2"/>
-<text x="400.0" y="112" class="label" text-anchor="middle">Model</text>
-<path d="M400 133V841" class="life"/>
-<rect x="493" y="78" width="132" height="55" rx="12" fill="#eaf3ff" stroke="#90b5de" stroke-width="2"/>
-<text x="559.0" y="112" class="label" text-anchor="middle">Tool</text>
-<path d="M559 133V841" class="life"/>
-<text x="161.5" y="179" class="body" text-anchor="middle">1. run 시작</text>
-<path d="M82 191H241" class="edge"/>
-<rect x="136" y="215" width="210" height="90" rx="12" fill="#fff7e7" stroke="#cbd5e1" stroke-width="2"/>
-<text x="241.0" y="249" class="label" text-anchor="middle">Context</text>
-<text x="241.0" y="283" class="body" text-anchor="middle">history · skills</text>
-<text x="320.5" y="340" class="body" text-anchor="middle">2. 추론 요청</text>
-<path d="M241 352H400" class="edge"/>
-<rect x="202" y="370" width="406" height="308" rx="10" fill="#ecfdf5" fill-opacity=".75" stroke="#298474" stroke-dasharray="6 4"/>
-<text x="218" y="402" class="note" text-anchor="start">필요할 때 반복</text>
-<text x="320.5" y="440" class="body" text-anchor="middle">3. tool call</text>
-<path d="M400 452H241" class="edge return"/>
-<text x="400.0" y="518" class="body" text-anchor="middle">4. Hook → Tool 실행</text>
-<path d="M241 530H559" class="edge"/>
-<text x="400.0" y="584" class="body" text-anchor="middle">5. 결과 → Hook</text>
-<path d="M559 596H241" class="edge return"/>
-<text x="320.5" y="644" class="body" text-anchor="middle">6. 결과로 재추론</text>
-<path d="M241 656H400" class="edge"/>
-<text x="320.5" y="718" class="body" text-anchor="middle">7. 최종 응답</text>
-<path d="M400 730H241" class="edge return"/>
-<text x="161.5" y="786" class="body" text-anchor="middle">8. 응답 전달</text>
-<path d="M241 798H82" class="edge return"/>
-<text x="28" y="876" class="note" text-anchor="start">assistant / tool / lifecycle 이벤트는 실행 중 전달</text>
-<text x="28" y="906" class="note" text-anchor="start">transcript도 실행 중 갱신 — 종료 시 한 번 저장 아님</text>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#475569" /></marker></defs>
+<style>.article-diagram-art text{font-family:"Source Sans Pro","Pretendard Variable",Pretendard,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;fill:#172b42}.article-diagram-art .heading{font-size:18px;font-weight:600}.article-diagram-art .label{font-size:16px;font-weight:600}.article-diagram-art .body{font-size:16px}.article-diagram-art .note{font-size:14px;fill:#475569}.article-diagram-art .edge{fill:none;stroke:#475569;stroke-width:2.3;marker-end:url(#arrow)}.article-diagram-art .return{stroke-dasharray:7 5}.article-diagram-art .life{stroke:#94a3b8;stroke-width:1.5;stroke-dasharray:6 6}</style>
+<rect width="560" height="696" rx="18" fill="#f8fafc" />
+<text x="24.5" y="33" class="heading" text-anchor="start">02 / 한 turn의 도구 호출</text>
+<rect x="14" y="58.5" width="115.5" height="41.25" rx="12" fill="#eaf3ff" stroke="#90b5de" stroke-width="2" />
+<text x="71.75" y="84" class="label" text-anchor="middle">Gateway</text>
+<path d="M71.75 99.75V630.75" class="life" />
+<rect x="153.125" y="58.5" width="115.5" height="41.25" rx="12" fill="#eaf3ff" stroke="#90b5de" stroke-width="2" />
+<text x="210.875" y="84" class="label" text-anchor="middle">Agent loop</text>
+<path d="M210.875 99.75V630.75" class="life" />
+<rect x="292.25" y="58.5" width="115.5" height="41.25" rx="12" fill="#eaf3ff" stroke="#90b5de" stroke-width="2" />
+<text x="350" y="84" class="label" text-anchor="middle">Model</text>
+<path d="M350 99.75V630.75" class="life" />
+<rect x="431.375" y="58.5" width="115.5" height="41.25" rx="12" fill="#eaf3ff" stroke="#90b5de" stroke-width="2" />
+<text x="489.125" y="84" class="label" text-anchor="middle">Tool</text>
+<path d="M489.125 99.75V630.75" class="life" />
+<text x="141.312" y="134.25" class="body" text-anchor="middle">1. run 시작</text>
+<path d="M71.75 143.25H210.875" class="edge" />
+<rect x="119" y="161.25" width="183.75" height="67.5" rx="12" fill="#fff7e7" stroke="#cbd5e1" stroke-width="2" />
+<text x="210.875" y="186.75" class="label" text-anchor="middle">Context</text>
+<text x="210.875" y="212.25" class="body" text-anchor="middle">history · skills</text>
+<text x="280.438" y="255" class="body" text-anchor="middle">2. 추론 요청</text>
+<path d="M210.875 264H350" class="edge" />
+<rect x="176.75" y="277.5" width="355.25" height="231" rx="10" fill="#ecfdf5" fill-opacity=".75" stroke="#298474" stroke-dasharray="6 4" />
+<text x="190.75" y="301.5" class="note" text-anchor="start">필요할 때 반복</text>
+<text x="280.438" y="330" class="body" text-anchor="middle">3. tool call</text>
+<path d="M350 339H210.875" class="edge return" />
+<text x="350" y="388.5" class="body" text-anchor="middle">4. Hook → Tool 실행</text>
+<path d="M210.875 397.5H489.125" class="edge" />
+<text x="350" y="438" class="body" text-anchor="middle">5. 결과 → Hook</text>
+<path d="M489.125 447H210.875" class="edge return" />
+<text x="280.438" y="483" class="body" text-anchor="middle">6. 결과로 재추론</text>
+<path d="M210.875 492H350" class="edge" />
+<text x="280.438" y="538.5" class="body" text-anchor="middle">7. 최종 응답</text>
+<path d="M350 547.5H210.875" class="edge return" />
+<text x="141.312" y="589.5" class="body" text-anchor="middle">8. 응답 전달</text>
+<path d="M210.875 598.5H71.75" class="edge return" />
+<text x="24.5" y="657" class="note" text-anchor="start">assistant / tool / lifecycle 이벤트는 실행 중 전달</text>
+<text x="24.5" y="679.5" class="note" text-anchor="start">transcript도 실행 중 갱신 — 종료 시 한 번 저장 아님</text>
 </svg>
