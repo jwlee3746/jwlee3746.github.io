@@ -2,7 +2,7 @@
 title: '[Device Assistant] 디바이스 어시스턴트 평가는 왜 어려운가'
 excerpt: 부분적으로 관측되는 기기 상태, 다단계 사용자 개입과 실제 세계의 비가역 동작을 평가하는 방법, 기존 평가기가 풀어낸 문제와 아직 남은 구조적 과제.
 date: '2026-08-31'
-category: Evaluation
+category: 기타
 tags:
 - Device Assistant
 - LLM Evaluation

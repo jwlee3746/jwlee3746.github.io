@@ -2,7 +2,7 @@
 title: '[Agent Eval 4] TC 중심 설계를 돌아본 Hybrid Evaluation Architecture'
 excerpt: 고정 TC의 재현성은 유지하면서 trace feedback, executable environment와 simulator를 비용 대비 효과에 맞게 결합하는 설계 회고.
 date: '2026-08-31'
-category: Evaluation
+category: 기타
 tags:
 - Agent
 - LLM Evaluation

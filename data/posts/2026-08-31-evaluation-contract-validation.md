@@ -2,7 +2,7 @@
 title: '[Agent Eval 구현 노트 1] 평가 계약과 검증 경계'
 excerpt: Trace를 평가 계약으로 구조화하고 CI와 runtime이 같은 validator를 공유하도록 설계하는 방법.
 date: '2026-08-31'
-category: Evaluation
+category: 기타
 tags:
 - Agent
 - LLM Evaluation

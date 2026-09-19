@@ -2,7 +2,7 @@
 title: '[Agent Eval 3] Evaluation Harness는 무엇을 표준화하는가'
 excerpt: Anthropic의 개념 모델, Inspect AI, Harbor와 τ-bench를 비교해 agent evaluation harness가 표준화하는 실행 경계와 남겨 두는 제품 책임을 정리한다.
 date: '2026-08-31'
-category: Evaluation
+category: 기타
 tags:
 - Agent
 - LLM Evaluation
