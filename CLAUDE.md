@@ -41,7 +41,7 @@
 
 ## 작업 규칙
 
-- 변경이 끝나면 **묻지 말고 바로 커밋·푸시**한다. Pages 배포에 시간 텀이 있어 승인 대기가 곧 배포 지연이다.
+- 변경이 끝나면 **별도 브랜치에 커밋·푸시하고 PR을 생성**한다. `main`에 직접 푸시하지 않는다.
 - 이력서 원본 데이터·`ui/resume/`·`ui/shared/`·빌드 코드를 고치면 `npm run build:resume:pdf`로 HTML과 PDF를 함께 갱신한다. `npm run typecheck`, `npm test`, `npm run check:resume`도 통과해야 한다.
 - 새 프로젝트는 `data/resume/projects/<slug>.json` 하나를 추가한다. `_site/resume/index.html`은 직접 수정하지 않는다. 훅은 `bash scripts/install-resume-hook.sh`로 설치·갱신한다.
 - 이력서는 **A4 1~3페이지** 안에서 프로젝트 근거와 가독성을 우선한다. 빌드 스크립트가 페이지 수를 검증한다.

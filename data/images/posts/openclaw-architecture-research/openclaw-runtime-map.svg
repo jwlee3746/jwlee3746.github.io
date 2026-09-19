@@ -1,58 +1,41 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
-  <title id="title">OpenClaw runtime component map</title>
-  <desc id="desc">Clients connect to the Gateway, which owns sessions and runs the agent loop. Workspace skills shape decisions, plugins provide tools and hooks, and automations wake later runs.</desc>
-  <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#475569"/></marker>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0f172a" flood-opacity=".12"/></filter>
-    <style>.title{font:700 30px system-ui,sans-serif;fill:#0f172a}.sub{font:16px system-ui,sans-serif;fill:#64748b}.label{font:700 19px system-ui,sans-serif;fill:#0f172a}.small{font:14px system-ui,sans-serif;fill:#475569}.tiny{font:13px system-ui,sans-serif;fill:#64748b}.box{fill:#fff;stroke:#cbd5e1;stroke-width:2;rx:16;filter:url(#shadow)}.blue{fill:#eff6ff;stroke:#2563eb}.cyan{fill:#ecfeff;stroke:#0f766e}.amber{fill:#fffbeb;stroke:#b45309}.violet{fill:#f5f3ff;stroke:#7c3aed}.line{stroke:#475569;stroke-width:2.5;fill:none;marker-end:url(#arrow)}.dash{stroke:#7c3aed;stroke-width:2.2;stroke-dasharray:8 6;fill:none;marker-end:url(#arrow)}</style>
-  </defs>
-  <rect width="1200" height="720" rx="24" fill="#f8fafc"/>
-  <text x="55" y="58" class="title">OpenClaw Runtime — Component Boundaries</text>
-  <text x="55" y="88" class="sub">Gateway가 상태와 실행을 소유하고, Skill은 판단을 안내하며, Tool·Plugin은 실제 행동을 확장한다.</text>
-
-  <rect x="50" y="155" width="205" height="245" class="box blue"/>
-  <text x="152" y="193" text-anchor="middle" class="label">Clients / Nodes</text>
-  <text x="152" y="239" text-anchor="middle" class="small">Web · CLI · App</text>
-  <text x="152" y="275" text-anchor="middle" class="small">Messaging channels</text>
-  <text x="152" y="311" text-anchor="middle" class="small">Device nodes</text>
-  <text x="152" y="358" text-anchor="middle" class="tiny">typed WebSocket API</text>
-
-  <rect x="330" y="125" width="530" height="420" class="box cyan"/>
-  <text x="595" y="168" text-anchor="middle" class="label">Gateway</text>
-  <text x="595" y="195" text-anchor="middle" class="small">routing · session state · queues · streaming · persistence</text>
-
-  <rect x="370" y="235" width="205" height="225" class="box amber"/>
-  <text x="472" y="275" text-anchor="middle" class="label">Session Lane</text>
-  <text x="472" y="315" text-anchor="middle" class="small">session key / history</text>
-  <text x="472" y="349" text-anchor="middle" class="small">serialized runs</text>
-  <text x="472" y="383" text-anchor="middle" class="small">context + compaction</text>
-  <text x="472" y="425" text-anchor="middle" class="tiny">continuity boundary</text>
-
-  <rect x="625" y="235" width="195" height="225" class="box violet"/>
-  <text x="722" y="275" text-anchor="middle" class="label">Agent Loop</text>
-  <text x="722" y="315" text-anchor="middle" class="small">prompt assembly</text>
-  <text x="722" y="349" text-anchor="middle" class="small">model inference</text>
-  <text x="722" y="383" text-anchor="middle" class="small">tool execution</text>
-  <text x="722" y="417" text-anchor="middle" class="small">reply + persistence</text>
-  <path d="M575 347H625" class="line"/>
-
-  <rect x="930" y="120" width="220" height="135" class="box blue"/>
-  <text x="1040" y="158" text-anchor="middle" class="label">Workspace</text>
-  <text x="1040" y="196" text-anchor="middle" class="small">AGENTS.md · context</text>
-  <text x="1040" y="226" text-anchor="middle" class="small">Skills / SKILL.md</text>
-  <path d="M930 205H860" class="line"/>
-
-  <rect x="930" y="320" width="220" height="180" class="box amber"/>
-  <text x="1040" y="360" text-anchor="middle" class="label">Capability Layer</text>
-  <text x="1040" y="399" text-anchor="middle" class="small">typed Tools</text>
-  <text x="1040" y="432" text-anchor="middle" class="small">Plugins · Hooks</text>
-  <text x="1040" y="465" text-anchor="middle" class="small">external systems</text>
-  <path d="M820 383H930" class="line"/>
-
-  <rect x="330" y="615" width="530" height="65" class="box violet"/>
-  <text x="595" y="643" text-anchor="middle" class="label">Automations</text>
-  <text x="595" y="666" text-anchor="middle" class="small">schedule · wake · background run · delivery</text>
-  <path d="M595 615V545" class="dash"/>
-  <path d="M255 277H330" class="line"/>
-  <text x="55" y="698" class="sub">정책 경계는 별개다: sandbox는 어디서 실행할지, tool policy는 무엇을 호출할지 결정한다.</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="1050" viewBox="0 0 640 1050" role="img" aria-labelledby="title desc">
+<title id="title">01 / Runtime 구성</title><desc id="desc">CLI와 UI는 WebSocket, 메시징 채널은 채널 연동을 통해 Gateway에 연결한다. Gateway 안의 세션 큐, agent loop와 scheduler가 문맥·도구·모델을 연결한다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#475569"/></marker></defs>
+<style>text{font-family:system-ui,-apple-system,sans-serif;fill:#172b42}.heading{font-size:28px;font-weight:700}.label{font-size:23px;font-weight:650}.body{font-size:23px}.note{font-size:21px;fill:#475569}.edge{fill:none;stroke:#475569;stroke-width:2.3;marker-end:url(#arrow)}.return{stroke-dasharray:7 5}.life{stroke:#94a3b8;stroke-width:1.5;stroke-dasharray:6 6}</style>
+<rect width="640" height="1050" rx="18" fill="#f8fafc"/>
+<text x="28" y="44" class="heading" text-anchor="start">01 / Runtime 구성</text>
+<rect x="24" y="78" width="282" height="100" rx="12" fill="#eaf3ff" stroke="#cbd5e1" stroke-width="2"/>
+<text x="165.0" y="112" class="label" text-anchor="middle">CLI · Web UI · Nodes</text>
+<text x="165.0" y="146" class="body" text-anchor="middle">WebSocket 연결</text>
+<rect x="326" y="78" width="290" height="100" rx="12" fill="#eaf3ff" stroke="#cbd5e1" stroke-width="2"/>
+<text x="471.0" y="112" class="label" text-anchor="middle">Messaging channels</text>
+<text x="471.0" y="146" class="body" text-anchor="middle">채널별 연동</text>
+<path d="M165 178V218" class="edge"/>
+<path d="M471 178V218" class="edge"/>
+<rect x="24" y="218" width="592" height="570" rx="16" fill="#ecfdf5" stroke="#298474" stroke-width="2"/>
+<text x="48" y="260" class="heading" text-anchor="start">Gateway</text>
+<text x="48" y="295" class="body" text-anchor="start">연결 · 인증 · routing · streaming</text>
+<rect x="48" y="325" width="544" height="104" rx="12" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+<text x="320.0" y="359" class="label" text-anchor="middle">Session / Queue</text>
+<text x="320.0" y="393" class="body" text-anchor="middle">session key · history · 실행 순서</text>
+<path d="M320 429V469" class="edge"/>
+<rect x="48" y="469" width="544" height="132" rx="12" fill="#f1edff" stroke="#a69ac9" stroke-width="2"/>
+<text x="320.0" y="503" class="label" text-anchor="middle">Agent loop</text>
+<text x="320.0" y="537" class="body" text-anchor="middle">context 구성 → model 호출</text>
+<text x="320.0" y="567" class="body" text-anchor="middle">tool 결과 반영 → 응답 구성</text>
+<rect x="48" y="651" width="544" height="100" rx="12" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+<text x="320.0" y="685" class="label" text-anchor="middle">Scheduler / Automation</text>
+<text x="320.0" y="719" class="body" text-anchor="middle">예약 상태 · 깨우기 · 결과 전달</text>
+<path d="M560 651V601" class="edge return"/>
+<path d="M48 550H34V817H162V849" class="edge"/>
+<path d="M592 550H606V817H478V849" class="edge"/>
+<rect x="24" y="849" width="282" height="112" rx="12" fill="#fff7e7" stroke="#cbd5e1" stroke-width="2"/>
+<text x="165.0" y="883" class="label" text-anchor="middle">Context / Capability</text>
+<text x="165.0" y="917" class="body" text-anchor="middle">Workspace · Skills</text>
+<text x="165.0" y="947" class="body" text-anchor="middle">Tools · Plugin hooks</text>
+<rect x="326" y="849" width="290" height="112" rx="12" fill="#eaf3ff" stroke="#cbd5e1" stroke-width="2"/>
+<text x="471.0" y="883" class="label" text-anchor="middle">Model provider</text>
+<text x="471.0" y="917" class="body" text-anchor="middle">추론 요청 · 응답</text>
+<text x="471.0" y="947" class="body" text-anchor="middle">외부 model endpoint</text>
+<text x="28" y="1006" class="note" text-anchor="start">실선: 연결·호출   점선: 예약 시점의 실행 요청</text>
 </svg>

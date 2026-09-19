@@ -1,6 +1,6 @@
 ---
 title: '[리서치] OpenClaw 아키텍처: Gateway에서 Tool·Skill·Plugin까지'
-excerpt: OpenClaw를 단순한 챗봇이 아니라 Gateway, session, agent loop와 확장 경계로 나누어 읽고, Tool·Skill·Plugin의 역할 차이를 정리합니다.
+excerpt: 블록·시퀀스 다이어그램으로 OpenClaw의 실행 구조를 읽고, 코드 예시와 비교 표로 Tool·Skill·Plugin, Session과 Automation의 책임을 구분합니다.
 date: '2026-09-01'
 category: Agent
 tags:
@@ -14,159 +14,278 @@ legacyUrl: /blog/Agent/openclaw-architecture-research/
 toc: true
 ---
 
-> 이 글은 2026년 9월 1일의 [OpenClaw 공식 문서](https://docs.openclaw.ai/)와 [공식 저장소](https://github.com/openclaw/openclaw)를 기준으로 작성했다. OpenClaw는 빠르게 바뀌는 프로젝트이므로 세부 API와 기본값은 링크한 최신 문서를 다시 확인해야 한다.
+**OpenClaw는 Gateway가 연결과 상태를 관리하고, agent loop가 model과 도구를 연결하는 실행 환경이다.** 아래에서는 같은 날씨 조회 예시를 구조도 → 실행 순서 → 확장 코드 순서로 따라간다.
 
-OpenClaw를 처음 보면 메시징 채널이 많은 개인 AI assistant처럼 보인다. 하지만 서버형 agent를 설계하는 관점에서는 **Gateway가 상태와 실행을 소유하고, agent loop가 한 turn을 처리하며, Tool·Skill·Plugin이 서로 다른 방식으로 capability를 확장하는 runtime**으로 보는 편이 더 정확하다.
-
-이 구분을 이해하면 “프롬프트에 지시를 더 쓸까?”, “typed tool을 만들까?”, “plugin으로 lifecycle에 개입할까?”를 같은 문제로 취급하지 않게 된다.
-
-![OpenClaw Gateway, session, agent loop와 capability layer의 관계](/data/images/posts/openclaw-architecture-research/openclaw-runtime-map.svg)
+> 2026년 9월 19일 공식 문서를 다시 확인해 재구성했다. 다이어그램은 책임과 호출 관계를 단순화한 개념도다. 코드에는 설정 조각·등록부 발췌·의사코드 여부를 표시했으며, 완성된 Plugin 설치 예제는 아니다.
 
 ## 먼저 결론: OpenClaw는 model이 아니라 runtime이다
 
-LLM provider는 OpenClaw가 사용하는 구성요소 중 하나다. OpenClaw가 더 넓게 책임지는 범위는 다음과 같다.
+[![CLI·UI와 채널이 Gateway에 연결되고 Session, Agent loop, Scheduler가 문맥·도구·모델을 연결하는 블록 다이어그램](/data/images/posts/openclaw-architecture-research/openclaw-runtime-map.svg)](/data/images/posts/openclaw-architecture-research/openclaw-runtime-map.svg)
 
-- 여러 client와 channel의 요청을 받는 Gateway
-- 요청을 어느 agent와 session으로 보낼지 결정하는 routing
-- context 구성, model inference, tool execution과 응답을 잇는 agent loop
-- session history, queue, streaming과 persistence
-- workspace context와 Skill loading
-- Tool, Plugin, Hook과 automation을 통한 capability 확장
+그림 1. Gateway 내부의 실행 책임과 외부 연결. 이미지를 선택하면 원본 크기로 볼 수 있다.
 
-공식 문서도 embedded agent runtime이 model discovery, tool wiring, prompt assembly, session management와 channel delivery를 하나의 runtime surface로 소유한다고 설명한다. 즉 OpenClaw를 도입한다는 것은 특정 model을 선택하는 것보다 **model 주위의 실행 계약을 채택하는 일**에 가깝다. ([Agent runtime](https://docs.openclaw.ai/concepts/agent))
+| 경계 | 받는 것 → 내보내는 것 | 맡는 책임 |
+| --- | --- | --- |
+| Gateway | 요청 → run 접수·이벤트 | 연결, 인증, routing |
+| Session / Queue | session key → history·실행 순서 | 대화 연속성, 같은 session의 동시 실행 조정 |
+| Agent loop | context → 응답·도구 호출 | model과 도구 사이의 반복 실행 |
+| Context / Capability | 파일·등록 코드 → 지침·도구 | Workspace, Skill, Tool, Hook |
+| Model provider | prompt·도구 결과 → 추론 결과 | 다음 행동 또는 응답 생성 |
+| Scheduler | 예약 상태 → 실행 요청 | 실행 시점과 결과 전달 관리 |
+
+Model을 바꾸는 것과 runtime을 바꾸는 것은 영향 범위가 다르다. 후자는 문맥 구성, 실행 순서, 도구 연결과 상태 관리까지 바꾼다. [Gateway architecture](https://docs.openclaw.ai/concepts/architecture) · [Agent runtime](https://docs.openclaw.ai/concepts/agent)
 
 ## Gateway: 장시간 살아 있는 control plane
 
-[Gateway architecture](https://docs.openclaw.ai/concepts/architecture)에 따르면 하나의 long-lived Gateway가 messaging surface와 client 연결을 소유한다. CLI, web UI와 app은 typed WebSocket API로 연결되고, node도 같은 server에 자신의 role과 capability를 선언한다.
+CLI·UI·node는 Gateway의 WebSocket API에 연결한다. 메시징 채널은 채널별 연동을 거친다. **연결 수립, 요청 접수, 실행 완료를 구분해서 읽는 것**이 핵심이다.
 
-Gateway의 책임은 단순 reverse proxy보다 넓다.
+| 단계 | 메시지 / 상태 | 해석 |
+| --- | --- | --- |
+| 연결 | `connect` → 연결 승인 | 인증·역할 확인 후 API 사용 |
+| 요청 | `type: "req"`, `id`, `method`, `params` | `id`로 요청과 응답을 대응 |
+| 응답 | `type: "res"`, `ok`, `payload` 또는 `error` | 호출 결과 또는 접수 상태 |
+| 이벤트 | `type: "event"`, `event`, `payload` | 실행 진행 상황을 비동기로 전달 |
+| 완료 확인 | `runId`와 lifecycle / `agent.wait` | 접수된 run이 끝났는지 추적 |
 
-- inbound frame 검증과 인증
-- client, channel, node 연결 관리
-- agent run 접수와 streaming event 전달
-- session routing과 상태 보관
-- health, presence, heartbeat와 automation event 발행
+**프로토콜 예시 — 인증된 연결에서 보내는 `health` 요청과 요청 ID 대응.** 연결 handshake와 오류 응답은 생략했다.
 
-이 구조의 장점은 client가 각자 agent state를 들고 있지 않아도 된다는 점이다. 여러 UI가 같은 session에 붙더라도 기준 상태는 Gateway에 있다. 반대로 Gateway를 외부에 노출하면 agent가 가진 tool 권한까지 공격 표면에 포함되므로, 네트워크 접근과 tool 권한을 함께 설계해야 한다.
+```json
+{
+  "type": "req",
+  "id": "health-01",
+  "method": "health",
+  "params": {}
+}
+```
+
+```text
+Client  ── req: health-01 ──▶  Gateway
+Client  ◀─ res: health-01 ───  Gateway
+
+agent 요청의 접수 확인 ≠ agent run의 실행 완료
+```
+
+필드 구조는 [Gateway architecture](https://docs.openclaw.ai/concepts/architecture), run 접수와 대기는 [Agent loop](https://docs.openclaw.ai/concepts/agent-loop)를 기준으로 했다.
 
 ## Agent loop: 한 turn이 action과 reply가 되는 과정
 
-[Agent loop 문서](https://docs.openclaw.ai/concepts/agent-loop)는 한 run을 다음 흐름으로 설명한다.
+예시 요청은 “서울 날씨를 알려줘”다. model이 날씨 도구를 선택하면 runtime이 실행하고, model은 도구 결과를 받아 답을 만든다. 도구가 필요 없는 요청은 도구 호출 구간을 건너뛴다.
 
-```text
-message intake
-  → session resolve
-  → workspace / skills / context assembly
-  → model inference
-  → tool execution
-  → assistant · tool · lifecycle streaming
-  → reply shaping
-  → transcript persistence
+[![Gateway, Agent loop, Model, Tool 사이의 추론·도구 호출·결과 반영·응답 전달 시퀀스 다이어그램](/data/images/posts/openclaw-architecture-research/agent-tool-sequence.svg)](/data/images/posts/openclaw-architecture-research/agent-tool-sequence.svg)
+
+그림 2. 한 번의 도구 호출을 펼친 실행 순서. 도구 호출과 재추론은 여러 번 반복될 수 있다. Streaming과 transcript 갱신은 실행 중에도 일어난다.
+
+**실행 책임을 설명하는 의사코드.** 아래 함수명은 설명용이며 OpenClaw SDK API가 아니다. 취소·timeout·재시도 처리는 생략했다.
+
+```python
+with session_lane(session_key):
+    context = assemble_context(history, workspace, skills)
+
+    while True:
+        step = model.infer(context, allowed_tools)
+        if not step.tool_calls:
+            break
+
+        for call in step.tool_calls:
+            result = execute_with_hooks(call)
+            context.append(result)
+            persist_tool_result(result)
+
+    persist_assistant_reply(step.reply)
+    deliver(step.reply)
 ```
 
-중요한 점은 이 흐름이 **session 단위로 직렬화**된다는 것이다. 같은 session에서 두 run이 동시에 history를 덮어쓰거나 tool 결과의 순서를 뒤섞지 않도록 session lane과 writer claim이 경계를 만든다.
+| 관찰 지점 | 확인할 것 | 놓치면 생기는 문제 |
+| --- | --- | --- |
+| Context 구성 | 어떤 history·Skill·도구가 들어갔는가 | model 오류와 입력 구성 오류를 혼동 |
+| Session lane | 같은 session의 run이 어떤 순서로 실행되는가 | 결과·history 순서 충돌 |
+| Tool 전후 | 인자, 결과, 실패 상태 | 추론과 외부 실행 실패를 구분하기 어려움 |
+| Streaming / 저장 | 진행 이벤트와 기록된 실행 결과 | 화면에 나온 텍스트만으로 완료를 오판 |
 
-Agent framework를 평가할 때 model 응답만 보면 이 부분을 놓친다. 실제 동작은 model뿐 아니라 context assembly, tool schema, hook, queue mode, timeout과 persistence의 합성 결과다.
-
-## Workspace와 Skill: 실행 코드가 아니라 판단의 문맥
-
-Agent마다 workspace가 있고, `AGENTS.md` 같은 bootstrap/context 파일과 Skill이 prompt 구성에 참여한다. [Skills 문서](https://docs.openclaw.ai/tools/skills)는 Skill을 YAML frontmatter와 Markdown body를 가진 `SKILL.md` instruction pack으로 정의한다.
-
-Skill은 tool을 새로 만들지 않는다. 이미 존재하는 tool을 **언제, 어떤 순서와 제약으로 사용할지** 가르친다. 예를 들어 날씨 조회 tool이 이미 있다면 Skill은 다음을 담을 수 있다.
-
-- 어떤 요청이 이 capability의 범위인지
-- 먼저 확인해야 할 값이 무엇인지
-- 허용·금지되는 실행 패턴
-- 실패했을 때의 fallback과 사용자 확인 규칙
-
-Workspace, managed directory, bundled package와 plugin 등 여러 위치에서 Skill을 불러올 수 있고 같은 이름이 충돌하면 loading precedence가 적용된다. 따라서 Skill은 단순 문서 파일이 아니라 **배포 위치와 override 정책을 가진 prompt-side dependency**다.
+실제 runtime은 session별 queue, 실행 제한과 이벤트 전달을 함께 다룬다. `agent.wait`의 대기 timeout은 run 취소와 다르다. [Agent loop](https://docs.openclaw.ai/concepts/agent-loop)
 
 ## Tool, Skill, Plugin을 구분하는 기준
 
-[Capabilities overview](https://docs.openclaw.ai/tools)는 세 경계를 명확하게 나눈다.
+[![Skill은 Agent loop에 지침을 제공하고 Plugin이 등록한 Tool과 Hook이 외부 API 실행을 담당하는 블록 다이어그램](/data/images/posts/openclaw-architecture-research/capability-boundaries.svg)](/data/images/posts/openclaw-architecture-research/capability-boundaries.svg)
 
-| 구성요소 | 해결하는 문제 | model이 보는 형태 | 적합한 사례 |
-| --- | --- | --- | --- |
-| **Tool** | 외부 세계에 실제 action을 수행 | typed function schema | API 호출, 파일 변경, 검색, 메시지 전송 |
-| **Skill** | 기존 capability를 사용하는 절차와 판단 기준 | 필요할 때 load되는 instruction | routing 규칙, workflow, review rubric |
-| **Plugin** | runtime에 새로운 capability와 lifecycle을 추가 | 등록한 tool·hook·provider 등의 결과 | custom integration, hook, channel, provider |
+그림 3. 같은 날씨 조회 기능에서도 판단 절차, 실제 호출, 등록과 배포는 서로 다른 책임이다.
 
-선택 기준은 비교적 단순하다.
+| 구성요소 | 날씨 조회에서 맡는 역할 | 넣지 않을 책임 |
+| --- | --- | --- |
+| Skill | 지역이 없으면 확인하고 조회 결과를 요약 | API 인증·입력 검증의 강제 |
+| Tool | 지역을 입력받아 외부 기능 실행 | 긴 업무 절차 전체 |
+| Plugin | Tool·Hook 등록과 설정·배포 | model의 모든 판단을 대체 |
+| Hook | 호출 전 공통 제약, 호출 후 관측 | 반드시 보존되어야 하는 작업 큐 |
 
-1. Agent가 실제로 무언가를 해야 한다면 Tool이다.
-2. Tool은 있지만 사용하는 법이 복잡하다면 Skill이다.
-3. 코드, credential, lifecycle hook이나 packaging이 필요하면 Plugin이다.
+선택은 “기존 기능의 사용법인가, 새 행동인가, runtime에 등록할 코드인가?”로 나눈다. [Capabilities overview](https://docs.openclaw.ai/tools) · [Building plugins](https://docs.openclaw.ai/plugins/building-plugins)
 
-이 세 가지를 한곳에 몰아넣으면 유지보수가 어려워진다. 긴 운영 규칙을 tool description에 전부 넣으면 매 turn의 schema 비용이 커지고, 반대로 API validation을 Skill에만 적으면 deterministic하게 막을 수 없다.
+### Workspace와 Skill: 실행 코드가 아니라 판단의 문맥
 
-## Plugin과 Hook: core를 수정하지 않고 runtime에 개입한다
+**Skill 파일 예시** — `<workspace>/skills/weather-summary/SKILL.md`. 아래의 `weather_lookup` 도구가 별도로 등록되어 있다고 가정한다.
 
-[Plugin 개발 문서](https://docs.openclaw.ai/plugins/building-plugins)에 따르면 Plugin은 core를 수정하지 않고 tool, channel, provider와 hook 같은 capability를 추가한다. Tool plugin은 typed tool을 등록하고, 더 복합적인 plugin은 여러 capability를 함께 제공할 수 있다.
+```markdown
+---
+name: weather-summary
+description: 사용자가 요청한 지역의 현재 날씨를 조회하고 요약한다.
+---
 
-[Plugin hooks](https://docs.openclaw.ai/plugins/hooks)는 agent run과 tool lifecycle에 개입하는 typed handler다. 예를 들어 다음 위치를 관찰하거나 변경할 수 있다.
+1. 지역이 명확하지 않으면 사용자에게 확인한다.
+2. weather_lookup에 확인한 지역을 전달한다.
+3. 조회 결과의 관측 시각과 기온을 함께 설명한다.
+4. 조회가 실패하면 현재 날씨를 추정해서 쓰지 않는다.
+```
 
-- model 선택 또는 prompt build 전
-- tool call 전후
-- message 수신·전송 전후
-- session과 Gateway lifecycle
-- tool result가 transcript에 저장되기 전
+Skill은 실행 코드를 추가하지 않는다. 같은 이름의 Skill이 여러 위치에 있으면 loading precedence가 적용되므로, 수정한 파일이 실제 선택된 위치인지도 확인해야 한다. [Skills](https://docs.openclaw.ai/tools/skills)
 
-Hook은 business action 자체보다 횡단 관심사에 잘 맞는다. 공통 logging, argument 보정, 정책 gate와 delivery metadata 주입이 대표적이다. 다만 callback은 durable queue가 아니므로, 반드시 보존되어야 하는 event 처리까지 단순 hook에 맡기면 안 된다.
+### Tool: model과 실행 코드 사이의 계약을 만든다
+
+**Plugin `register(api)` 내부의 등록부 발췌.** `Type`은 `typebox`의 import, `lookupWeather`는 별도로 구현할 날씨 서비스 adapter다. adapter는 아래 네 필드만 반환하도록 가정한다.
+
+```typescript
+api.registerTool({
+  name: "weather_lookup",
+  description: "지정한 지역의 현재 날씨를 조회한다.",
+  parameters: Type.Object({
+    city: Type.String({ minLength: 1 }),
+  }),
+  async execute(_id, { city }) {
+    const weather = await lookupWeather(city);
+    return {
+      content: [{
+        type: "text",
+        text: JSON.stringify(weather),
+      }],
+    };
+  },
+});
+```
+
+**도구 출력 예시 — 설명을 위한 가상 데이터다.** 외부 서비스의 원본 응답 전체 대신 답변에 필요한 필드를 반환한다.
+
+```json
+{
+  "city": "서울",
+  "temperatureC": 24,
+  "condition": "흐림",
+  "observedAt": "2026-09-19T09:00:00+09:00"
+}
+```
+
+| 코드 밖에서 완성할 부분 | 이유 |
+| --- | --- |
+| Plugin entry와 package metadata | runtime이 Plugin을 로드하도록 연결 |
+| Manifest의 `contracts.tools` 선언 | 등록한 `weather_lookup`의 소유권·탐색 정보 명시 |
+| Adapter의 인증·timeout·오류 처리 | 외부 서비스 실행 책임을 완성 |
+| 도구 노출 정책 | model이 사용할 수 있는 범위를 결정 |
+
+등록 API와 manifest 요구사항은 [Building plugins](https://docs.openclaw.ai/plugins/building-plugins)를 따른다. 위 조각만 복사해도 설치되는 예제는 아니다.
+
+### Plugin과 Hook: core를 수정하지 않고 runtime에 개입한다
+
+**Plugin 등록부 발췌** — 빈 지역으로 날씨 도구가 실행되는 것을 막는 예다. Tool schema와 실행 코드의 검증을 대체하지 않는다.
+
+```typescript
+api.on("before_tool_call", (event) => {
+  if (event.toolName !== "weather_lookup") return;
+
+  const city = event.params.city;
+  if (typeof city !== "string" || !city.trim()) {
+    return {
+      block: true,
+      blockReason: "조회할 지역이 필요합니다.",
+    };
+  }
+});
+```
+
+| 목적 | Plugin Hook | 주의할 경계 |
+| --- | --- | --- |
+| Prompt 구성 조정 | `before_prompt_build` | 모델 입력을 바꾸는 지점 |
+| 도구 실행 전 제약 | `before_tool_call` | 차단·인자 조정 |
+| 도구 실행 후 관측 | `after_tool_call` | 로그·실행 결과 관측 |
+| Transcript 저장 전 변환 | `tool_result_persist` | 지원 runtime의 저장 경계 |
+
+Typed Plugin Hook은 `api.on(...)`으로 등록한다. `HOOK.md` 기반 내부 hook이나 외부 HTTP webhook과는 다른 기능이다. [Plugin hooks](https://docs.openclaw.ai/plugins/hooks) · [Tool call policy hooks](https://docs.openclaw.ai/plugins/hooks/tool-policy)
 
 ## Session: 대화 history 이상의 routing boundary
 
-[Session management](https://docs.openclaw.ai/concepts/session)에서 session은 inbound source에 따라 정해지는 실행·상태 경계다. DM, group, room, cron과 webhook은 서로 다른 기본 routing 규칙을 가진다.
+같은 사용자의 후속 질문은 이어져야 하고, 다른 사용자의 대화는 분리되어야 한다. Session key는 **어느 문맥과 실행 순서를 공유할지** 정하는 기준이다.
 
-Session은 다음 질문의 답을 결정한다.
+**설정 조각 — DM을 channel과 sender 조합으로 분리한다.** 기존 OpenClaw 설정의 `session` 항목에 병합하는 예다.
 
-- 어느 history와 context를 이어받는가?
-- 동시에 들어온 run을 어느 queue에서 직렬화하는가?
-- 어느 사용자·channel의 상태와 격리되는가?
-- background task 결과가 어디로 돌아가는가?
+```json
+{
+  "session": {
+    "dmScope": "per-channel-peer"
+  }
+}
+```
 
-특히 다중 사용자 환경에서 모든 DM을 하나의 main session으로 합치면 context가 섞일 수 있다. 서버형 agent에서는 session key 설계를 편의 기능이 아니라 tenant·conversation isolation 문제로 봐야 한다.
+| `dmScope` | DM 문맥을 나누는 기준 | 검토할 상황 |
+| --- | --- | --- |
+| `main` | 같은 agent의 main session 공유 | 기본 단일 사용자 구성 |
+| `per-peer` | 발신자 | channel을 넘어 같은 사람의 문맥을 이을 때 |
+| `per-channel-peer` | channel + 발신자 | channel별 대화까지 분리할 때 |
+| `per-account-channel-peer` | account + channel + 발신자 | 여러 계정을 운영할 때 |
+
+이는 DM routing 설정이며 모든 channel·thread의 예외를 없애는 설정은 아니다. Session 분리와 외부 API의 사용자별 권한 검증도 별도로 설계해야 한다. [Session management](https://docs.openclaw.ai/concepts/session)
 
 ## Automation: “나중에 실행”도 Gateway의 책임이다
 
-[Automations 문서](https://docs.openclaw.ai/automation/cron-jobs)에 따르면 scheduler는 Gateway process 안에서 job을 보존하고 agent를 깨우며 결과를 channel이나 webhook으로 전달한다. Model이 시간을 세는 것이 아니다.
+“내일 아침 서울에 비가 오면 알려줘”는 **시점에 맞춰 깨우기**와 **그때 날씨를 조회해 판단하기**로 나뉜다.
 
-따라서 예약·조건부 요청에는 두 종류의 상태가 생긴다.
+[![Scheduler가 예약 상태를 보존하고 Agent run을 깨운 뒤 실행 결과와 전달 결과를 따로 확인하는 시퀀스 다이어그램](/data/images/posts/openclaw-architecture-research/automation-sequence.svg)](/data/images/posts/openclaw-architecture-research/automation-sequence.svg)
 
-- 실행해야 할 시점과 delivery를 보존하는 scheduler state
-- 실행 시 판단과 tool 사용을 이어가는 agent/session state
+그림 4. 예약 실행의 책임 순서. 실제 session 선택과 전달 방식은 job 설정에 따라 달라진다.
 
-두 상태를 섞지 않아야 재시작, timeout, 중복 실행과 delivery 실패를 다룰 수 있다. “prompt에 나중에 해 달라고 쓰기”와 automation은 전혀 다른 보장 수준을 가진다.
+| 상태 | 보존할 정보 | 실패를 구분할 질문 |
+| --- | --- | --- |
+| Scheduler state | 예약 시점, 대상, 실행 이력 | 예정된 작업이 시작됐는가? |
+| Agent / Session state | 문맥, 도구 결과, 판단 | 조회와 조건 판단에 성공했는가? |
+| Delivery state | 전달 경로와 결과 | 응답이 목적지에 도착했는가? |
+
+Prompt에 미래 시각을 적는 것만으로 예약이 생기지는 않는다. Scheduler가 작업을 보존하고 실행을 요청해야 한다. 작업 성공과 알림 전달 성공도 따로 관측해야 한다. [Automations](https://docs.openclaw.ai/automation/cron-jobs)
 
 ## 보안은 sandbox 하나로 끝나지 않는다
 
-OpenClaw의 [sandbox·tool policy·elevated 구분](https://docs.openclaw.ai/gateway/sandbox-vs-tool-policy-vs-elevated)은 세 질문을 분리한다.
+| 제어 | 답하는 질문 | 다른 제어와의 관계 |
+| --- | --- | --- |
+| Tool policy | 어떤 도구를 노출·호출할 수 있는가? | 이름 기준의 허용·차단 |
+| Sandbox | 도구가 어느 실행 환경에서 동작하는가? | 호출 가능한 도구의 실행 범위 제한 |
+| Elevated | sandbox의 `exec`를 host에서 실행할 수 있는가? | 도구 deny를 우회하지 않음 |
+| Skill 지침 | model이 어떤 순서와 기준을 따를 것인가? | 강제 권한 제어를 대체하지 않음 |
 
-- **Sandbox**: tool이 어디에서 실행되는가?
-- **Tool policy**: 어떤 tool이 model에게 보이고 호출 가능한가?
-- **Elevated**: sandboxed `exec`가 제한적으로 host에서 실행될 수 있는가?
+**설정 조각 — `exec`와 `process`를 도구 정책에서 차단한다.** 다른 Tool이나 Plugin까지 읽기 전용으로 만드는 설정은 아니다.
 
-서버형 agent에서 중요한 것은 최소 권한의 tool surface다. Skill에 “이 tool을 쓰지 말라”고 쓰는 것은 soft guidance일 뿐이다. 실제 차단은 tool policy와 sandbox 같은 runtime enforcement가 담당해야 한다.
+```json
+{
+  "tools": {
+    "deny": ["exec", "process"]
+  }
+}
+```
+
+`deny`가 `allow`보다 우선한다. 반대로 `exec`를 허용한 채 파일 쓰기 도구만 차단하면 shell을 통한 쓰기까지 막히지는 않는다. [Sandbox vs tool policy vs elevated](https://docs.openclaw.ai/gateway/sandbox-vs-tool-policy-vs-elevated)
 
 ## 아키텍처를 읽고 남는 판단 기준
 
-OpenClaw의 핵심은 capability가 많다는 사실보다 **판단, 행동, lifecycle과 상태의 경계를 각각 확장할 수 있다는 점**이다.
+| 바꾸려는 것 | 먼저 볼 위치 |
+| --- | --- |
+| 기능 선택·사용 절차 | Workspace / Skill |
+| 실행할 외부 행동·입출력 | Tool / Adapter |
+| 기능 등록·설정·배포 | Plugin |
+| 실행 전후 공통 개입 | Hook |
+| 대화 연속성·동시성 | Session / Queue |
+| 예약·재실행·결과 전달 | Automation |
+| 연결·인증·이벤트 진입점 | Gateway |
 
-- 판단 절차는 Skill
-- 외부 action은 Tool
-- runtime extension은 Plugin
-- 횡단 lifecycle 제어는 Hook
-- 대화와 동시성의 경계는 Session
-- 지연 실행은 Automation
-- 이들을 연결하고 상태를 소유하는 곳은 Gateway
-
-다음 글에서는 이 구분을 실제 서버형 디바이스 assistant PoC에 어떻게 적용했는지, 하나의 tool과 여러 Skill을 조합한 이유와 멀티턴·event normalization에서 생긴 설계 trade-off를 정리한다.
-
-[OpenClaw 컴포넌트 적용기 읽기](/posts/openclaw-component-application/)
+다음 글에서는 이 경계를 실제 PoC에 적용한 판단과 한계를 정리한다. [OpenClaw 컴포넌트 적용기 읽기](/posts/openclaw-component-application/)
 
 ## 참고 자료
 
 - [OpenClaw 공식 저장소](https://github.com/openclaw/openclaw)
 - [Gateway architecture](https://docs.openclaw.ai/concepts/architecture)
+- [Agent runtime](https://docs.openclaw.ai/concepts/agent)
 - [Agent loop](https://docs.openclaw.ai/concepts/agent-loop)
 - [Capabilities overview](https://docs.openclaw.ai/tools)
 - [Skills](https://docs.openclaw.ai/tools/skills)
