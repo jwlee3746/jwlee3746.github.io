@@ -40,6 +40,15 @@
 /* White-backed figures retain the contrast of labels in the original diagrams. */
 .post-content figure img { display: block; margin-inline: auto; padding: .75rem; background: #fff; }
 .post-content figcaption { margin-top: .7em; color: var(--color-label); font-size: .8rem; line-height: 1.65; }
+/* Inline diagrams share the article webfonts and preserve readable text on mobile. */
+.post-diagram { max-width: 100%; overflow-x: auto; margin-block: 1.5rem; border-radius: 12px; }
+.post-diagram:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+.post-diagram .article-diagram-art { display: block; max-width: none; }
+.post-diagram .article-diagram-art text { font-family: var(--font-body); font-size: 1rem; font-weight: var(--weight-normal); }
+.post-diagram .article-diagram-art .heading { font-size: 1.125rem; font-weight: var(--weight-semibold); }
+.post-diagram .article-diagram-art .label { font-weight: var(--weight-semibold); }
+.post-diagram .article-diagram-art .note { font-size: .875rem; }
+
 .post-content iframe { max-width: 100%; }
 
 .post-content .metrics { display: flex; flex-wrap: wrap; gap: .75rem; margin: 1.6em 0; }

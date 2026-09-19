@@ -1,4 +1,5 @@
 import { parseHTML } from 'linkedom';
+import { inlinePostDiagrams } from '../diagrams.ts';
 import { renderPostPagination } from '../pagination.ts';
 import { renderRelatedPosts } from '../related.ts';
 import type { Post } from '../list.ts';
@@ -11,7 +12,7 @@ export default class PostLayout {
   render({ content, page, collections }: {
     content: string; page: { url: string }; collections: { posts: Post[] };
   }): string {
-    const { document } = parseHTML(`<div class="post-content">${content}</div>`);
+    const { document } = parseHTML(`<div class="post-content">${inlinePostDiagrams(content)}</div>`);
     const body = document.querySelector('.post-content')!;
     const currentUrl = new URL(page.url, 'https://jwlee3746.github.io');
     for (const link of body.querySelectorAll('a[href]')) {
