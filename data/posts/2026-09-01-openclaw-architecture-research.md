@@ -22,7 +22,7 @@ toc: true
 
 ![CLI·UI와 채널이 Gateway에 연결되고 Session, Agent loop, Scheduler가 문맥·도구·모델을 연결하는 블록 다이어그램](/data/images/posts/openclaw-architecture-research/openclaw-runtime-map.svg)
 
-그림 1. Gateway 내부의 실행 책임과 외부 연결. 좁은 화면에서는 도표 영역을 가로로 스크롤해 볼 수 있다.
+그림 1. Gateway 내부의 실행 책임과 외부 연결. 그림을 누르면 확대창에서 화면 맞춤·100%·확대/축소로 볼 수 있다.
 
 | 경계 | 받는 것 → 내보내는 것 | 맡는 책임 |
 | --- | --- | --- |

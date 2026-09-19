@@ -53,6 +53,7 @@ export default async function ({ title, excerpt, date, content, tags, category, 
   <link rel="stylesheet" href="/theme/shared/navigation.css">
   <link rel="stylesheet" href="/theme/shared/site-shell.css">
   <script src="/theme/shared/site-shell.js" defer></script>
+  ${content.includes('class="post-content"') ? '<script src="/theme/posts/image-viewer.js" defer></script>' : ''}
 </head>
 <body>
   <a class="site-skip" href="#site-content">본문으로 건너뛰기</a>

@@ -49,6 +49,33 @@
 .post-diagram .article-diagram-art .label { font-weight: var(--weight-semibold); }
 .post-diagram .article-diagram-art .note { font-size: .875rem; }
 
+/* Fit the complete diagram in the article; the viewer provides readable detail. */
+.post-content :is(.post-diagram, .eval-explainer) svg { max-width: 100% !important; height: auto !important; }
+.image-zoom-trigger { display: block; position: relative; width: 100%; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; cursor: zoom-in; text-align: inherit; }
+.image-zoom-trigger > :is(img, svg) { display: block; margin-inline: auto; }
+.image-zoom-trigger:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+.image-zoom-hint { display: block; padding: .45rem .75rem; color: var(--color-link); font-size: .875rem; text-align: end; }
+html.image-viewer-open { overflow: hidden; }
+.image-viewer { width: min(96vw, 1440px); height: 94dvh; max-width: 100vw; max-height: 100dvh; padding: 0; border: 1px solid var(--color-border); border-radius: 12px; background: var(--color-background, #181818); color: var(--color-text); }
+.image-viewer::backdrop { background: rgb(0 0 0 / .85); }
+.image-viewer-panel { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+.image-viewer-header { display: flex; gap: 1rem; align-items: center; justify-content: space-between; padding: .75rem 1rem; }
+.image-viewer-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 1rem; }
+.image-viewer-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; padding: 0 1rem .75rem; border-bottom: 1px solid var(--color-border); }
+.image-viewer button, .image-viewer-original { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; min-width: 44px; min-height: 44px; padding: .4rem .7rem; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-card); color: var(--color-heading); font: inherit; font-size: .875rem; text-decoration: none; cursor: pointer; }
+.image-viewer-original[hidden] { display: none; }
+.image-viewer :is(button, a):focus-visible, .image-viewer-stage:focus-visible { outline: 2px solid var(--color-focus); outline-offset: -2px; }
+.image-viewer output { min-width: 3rem; text-align: center; font-size: .875rem; font-variant-numeric: tabular-nums; }
+.image-viewer-stage { flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; }
+.image-viewer-canvas.post-diagram { display: grid; place-items: center; width: max-content; min-width: 100%; min-height: 100%; max-width: none; margin: 0; padding: 16px; overflow: visible; border-radius: 0; }
+.post-content .image-viewer [data-viewer-media] { display: block; width: var(--viewer-width) !important; max-width: none !important; height: auto !important; margin: 0; }
+.image-viewer img { background: #fff; }
+@media screen and (max-width: 620px) {
+  .image-viewer { width: 100vw; height: 100dvh; border: 0; border-radius: 0; }
+  .image-viewer-header { padding-top: max(.75rem, env(safe-area-inset-top)); }
+  .image-viewer-stage { padding-bottom: env(safe-area-inset-bottom); }
+}
+
 .post-content iframe { max-width: 100%; }
 
 .post-content .metrics { display: flex; flex-wrap: wrap; gap: .75rem; margin: 1.6em 0; }

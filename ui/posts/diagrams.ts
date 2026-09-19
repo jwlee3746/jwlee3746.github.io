@@ -17,6 +17,7 @@ export function inlinePostDiagrams(content: string): string {
     const rootId = `post-diagram-${++index}`;
     const prefix = `${rootId}-`;
     svg.setAttribute('id', rootId);
+    svg.setAttribute('data-diagram-src', src);
     for (const style of svg.querySelectorAll('style')) {
       style.textContent = style.textContent!.replaceAll('.article-diagram-art', `:where(#${rootId})`);
     }
