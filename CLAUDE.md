@@ -41,6 +41,7 @@
 
 ## 작업 규칙
 
+- 글 작성·수정 시 **[포스팅 작성·편집 원칙](data/README.md#포스팅-작성편집-원칙)**을 따른다. 핵심 문장 외 개조식, 블록·시퀀스 다이어그램 중심 구성, 비교표, 원본 그림·맥락 보존, 중요 표현 강조를 적용한다.
 - 변경이 끝나면 **묻지 말고 바로 커밋·푸시**한다. Pages 배포에 시간 텀이 있어 승인 대기가 곧 배포 지연이다.
 - 이력서 원본 데이터·`ui/resume/`·`ui/shared/`·빌드 코드를 고치면 `npm run build:resume:pdf`로 HTML과 PDF를 함께 갱신한다. `npm run typecheck`, `npm test`, `npm run check:resume`도 통과해야 한다.
 - 새 프로젝트는 `data/resume/projects/<slug>.json` 하나를 추가한다. `_site/resume/index.html`은 직접 수정하지 않는다. 훅은 `bash scripts/install-resume-hook.sh`로 설치·갱신한다.
