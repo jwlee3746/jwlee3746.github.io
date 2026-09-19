@@ -42,13 +42,14 @@
 ## 작업 규칙
 
 - 글 작성·수정 시 **[포스팅 작성·편집 원칙](data/README.md#포스팅-작성편집-원칙)**을 따른다. 핵심 문장 외 개조식, 블록·시퀀스 다이어그램 중심 구성, 비교표, 원본 그림·맥락 보존, 중요 표현 강조를 적용한다.
-- 변경이 끝나면 **묻지 말고 바로 커밋·푸시**한다. Pages 배포에 시간 텀이 있어 승인 대기가 곧 배포 지연이다.
+- 변경이 끝나면 **별도 브랜치에 커밋·푸시하고 PR을 생성**한다. `main`에 직접 푸시하지 않는다.
 - 이력서 원본 데이터·`ui/resume/`·`ui/shared/`·빌드 코드를 고치면 `npm run build:resume:pdf`로 HTML과 PDF를 함께 갱신한다. `npm run typecheck`, `npm test`, `npm run check:resume`도 통과해야 한다.
 - 새 프로젝트는 `data/resume/projects/<slug>.json` 하나를 추가한다. `_site/resume/index.html`은 직접 수정하지 않는다. 훅은 `bash scripts/install-resume-hook.sh`로 설치·갱신한다.
 - 이력서는 **A4 1~3페이지** 안에서 프로젝트 근거와 가독성을 우선한다. 빌드 스크립트가 페이지 수를 검증한다.
 - 인쇄에 영향을 주는 미디어쿼리는 `@media screen and (...)`으로 한정한다. 용지 폭(210mm)에 걸려 인쇄가 1컬럼으로 무너진 적이 있다.
 - 포트폴리오는 **다크 모드 전용**이다. `<html data-theme="dark">`를 유지하며 테마 전환 버튼이나 저장 스크립트를 다시 추가하지 않는다.
 - 레이아웃은 Chirpy 구조를 따른다: 260px 고정 사이드바, 중앙 콘텐츠 피드, 데스크톱 우측 보조 패널. 850px 미만에서는 사이드바를 오프캔버스로 전환한다.
+- 글에 새로 만들거나 수정하는 도표는 **본문과 같은 글꼴과 크기 체계**를 사용한다. 본문 설명은 `--font-body`·`1rem`, 보조 설명은 `.875rem`, 도표 제목은 `1.125rem` 이내로 맞춘다. SVG를 이미지로 넣어 웹폰트가 분리되거나 모바일에서 글자가 과하게 축소되지 않게 한다. 상세 구현은 `data/README.md`를 따른다.
 - 프로필 사진은 GitHub 공개 프로필에서 받은 `data/images/profile/avatar.jpg`를 사용한다.
 - **블로그 SCSS 는 Ruby Sass 로 빌드된다.** GitHub Pages 의 legacy 빌드는 `jekyll-sass-converter 1.5.2` 를 쓰고, 그 안은 dart-sass 도 libsass 도 아닌 **Ruby Sass 3.x** 다. 로컬 dart-sass 로 통과한 SCSS 가 배포에서 죽은 적이 두 번 있다.
   - `hsl(188deg 52% 18%)` — 공백 구분 표기를 **SassScript 로 평가되는 자리**(변수 대입, 일반 선언의 값)에서 못 읽는다. 커스텀 프로퍼티 값(`--x: hsl(...)`)은 통과된다.
