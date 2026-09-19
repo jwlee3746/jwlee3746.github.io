@@ -81,14 +81,6 @@ toc: true
 - **두 갈래의 증거**: 실행 과정인 **transcript**, 환경의 최종 상태인 **outcome**
 - **판정의 기준**: task의 성공 조건에 맞춰 두 증거에 적절한 grader 적용
 
-## 이 글이 좋은 이유
-
-**Framework 비교에 앞서 “무엇을 평가하는가”에 대한 공통 언어를 맞춘다는 점이 유용하다.**
-
-- **작성자의 관점**: benchmark·LLM judge·monitoring·simulator를 같은 층위로 섞지 않도록 읽기
-- **원문의 전개**: 기본 단위 정의 → task·grader 설계 → 반복 trial → suite 장기 운영
-- **실무 연결**: 도구 선택보다 성공 조건과 실행·판정 경계부터 명시
-
 ## The structure of an evaluation
 
 **Evaluation은 입력을 주고 grading logic으로 성공 여부를 측정하는 test다.**
