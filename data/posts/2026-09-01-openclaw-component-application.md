@@ -1,11 +1,10 @@
 ---
 title: '[프로젝트] OpenClaw 컴포넌트 적용기: Skill·Tool·Hook·Session'
-excerpt: 서버형 Bixby 에이전트 PoC에서 OpenClaw의 Skill, custom Tool, Plugin Hook, Session과 Automation을 어떻게 조합했고 어떤 한계를 확인했는지 정리합니다.
+excerpt: 서버형 에이전트 PoC에서 OpenClaw의 Skill, custom Tool, Plugin Hook, Session과 Automation을 어떻게 조합했고 어떤 한계를 확인했는지 정리합니다.
 date: '2026-09-01'
 category: Agent
 tags:
 - OpenClaw
-- Bixby
 - Tool Calling
 - Plugin
 - Skill
@@ -15,7 +14,7 @@ legacyUrl: /blog/Agent/openclaw-component-application/
 toc: true
 ---
 
-> 이 글은 2026년 3–7월 진행한 서버형 Bixby 에이전트 PoC에서 확인한 설계 판단을 공개 가능한 수준으로 일반화한 기록이다. 내부 시스템명, endpoint, 인증 정보와 비공개 protocol은 제외했다. OpenClaw 자체의 현재 구조는 [아키텍처 리서치 글](/posts/openclaw-architecture-research/)에서 먼저 정리했다.
+> 이 글은 2026년 3–7월 진행한 서버형 에이전트 PoC에서 확인한 설계 판단을 공개 가능한 수준으로 일반화한 기록이다. 내부 시스템명, endpoint, 인증 정보와 비공개 protocol은 제외했다. OpenClaw 자체의 현재 구조는 [아키텍처 리서치 글](/posts/openclaw-architecture-research/)에서 먼저 정리했다.
 
 PoC의 질문은 단순했다.
 
@@ -35,7 +34,7 @@ PoC의 질문은 단순했다.
 | 예약·조건부 실행 | Cron/Automation | 실행 시점, session target과 결과 delivery 연결 |
 | 서버 실행 | Gateway + Docker Compose | 장시간 실행되는 runtime과 workspace/Skill mount |
 
-![서버형 Bixby 에이전트 PoC에서 Skill, Tool, Hook, Session이 맡은 책임과 요청 처리 흐름](/data/images/posts/openclaw-component-application/component-boundaries.svg)
+![서버형 에이전트 PoC에서 Skill, Tool, Hook, Session이 맡은 책임과 요청 처리 흐름](/data/images/posts/openclaw-component-application/component-boundaries.svg)
 
 요청은 Session에서 대화 문맥을 얻고, Skill이 capability 선택을 안내한 뒤, Tool을 통해 외부 기능으로 나간다. 돌아온 event는 model이 다음 판단에 필요한 정보만 남도록 정규화했다. Hook은 이 주 경로를 대신하지 않고 metadata와 관측 정보를 보강한다.
 

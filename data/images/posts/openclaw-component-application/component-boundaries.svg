@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="690" viewBox="0 0 1200 690" role="img" aria-labelledby="title desc">
-  <title id="title">OpenClaw component responsibilities in the Bixby agent proof of concept</title>
+  <title id="title">OpenClaw component responsibilities in the server-side agent proof of concept</title>
   <desc id="desc">A request enters a session. Skills guide capability selection, a typed custom tool executes the external function, hooks add metadata and observability, and the normalized result returns to the model.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#475569"/></marker>
