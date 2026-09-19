@@ -19,7 +19,7 @@ toc: true
 - **원문**: [Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)
 - **함께 읽기**: [에이전트 평가 시리즈 허브](/posts/reproducible-agent-evaluation/)
 - **읽는 순서**: 구성 블록 → trial 시퀀스 → grader 비교 → 운영 흐름
-- **모바일 읽기**: 도표·비교표는 영역 안에서 좌우로 스크롤
+- **모바일 읽기**: 그림을 누르면 확대 보기; 비교표는 영역 안에서 좌우로 스크롤
 - **그림 구분**: Anthropic 원본 그림 5개 유지. 아래의 한국어 블록·시퀀스 다이어그램은 원문 개념을 재구성한 보충 해설.
 
 ## Introduction: 왜 agent eval이 필요한가
@@ -73,7 +73,7 @@ toc: true
 <text x="370" y="619" fill="#e1e6ef" text-anchor="middle" style="font-size:1rem;font-weight:var(--weight-semibold, 600)"><tspan x="370" dy="0">Trial별 판정 → 반복 결과 집계 · 비용 / latency 추적</tspan></text>
 </svg>
 </div>
-<figcaption style="font-size:.875rem;">보충 해설 1. 원문 용어를 실행 책임과 증거의 흐름으로 재구성한 블록 다이어그램 · 좁은 화면에서는 도표 영역을 좌우로 스크롤.</figcaption>
+<figcaption style="font-size:.875rem;">보충 해설 1. 원문 용어를 실행 책임과 증거의 흐름으로 재구성한 블록 다이어그램 · 그림을 누르면 확대 보기.</figcaption>
 </figure>
 
 - **바깥 실행 계층**: evaluation harness가 task 준비·trial 실행·기록·채점·집계 담당
@@ -196,7 +196,7 @@ toc: true
 <text x="24" y="680" fill="#e1e6ef" text-anchor="start" style="font-size:1rem;font-weight:var(--weight-semibold, 600)"><tspan x="24" dy="0">실행 중 transcript 축적 · 최종 응답과 실제 상태 구분 · 반복 결과 집계</tspan></text>
 </svg>
 </div>
-<figcaption style="font-size:.875rem;">보충 해설 2. 실행·기록·채점의 논리적 순서. Grader 종류에 따라 확인하는 증거는 서로 다름 · 좁은 화면에서는 도표 영역을 좌우로 스크롤.</figcaption>
+<figcaption style="font-size:.875rem;">보충 해설 2. 실행·기록·채점의 논리적 순서. Grader 종류에 따라 확인하는 증거는 서로 다름 · 그림을 누르면 확대 보기.</figcaption>
 </figure>
 
 - **준비**: task의 입력·성공 조건에 맞춰 trial마다 깨끗한 environment 구성
@@ -471,7 +471,7 @@ tracked_metrics:
 <text x="370" y="380" fill="#e1e6ef" text-anchor="middle" style="font-size:1rem;font-weight:var(--weight-semibold, 600)"><tspan x="370" dy="0">Production monitoring · 사용자 feedback · human review로 보완</tspan></text>
 </svg>
 </div>
-<figcaption style="font-size:.875rem;">보충 해설 3. 원문의 suite 개발·harness 설계·장기 유지보수를 연결한 운영 블록 다이어그램 · 좁은 화면에서는 도표 영역을 좌우로 스크롤.</figcaption>
+<figcaption style="font-size:.875rem;">보충 해설 3. 원문의 suite 개발·harness 설계·장기 유지보수를 연결한 운영 블록 다이어그램 · 그림을 누르면 확대 보기.</figcaption>
 </figure>
 
 - **도표의 의미**: 원문의 세 단계와 운영 feedback을 연결한 작성자의 보충 해설
