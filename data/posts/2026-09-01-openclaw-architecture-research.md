@@ -275,7 +275,6 @@ Prompt에 미래 시각을 적는 것만으로 예약이 생기지는 않는다.
 | 예약·재실행·결과 전달 | Automation |
 | 연결·인증·이벤트 진입점 | Gateway |
 
-다음 글에서는 이 경계를 실제 PoC에 적용한 판단과 한계를 정리한다. [OpenClaw 컴포넌트 적용기 읽기](/posts/openclaw-component-application/)
 
 ## 참고 자료
 
