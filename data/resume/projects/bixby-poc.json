@@ -2,7 +2,6 @@
   "group": "platform",
   "order": 10,
   "title": "OpenClaw 기반 서버형 Bixby 에이전트 PoC",
-  "url": "https://jwlee3746.github.io/blog/Agent/openclaw-component-application/",
   "start": "2026-03",
   "end": "2026-07",
   "stack": [
