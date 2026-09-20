@@ -4,11 +4,7 @@ excerpt: 서버형 에이전트 PoC에서 OpenClaw의 Skill, custom Tool, Plugin
 date: '2026-09-01'
 category: Agent
 tags:
-- OpenClaw
-- Tool Calling
-- Plugin
-- Skill
-- Multi-turn
+- 기타
 permalink: /posts/openclaw-component-application/
 legacyUrl: /blog/Agent/openclaw-component-application/
 toc: true

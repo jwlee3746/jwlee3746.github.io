@@ -4,11 +4,7 @@ excerpt: 블록·시퀀스 다이어그램으로 OpenClaw의 실행 구조를 �
 date: '2026-09-01'
 category: Agent
 tags:
-- OpenClaw
-- Gateway
-- Tool Calling
-- Plugin
-- Skill
+- 기타
 permalink: /posts/openclaw-architecture-research/
 legacyUrl: /blog/Agent/openclaw-architecture-research/
 toc: true
