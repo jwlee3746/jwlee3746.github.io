@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="480" viewBox="0 0 780 480" role="img" aria-labelledby="prompt-title prompt-desc" data-article-diagram="true" class="article-diagram-art">
+<title id="prompt-title">고정 지침과 요청별 정보를 함께 조립한다</title><desc id="prompt-desc">역할과 도구 지침, capability, 실행 상태가 하네스를 거쳐 모델 입력과 실행 도구로 연결된다.</desc>
+<defs><marker id="prompt-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#8ddacb"/></marker></defs>
+<style>
+.article-diagram-art text { font-family:var(--font-body,sans-serif); font-size:1rem; fill:#e7edf4; }
+.article-diagram-art .heading { font-size:1.125rem; font-weight:var(--weight-semibold,600); }
+.article-diagram-art .label { font-weight:var(--weight-semibold,600); }
+.article-diagram-art .note { font-size:.875rem; fill:#b8c4d4; }
+.article-diagram-art .box { fill:#202c3b; stroke:#617287; stroke-width:1.5; }
+.article-diagram-art .focus { fill:#163a37; stroke:#8ddacb; stroke-width:1.5; }
+.article-diagram-art .line { fill:none; stroke:#8ddacb; stroke-width:1.5; marker-end:url(#prompt-arrow); }
+.article-diagram-art .lifeline { stroke:#617287; stroke-dasharray:5 5; }
+</style><rect width="780" height="480" rx="12" fill="#121b26"/>
+<text x="28" y="38" class="heading">고정 지침과 요청별 정보를 함께 조립한다</text>
+<rect x="28" y="76" width="222" height="116" rx="10" class="box"/>
+<text x="44" y="106" class="label" text-anchor="start">역할·도구 지침</text>
+<text x="44" y="134" class="note" text-anchor="start">AGENTS.md / TOOLS.md</text>
+<text x="44" y="156" class="note" text-anchor="start">역할 · 판단 · 사용 원칙</text>
+<rect x="279" y="76" width="222" height="116" rx="10" class="box"/>
+<text x="295" y="106" class="label" text-anchor="start">요청별 capability</text>
+<text x="295" y="134" class="note" text-anchor="start">발견한 기능과 제약</text>
+<text x="295" y="156" class="note" text-anchor="start">요청·탐색 단계마다 갱신</text>
+<rect x="530" y="76" width="222" height="116" rx="10" class="box"/>
+<text x="546" y="106" class="label" text-anchor="start">실행 상태</text>
+<text x="546" y="134" class="note" text-anchor="start">이전 결과 · 확인 대기</text>
+<text x="546" y="156" class="note" text-anchor="start">필요한 대화 문맥</text>
+<path d="M139 192V221H354V250" class="line"/>
+<path d="M390 192V250" class="line"/>
+<path d="M641 192V221H426V250" class="line"/>
+<rect x="210" y="250" width="360" height="96" rx="10" class="focus"/>
+<text x="226" y="280" class="label" text-anchor="start">하네스: 선택 · 조립 · 계약 확인</text>
+<text x="226" y="308" class="note" text-anchor="start">사용 가능한 도구 스키마와 정렬</text>
+<path d="M390 346V384" class="line"/>
+<rect x="150" y="384" width="480" height="66" rx="10" class="box"/>
+<text x="166" y="414" class="label" text-anchor="start">모델 입력 + 실제 호출 가능한 도구</text>
+</svg>

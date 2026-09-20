@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="694" viewBox="0 0 780 694" role="img" aria-labelledby="oc-prompt-title oc-prompt-desc" data-article-diagram="true" class="article-diagram-art">
+<title id="oc-prompt-title">OpenClaw의 프롬프트 조립 경계</title>
+<desc id="oc-prompt-desc">워크스페이스 파일을 읽고 필터링한 문맥과 현재 런타임 정보가 설정 해석과 렌더링을 거친다. 모델 요청은 프롬프트, 실제 도구 스키마, 대화와 실행 상태를 함께 받는다.</desc>
+<defs><marker id="oc-prompt-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#8ddacb"/></marker></defs>
+<style>
+.article-diagram-art text { font-family:var(--font-body,sans-serif); font-size:1rem; fill:#e7edf4; }
+.article-diagram-art .heading { font-size:1.125rem; font-weight:var(--weight-semibold,600); }
+.article-diagram-art .label { font-weight:var(--weight-semibold,600); }
+.article-diagram-art .note { font-size:.875rem; fill:#b8c4d4; }
+.article-diagram-art .box { fill:#202c3b; stroke:#617287; stroke-width:1.5; }
+.article-diagram-art .focus { fill:#163a37; stroke:#8ddacb; stroke-width:1.5; }
+.article-diagram-art .line { fill:none; stroke:#8ddacb; stroke-width:1.5; marker-end:url(#oc-prompt-arrow); }
+</style>
+<rect width="780" height="694" rx="12" fill="#121b26"/>
+<text x="28" y="38" class="heading">OpenClaw: 실행 입력을 모으고 공통 빌더로 조립</text>
+<rect x="28" y="68" width="348" height="88" rx="10" class="box"/>
+<text x="44" y="97" class="label">워크스페이스 파일</text>
+<text x="44" y="125" class="note">AGENTS · SOUL · IDENTITY · USER 등</text>
+<path d="M202 156V186" class="line"/>
+<rect x="28" y="186" width="348" height="102" rx="10" class="box"/>
+<text x="44" y="215" class="label">bootstrap 문맥 준비</text>
+<text x="44" y="241" class="note">세션 필터 → hook → 재검사 → 크기 제한</text>
+<text x="44" y="266" class="note">출력: contextFiles</text>
+<rect x="404" y="186" width="348" height="102" rx="10" class="box"/>
+<text x="420" y="215" class="label">런타임 어댑터의 현재 입력</text>
+<text x="420" y="241" class="note">도구 이름 · 스킬 목록 · 채널 · 샌드박스</text>
+<text x="420" y="266" class="note">설정 · provider별 프롬프트 정보</text>
+<path d="M202 288V311H366V336" class="line"/>
+<path d="M578 288V311H414V336" class="line"/>
+<rect x="138" y="336" width="504" height="112" rx="10" class="focus"/>
+<text x="158" y="365" class="label">설정 해석 → 프롬프트 렌더링</text>
+<text x="158" y="393" class="note">buildConfiguredAgentSystemPrompt</text>
+<text x="158" y="421" class="note">→ buildAgentSystemPrompt</text>
+<path d="M390 448V482" class="line"/>
+<rect x="138" y="482" width="504" height="76" rx="10" class="box"/>
+<text x="158" y="511" class="label">embedded 실행용 변환</text>
+<text x="158" y="537" class="note">provider 변환 · 안정 영역 / 동적 영역 분리</text>
+<path d="M390 558V596" class="line"/>
+<rect x="28" y="596" width="724" height="72" rx="10" class="focus"/>
+<text x="44" y="625" class="label">모델 요청을 구성하는 입력</text>
+<text x="44" y="650" class="note">조립한 프롬프트 + 실제 도구 스키마 + 대화 이력 / 현재 Runtime Context</text>
+</svg>
