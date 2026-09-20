@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="500" viewBox="0 0 660 500" role="img" aria-labelledby="title desc" data-article-diagram="true" class="article-diagram-art">
+<title id="title">입력을 읽고, 다음 토큰을 쓰기</title><desc id="desc">원문은 인코더를 거쳐 토큰별 memory가 된다. 디코더는 memory와 이전 출력으로 student를 예측한다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--color-link, #78b8ff)"/></marker></defs>
+<style>
+.article-diagram-art {font-family:var(--font-body, sans-serif);font-size:16px;color:var(--color-text,#ddd)}
+.article-diagram-art text {fill:var(--color-heading,#eee);font-family:var(--font-body, sans-serif);font-size:1rem}
+.article-diagram-art .heading {font-size:1.125rem;font-weight:var(--weight-semibold,600)}
+.article-diagram-art .label {font-weight:var(--weight-semibold,600)}
+.article-diagram-art .note {font-size:.875rem;fill:var(--color-label,#b5b5b5)}
+.article-diagram-art .box {fill:var(--color-card,#242424);stroke:var(--color-border,#555);stroke-width:1;rx:8}
+.article-diagram-art .active {fill:var(--color-card,#242424);stroke:var(--color-link,#78b8ff);stroke-width:1.5;rx:8}
+.article-diagram-art .edge {fill:none;stroke:var(--color-link,#78b8ff);stroke-width:1.5;marker-end:url(#arrow)}
+.article-diagram-art .life {fill:none;stroke:var(--color-border,#555);stroke-width:1;stroke-dasharray:5 5}
+</style>
+<text x="24" y="32" text-anchor="start" class="heading">입력을 읽고, 다음 토큰을 쓰기</text>
+<rect x="28" y="68" width="268" height="68" class="box"/>
+<text x="162.0" y="95.0" text-anchor="middle" class="label">원문</text>
+<text x="162.0" y="119.0" text-anchor="middle" class="note">나는 학생이다</text>
+<rect x="364" y="68" width="268" height="68" class="box"/>
+<text x="498.0" y="95.0" text-anchor="middle" class="label">지금까지의 출력</text>
+<text x="498.0" y="119.0" text-anchor="middle" class="note">[시작] I am a</text>
+<rect x="28" y="178" width="268" height="68" class="box"/>
+<text x="162.0" y="205.0" text-anchor="middle" class="label">Encoder</text>
+<text x="162.0" y="229.0" text-anchor="middle" class="note">원문의 각 위치를 가공</text>
+<path d="M162 136L162 178" class="edge"/>
+<rect x="28" y="288" width="268" height="76" class="box"/>
+<text x="162.0" y="319.0" text-anchor="middle" class="label">Memory</text>
+<text x="162.0" y="343.0" text-anchor="middle" class="note">입력 위치마다 벡터 하나</text>
+<path d="M162 246L162 288" class="edge"/>
+<rect x="364" y="288" width="268" height="76" class="active"/>
+<text x="498.0" y="319.0" text-anchor="middle" class="label">Decoder</text>
+<text x="498.0" y="343.0" text-anchor="middle" class="note">원문과 작성한 내용을 참고</text>
+<path d="M498 136L498 288" class="edge"/>
+<path d="M296 326L364 326" class="edge"/>
+<rect x="364" y="410" width="268" height="62" class="box"/>
+<text x="498.0" y="434.0" text-anchor="middle" class="label">어휘 점수 → 확률 → 선택</text>
+<text x="498.0" y="458.0" text-anchor="middle" class="note">다음 토큰: student</text>
+<path d="M498 364L498 410" class="edge"/>
+<text x="162" y="438" text-anchor="middle" class="note">Memory는 벡터 한 개가 아님</text>
+</svg>

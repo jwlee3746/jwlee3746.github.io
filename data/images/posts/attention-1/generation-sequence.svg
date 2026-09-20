@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="550" viewBox="0 0 660 550" role="img" aria-labelledby="title desc" data-article-diagram="true" class="article-diagram-art">
+<title id="title">생성: 토큰 선택과 입력 추가를 반복</title><desc id="desc">디코더가 다음 토큰을 선택해 출력에 추가하고 갱신된 앞부분을 다음 단계에서 사용한다. 원문 memory는 매 단계 참고한다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--color-link, #78b8ff)"/></marker></defs>
+<style>
+.article-diagram-art {font-family:var(--font-body, sans-serif);font-size:16px;color:var(--color-text,#ddd)}
+.article-diagram-art text {fill:var(--color-heading,#eee);font-family:var(--font-body, sans-serif);font-size:1rem}
+.article-diagram-art .heading {font-size:1.125rem;font-weight:var(--weight-semibold,600)}
+.article-diagram-art .label {font-weight:var(--weight-semibold,600)}
+.article-diagram-art .note {font-size:.875rem;fill:var(--color-label,#b5b5b5)}
+.article-diagram-art .box {fill:var(--color-card,#242424);stroke:var(--color-border,#555);stroke-width:1;rx:8}
+.article-diagram-art .active {fill:var(--color-card,#242424);stroke:var(--color-link,#78b8ff);stroke-width:1.5;rx:8}
+.article-diagram-art .edge {fill:none;stroke:var(--color-link,#78b8ff);stroke-width:1.5;marker-end:url(#arrow)}
+.article-diagram-art .life {fill:none;stroke:var(--color-border,#555);stroke-width:1;stroke-dasharray:5 5}
+</style>
+<text x="24" y="32" text-anchor="start" class="heading">생성: 토큰 선택과 입력 추가를 반복</text>
+<rect x="28" y="62" width="244" height="52" class="box"/>
+<text x="150.0" y="93.0" text-anchor="middle" class="label">디코더 + 어휘 출력층</text>
+<rect x="388" y="62" width="244" height="52" class="box"/>
+<text x="510.0" y="93.0" text-anchor="middle" class="label">출력 시퀀스</text>
+<path d="M150 114V494" class="life"/>
+<path d="M510 114V494" class="life"/>
+<path d="M510 162L150 162" class="edge"/>
+<text x="330" y="150" text-anchor="middle" class="">[시작] 입력</text>
+<path d="M150 222L510 222" class="edge"/>
+<text x="330" y="210" text-anchor="middle" class="">I 선택 · 추가</text>
+<path d="M510 282L150 282" class="edge"/>
+<text x="330" y="270" text-anchor="middle" class="">[시작] I</text>
+<path d="M150 342L510 342" class="edge"/>
+<text x="330" y="330" text-anchor="middle" class="">am 선택 · 추가</text>
+<path d="M510 402L150 402" class="edge"/>
+<text x="330" y="390" text-anchor="middle" class="">[시작] I am</text>
+<path d="M150 462L510 462" class="edge"/>
+<text x="330" y="450" text-anchor="middle" class="">a 선택 · 추가</text>
+<text x="330" y="526" text-anchor="middle" class="note">원문 Memory를 계속 참고 · student와 [끝]까지 반복</text>
+</svg>

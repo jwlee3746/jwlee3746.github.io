@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="410" viewBox="0 0 660 410" role="img" aria-labelledby="title desc" data-article-diagram="true" class="article-diagram-art">
+<title id="title">계산량을 만드는 두 가지 행렬 곱</title><desc id="desc">전체 입력에서 선형 변환과 FFN은 nd 제곱, attention은 n 제곱 d에 비례한다. 층 수만큼 반복한다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--color-link, #78b8ff)"/></marker></defs>
+<style>
+.article-diagram-art {font-family:var(--font-body, sans-serif);font-size:16px;color:var(--color-text,#ddd)}
+.article-diagram-art text {fill:var(--color-heading,#eee);font-family:var(--font-body, sans-serif);font-size:1rem}
+.article-diagram-art .heading {font-size:1.125rem;font-weight:var(--weight-semibold,600)}
+.article-diagram-art .label {font-weight:var(--weight-semibold,600)}
+.article-diagram-art .note {font-size:.875rem;fill:var(--color-label,#b5b5b5)}
+.article-diagram-art .box {fill:var(--color-card,#242424);stroke:var(--color-border,#555);stroke-width:1;rx:8}
+.article-diagram-art .active {fill:var(--color-card,#242424);stroke:var(--color-link,#78b8ff);stroke-width:1.5;rx:8}
+.article-diagram-art .edge {fill:none;stroke:var(--color-link,#78b8ff);stroke-width:1.5;marker-end:url(#arrow)}
+.article-diagram-art .life {fill:none;stroke:var(--color-border,#555);stroke-width:1;stroke-dasharray:5 5}
+</style>
+<text x="24" y="32" text-anchor="start" class="heading">계산량을 만드는 두 가지 행렬 곱</text>
+<rect x="24" y="80" width="288" height="104" class="active"/>
+<text x="168.0" y="113.0" text-anchor="middle" class="label">선형 변환 · FFN</text>
+<text x="168.0" y="137.0" text-anchor="middle" class="note">O(nd²)</text>
+<text x="168.0" y="161.0" text-anchor="middle" class="note">모델 폭 d에 제곱</text>
+<rect x="348" y="80" width="288" height="104" class="active"/>
+<text x="492.0" y="113.0" text-anchor="middle" class="label">토큰 간 Attention</text>
+<text x="492.0" y="137.0" text-anchor="middle" class="note">O(n²d)</text>
+<text x="492.0" y="161.0" text-anchor="middle" class="note">입력 길이 n에 제곱</text>
+<path d="M168 184V220H280V258" class="edge"/>
+<path d="M492 184V220H380V258" class="edge"/>
+<rect x="124" y="258" width="412" height="72" class="box"/>
+<text x="330.0" y="287.0" text-anchor="middle" class="label">L층 반복</text>
+<text x="330.0" y="311.0" text-anchor="middle" class="note">O(L(nd² + n²d))</text>
+<text x="330" y="380" text-anchor="middle" class="note">배치 1 · d_ff는 d의 일정한 배수 · 어휘 출력층은 별도</text>
+</svg>

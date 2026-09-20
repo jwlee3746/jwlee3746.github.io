@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="770" viewBox="0 0 660 770" role="img" aria-labelledby="title desc" data-article-diagram="true" class="article-diagram-art">
+<title id="title">한 층의 구조: Encoder와 Decoder</title><desc id="desc">인코더는 self-attention과 FFN, 디코더는 masked self-attention과 cross-attention 및 FFN을 사용한다. 각 서브레이어에 잔차 연결이 있다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--color-link, #78b8ff)"/></marker></defs>
+<style>
+.article-diagram-art {font-family:var(--font-body, sans-serif);font-size:16px;color:var(--color-text,#ddd)}
+.article-diagram-art text {fill:var(--color-heading,#eee);font-family:var(--font-body, sans-serif);font-size:1rem}
+.article-diagram-art .heading {font-size:1.125rem;font-weight:var(--weight-semibold,600)}
+.article-diagram-art .label {font-weight:var(--weight-semibold,600)}
+.article-diagram-art .note {font-size:.875rem;fill:var(--color-label,#b5b5b5)}
+.article-diagram-art .box {fill:var(--color-card,#242424);stroke:var(--color-border,#555);stroke-width:1;rx:8}
+.article-diagram-art .active {fill:var(--color-card,#242424);stroke:var(--color-link,#78b8ff);stroke-width:1.5;rx:8}
+.article-diagram-art .edge {fill:none;stroke:var(--color-link,#78b8ff);stroke-width:1.5;marker-end:url(#arrow)}
+.article-diagram-art .life {fill:none;stroke:var(--color-border,#555);stroke-width:1;stroke-dasharray:5 5}
+</style>
+<text x="24" y="32" text-anchor="start" class="heading">한 층의 구조: Encoder와 Decoder</text>
+<text x="164" y="72" text-anchor="middle" class="label">Encoder</text>
+<text x="496" y="72" text-anchor="middle" class="label">Decoder</text>
+<rect x="54" y="94" width="220" height="44" class="box"/>
+<text x="164.0" y="121.0" text-anchor="middle" class="label">입력 표현 X</text>
+<rect x="386" y="94" width="220" height="44" class="box"/>
+<text x="496.0" y="121.0" text-anchor="middle" class="label">출력 쪽 표현 Y</text>
+<path d="M164 138L164 178" class="edge"/>
+<rect x="54" y="178" width="220" height="48" class="box"/>
+<text x="164.0" y="207.0" text-anchor="middle" class="label">Self-Attention</text>
+<path d="M164 226L164 254" class="edge"/>
+<rect x="54" y="254" width="220" height="44" class="box"/>
+<text x="164.0" y="281.0" text-anchor="middle" class="label">Add &amp; Norm</text>
+<path d="M164 158H32V276H54" class="edge"/>
+<path d="M164 298L164 346" class="edge"/>
+<rect x="54" y="346" width="220" height="48" class="box"/>
+<text x="164.0" y="375.0" text-anchor="middle" class="label">FFN</text>
+<path d="M164 394L164 422" class="edge"/>
+<rect x="54" y="422" width="220" height="44" class="box"/>
+<text x="164.0" y="449.0" text-anchor="middle" class="label">Add &amp; Norm</text>
+<path d="M164 326H32V444H54" class="edge"/>
+<path d="M164 466L164 506" class="edge"/>
+<rect x="54" y="506" width="220" height="44" class="box"/>
+<text x="164.0" y="533.0" text-anchor="middle" class="label">다음 층으로</text>
+<path d="M496 138L496 178" class="edge"/>
+<rect x="386" y="178" width="220" height="48" class="box"/>
+<text x="496.0" y="207.0" text-anchor="middle" class="label">Masked Self-Attention</text>
+<path d="M496 226L496 254" class="edge"/>
+<rect x="386" y="254" width="220" height="44" class="box"/>
+<text x="496.0" y="281.0" text-anchor="middle" class="label">Add &amp; Norm</text>
+<path d="M496 158H364V276H386" class="edge"/>
+<path d="M496 298L496 346" class="edge"/>
+<rect x="386" y="346" width="220" height="48" class="box"/>
+<text x="496.0" y="375.0" text-anchor="middle" class="label">Cross-Attention</text>
+<path d="M496 394L496 422" class="edge"/>
+<rect x="386" y="422" width="220" height="44" class="box"/>
+<text x="496.0" y="449.0" text-anchor="middle" class="label">Add &amp; Norm</text>
+<path d="M496 326H364V444H386" class="edge"/>
+<path d="M496 466L496 514" class="edge"/>
+<rect x="386" y="514" width="220" height="48" class="box"/>
+<text x="496.0" y="543.0" text-anchor="middle" class="label">FFN</text>
+<path d="M496 562L496 590" class="edge"/>
+<rect x="386" y="590" width="220" height="44" class="box"/>
+<text x="496.0" y="617.0" text-anchor="middle" class="label">Add &amp; Norm</text>
+<path d="M496 494H364V612H386" class="edge"/>
+<path d="M496 634L496 686" class="edge"/>
+<rect x="386" y="686" width="220" height="44" class="box"/>
+<text x="496.0" y="713.0" text-anchor="middle" class="label">다음 층으로</text>
+<path d="M164 550L164 604" class="edge"/>
+<rect x="34" y="604" width="260" height="68" class="box"/>
+<text x="164.0" y="631.0" text-anchor="middle" class="label">6층 뒤 최종 출력 Memory</text>
+<text x="164.0" y="655.0" text-anchor="middle" class="note">각 디코더 층의 K·V 원천</text>
+<path d="M294 638H330V370H386" class="edge"/>
+<text x="330" y="756" text-anchor="middle" class="note">원 논문: 각 스택 6층 · dropout 생략 · 층마다 가중치 별개</text>
+</svg>

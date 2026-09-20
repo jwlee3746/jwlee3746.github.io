@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="630" viewBox="0 0 660 630" role="img" aria-labelledby="title desc" data-article-diagram="true" class="article-diagram-art">
+<title id="title">KV 캐시: 새 위치만 계산하고 과거를 읽기</title><desc id="desc">한 층에서 새 토큰 a의 Q K V를 만들고 K V를 캐시에 추가한 뒤 전체 K V를 읽어 a 위치의 표현을 계산한다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--color-link, #78b8ff)"/></marker></defs>
+<style>
+.article-diagram-art {font-family:var(--font-body, sans-serif);font-size:16px;color:var(--color-text,#ddd)}
+.article-diagram-art text {fill:var(--color-heading,#eee);font-family:var(--font-body, sans-serif);font-size:1rem}
+.article-diagram-art .heading {font-size:1.125rem;font-weight:var(--weight-semibold,600)}
+.article-diagram-art .label {font-weight:var(--weight-semibold,600)}
+.article-diagram-art .note {font-size:.875rem;fill:var(--color-label,#b5b5b5)}
+.article-diagram-art .box {fill:var(--color-card,#242424);stroke:var(--color-border,#555);stroke-width:1;rx:8}
+.article-diagram-art .active {fill:var(--color-card,#242424);stroke:var(--color-link,#78b8ff);stroke-width:1.5;rx:8}
+.article-diagram-art .edge {fill:none;stroke:var(--color-link,#78b8ff);stroke-width:1.5;marker-end:url(#arrow)}
+.article-diagram-art .life {fill:none;stroke:var(--color-border,#555);stroke-width:1;stroke-dasharray:5 5}
+</style>
+<text x="24" y="32" text-anchor="start" class="heading">KV 캐시: 새 위치만 계산하고 과거를 읽기</text>
+<rect x="20" y="66" width="160" height="52" class="box"/>
+<text x="100.0" y="97.0" text-anchor="middle" class="label">새 위치 a</text>
+<rect x="242" y="66" width="176" height="52" class="box"/>
+<text x="330.0" y="97.0" text-anchor="middle" class="label">한 층의 Attention</text>
+<rect x="480" y="66" width="160" height="52" class="box"/>
+<text x="560.0" y="97.0" text-anchor="middle" class="label">이 층의 KV 캐시</text>
+<path d="M100 118V550" class="life"/>
+<path d="M330 118V550" class="life"/>
+<path d="M560 118V550" class="life"/>
+<path d="M100 172L330 172" class="edge"/>
+<text x="215" y="160" text-anchor="middle" class="note">현재 층 입력</text>
+<rect x="250" y="202" width="160" height="54" class="active"/>
+<text x="330.0" y="234.0" text-anchor="middle" class="label">Q_a · K_a · V_a</text>
+<path d="M330 310L560 310" class="edge"/>
+<text x="445" y="296" text-anchor="middle" class="note">K_a · V_a 추가</text>
+<rect x="466" y="336" width="188" height="68" class="box"/>
+<text x="560.0" y="363.0" text-anchor="middle" class="label">I · am · a의 K·V</text>
+<text x="560.0" y="387.0" text-anchor="middle" class="note">토큰 축으로 확장</text>
+<path d="M560 448L330 448" class="edge"/>
+<text x="445" y="434" text-anchor="middle" class="note">전체 K·V 읽기</text>
+<rect x="218" y="482" width="224" height="58" class="box"/>
+<text x="330.0" y="504.0" text-anchor="middle" class="label">Q_a로 비교 · V 가중합</text>
+<text x="330.0" y="528.0" text-anchor="middle" class="note">현재 위치의 새 표현</text>
+<path d="M330 540L330 580" class="edge"/>
+<text x="330" y="605" text-anchor="middle" class="note">다음 층으로 · 마지막 층 뒤 다음 토큰 예측</text>
+</svg>

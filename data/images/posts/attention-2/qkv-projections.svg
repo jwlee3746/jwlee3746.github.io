@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="370" viewBox="0 0 660 370" role="img" aria-labelledby="title desc" data-article-diagram="true" class="article-diagram-art">
+<title id="title">Q·K·V: 비교와 전달을 위한 세 변환</title><desc id="desc">같은 입력에서 학습 가중치가 서로 다른 Q K V를 만든다. Q와 K는 참고 비율, V는 전달 내용이다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--color-link, #78b8ff)"/></marker></defs>
+<style>
+.article-diagram-art {font-family:var(--font-body, sans-serif);font-size:16px;color:var(--color-text,#ddd)}
+.article-diagram-art text {fill:var(--color-heading,#eee);font-family:var(--font-body, sans-serif);font-size:1rem}
+.article-diagram-art .heading {font-size:1.125rem;font-weight:var(--weight-semibold,600)}
+.article-diagram-art .label {font-weight:var(--weight-semibold,600)}
+.article-diagram-art .note {font-size:.875rem;fill:var(--color-label,#b5b5b5)}
+.article-diagram-art .box {fill:var(--color-card,#242424);stroke:var(--color-border,#555);stroke-width:1;rx:8}
+.article-diagram-art .active {fill:var(--color-card,#242424);stroke:var(--color-link,#78b8ff);stroke-width:1.5;rx:8}
+.article-diagram-art .edge {fill:none;stroke:var(--color-link,#78b8ff);stroke-width:1.5;marker-end:url(#arrow)}
+.article-diagram-art .life {fill:none;stroke:var(--color-border,#555);stroke-width:1;stroke-dasharray:5 5}
+</style>
+<text x="24" y="32" text-anchor="start" class="heading">Q·K·V: 비교와 전달을 위한 세 변환</text>
+<rect x="210" y="64" width="240" height="56" class="box"/>
+<text x="330.0" y="97.0" text-anchor="middle" class="label">토큰의 현재 표현 X</text>
+<path d="M330 120V154H118V188" class="edge"/>
+<rect x="24" y="188" width="188" height="96" class="active"/>
+<text x="118.0" y="229.0" text-anchor="middle" class="label">Q = XW_Q</text>
+<text x="118.0" y="253.0" text-anchor="middle" class="note">무엇을 찾는가</text>
+<path d="M330 120V154H330V188" class="edge"/>
+<rect x="236" y="188" width="188" height="96" class="active"/>
+<text x="330.0" y="229.0" text-anchor="middle" class="label">K = XW_K</text>
+<text x="330.0" y="253.0" text-anchor="middle" class="note">무엇과 맞는가</text>
+<path d="M330 120V154H542V188" class="edge"/>
+<rect x="448" y="188" width="188" height="96" class="active"/>
+<text x="542.0" y="229.0" text-anchor="middle" class="label">V = XW_V</text>
+<text x="542.0" y="253.0" text-anchor="middle" class="note">무엇을 전달하는가</text>
+<text x="330" y="330" text-anchor="middle" class="note">Q·K·V는 모두 숫자 벡터 · 세 가중치는 학습으로 결정</text>
+</svg>
