@@ -13,7 +13,7 @@
 .article-diagram-art .life{fill:none;stroke:var(--color-border,#555);stroke-width:1;stroke-dasharray:5 5}
 </style>
 <text x="24" y="32" class="heading" text-anchor="start">라이브러리별 책임과 서비스 경계</text>
-<rect x="80" y="65" width="800" height="80" class="active"/><text x="480.0" y="100.0" class="label" text-anchor="middle">서비스 / AgentAdapter</text><text x="480.0" y="126.0" class="note" text-anchor="middle">도메인 요청·응답 · 도구 결과 대응 · 식별자 정책</text>
+<rect x="80" y="65" width="800" height="80" class="active"/><text x="480.0" y="100.0" class="label" text-anchor="middle">서비스 / 연결 계층</text><text x="480.0" y="126.0" class="note" text-anchor="middle">도메인 요청·응답 · 도구 결과 대응 · 식별자 정책</text>
 <rect x="80" y="195" width="800" height="80" class="box"/><text x="480.0" y="230.0" class="label" text-anchor="middle">Deep Agents</text><text x="480.0" y="256.0" class="note" text-anchor="middle">에이전트 실행 구성 · 스킬과 문맥 연결</text>
 <rect x="80" y="325" width="800" height="80" class="box"/><text x="480.0" y="360.0" class="label" text-anchor="middle">LangChain</text><text x="480.0" y="386.0" class="note" text-anchor="middle">모델 · 메시지 · 도구 · 에이전트 구성 요소</text>
 <rect x="80" y="455" width="800" height="80" class="box"/><text x="480.0" y="490.0" class="label" text-anchor="middle">LangGraph</text><text x="480.0" y="516.0" class="note" text-anchor="middle">상태를 가진 실행 기반 · 체크포인터</text>
