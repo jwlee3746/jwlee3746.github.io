@@ -1,477 +1,407 @@
-# AIC의 진화와 현재 evaluator의 구조
+# 프롬프트 평가에서 에이전트 평가로: 고정 fixture와 stateful simulator를 함께 쓰기까지
 
-분석일: 2026-09-20. 로컬 Git 이력과 해당 커밋의 소스를 읽어 재구성했다. Phase는 저장소의 공식 로드맵이 아니라 **실행 책임과 요청·응답 계약이 바뀐 경계**를 기준으로 나눈 것이다.
+**고정된 문맥에서 올바른 plan을 생성하는 모델을 평가하던 방식은, 모델과 하네스가 환경과 상호작용하는 전체 실행을 평가하는 방식으로 확장되어야 한다.**
 
-- AIC: `main`, `fde590ecc4e56fe1c04d58ee538f28ddcba137be` — 2026-08-31.
-- AES: `68093a5e2b` — 2026-08-27.
-- 원격 fetch와 배포 환경 검증은 하지 않았다. 여기서 ‘현재’는 위 로컬 checkout을 뜻한다.
-- 날짜는 Git 로그에 기록된 날짜를 기준으로 한다. 모든 기능 변경을 나열하지 않고 evaluator의 설계에 영향을 주는 흐름에 집중했다.
-- 아래 ‘평가에 미친 영향’은 별도 표시가 없는 한 코드의 관계를 해석한 것이며, 당시 개발자의 의도를 단정한 것이 아니다.
+- **출발점:** 2025년 `llm-train`과 `plan-llm`의 prompt·plan 평가.
+- **현재 도달점:** AIC 요청·응답 계약을 대상으로 한 AES의 fixture replay와 제한적인 capability continuation.
+- **다음 방향:** state와 tool output을 제공하는 simulator를 추가하고, replay와 stateful episode를 함께 운영하는 하이브리드 AES.
+- **서술 기준:** Phase 1~4는 로컬 코드·Git 이력을 바탕으로 한 분석이다. Phase 5~6은 **아직 구현 완료를 주장하지 않는 설계 제안**이다.
+- **문서 상태:** 포스팅 초안이다. `docs/`는 사이트 빌드에서 제외되며 현재 글 목록에 노출되지 않는다.
 
-핵심은 AIC가 **자체 planner loop → 교체 가능한 agent runtime → Fast/Deep routing → client round trip → 동적 capability와 상태 복원**으로 확장되었다는 점이다. 현재 AES는 그 경계를 대상으로 입력을 재현하고, 구조화된 행동을 비교하며, capability continuation만 제한적으로 이어 실행한다.
+## 평가가 복잡해진 이유
 
-## Phase 개요
+**평가 단위가 모델의 한 번의 출력에서, 모델과 하네스가 만드는 실행 과정과 결과로 바뀌었다.**
 
-| Phase | 기간 | 중심 변화 | 평가에서 중요해진 것 |
+- [Anthropic agent eval 정리](../data/posts/2026-08-31-demystifying-agent-evals-korean.md)의 구분에 따라 **agent harness**와 **evaluation harness**를 구분한다.
+- **Agent harness:** 모델 입력 구성, tool 호출·결과 전달, 상태 유지, 재시도·중단 등 실행을 조율한다.
+- **Evaluation harness:** task와 실행 환경을 준비하고, agent를 실행하고, 기록·결과를 grader로 판정한다.
+- 2025년에도 multi-turn 문맥, 여러 step, service decoder가 있었다. 당시 시스템 전체에 orchestration이 없었다는 뜻은 아니다.
+- 여기서 **single-turn/component 평가**는 고정된 입력에 대한 모델 예측을 평가 단위로 삼는다는 뜻이다. 실제 예측과 도구 결과가 다음 환경을 만드는 전체 episode 평가와 구분한다.
+- 초기 평가가 상대적으로 단순했던 것은 정답 판정이 항상 쉬워서가 아니라, **평가기가 동적인 환경과 실행 수명을 소유할 필요가 적었기 때문**이다.
+
+## 여섯 개 phase
+
+| Phase | 시기·상태 | 평가 질문 | 다음 단계가 필요한 이유 |
 | --- | --- | --- | --- |
-| 1 | 02-19 ~ 04-09 | 직접 만든 Subtask/Tool planner loop | 최종 답뿐 아니라 계획·도구 실행 이력 |
-| 2 | 04-10 ~ 05-07 | Deep Agents + Adapter + skills + streaming | 외부 요청/응답 계약과 tool-call handoff |
-| 3 | 05-08 ~ 05-20 | FastPlanner 먼저, 실패 시 내부 Deep fallback | 행동 선택과 tier 판단의 분리 |
-| 4 | 05-21 ~ 06-15 | deliberate, incompleted, client 재호출, 도구 실행 주체 분리 | Turn/Step, 기대 이력 재생, transport 정규화 |
-| 5 | 06-16 ~ 07-05 | CDS discovery, 확장 capability, ToolSpec/Runnable 분리 | 검색 실패와 행동 선택 실패의 구분 |
-| 6 | 07-06 ~ 08-10 | snapshot 왕복, fetch capability, debug evidence | 상태 보존, skill 로드 증거, 중간 호출 |
-| 7 | 08-11 ~ 08-31 | 평가 자산 AES 분리, capability 통합, 계약 정착 | canonical 검증·실행·채점·artifact, 제한적 continuation |
+| 1. 고정 prompt의 plan 평가 | 2025년 기본 구조 | 이 문맥에서 다음 출력을 맞혔는가? | 올바른 출력과 실제 작업 성공은 다름 |
+| 2. 판정과 분석의 확장 | 2025년 중·후반까지 확장 | 표현과 plan 구조가 달라도 올바른 예측인가? | 채점 개선만으로 실제 오류 전파를 볼 수 없음 |
+| 3. 하네스로 평가 대상 확대 | 2026년 AIC 변화 | 모델과 하네스가 함께 어떤 행동을 했는가? | 검색·실행·상태 전달의 실패를 분리해야 함 |
+| 4. AES의 계약 기반 replay | 분석한 현재 구현 | 같은 문맥에서 판단과 회귀를 재현할 수 있는가? | fixture는 실제 action에 반응하는 환경이 아님 |
+| 5. State와 observation의 실행 | 향후 설계 제안 | 실제 상태 전이를 거쳐 목표를 달성하는가? | simulator의 비용·충실도까지 관리해야 함 |
+| 6. 하이브리드 AES 운영 | 목표 운영 형태 | 위험에 맞는 모드로 평가하고 실패를 다시 자산화하는가? | 두 모드의 점수와 실행 의미를 보존해야 함 |
 
-## Phase 1 — 직접 만든 계층형 planner와 runner
+- Phase는 공식 로드맵이나 엄격하게 분리된 출시 시점이 아니다. **문제 → 대응 → 남은 한계**를 설명하기 위한 구성이다.
+- Phase 1~2의 기술은 겹쳐 존재했다. 구조 비교와 문장 유사도가 하반기에 처음 생겼다는 의미가 아니다.
+- AIC의 세부 구현 변화는 [runtime 7단계 부록](aic-runtime-history.md)에 별도로 보존했다.
 
-**기간:** 2026-02-19 ~ 04-09.
+## Phase 1 — 고정된 입력에서 올바른 plan을 생성하는가
 
-대표 근거: `c46990d3` planner, `b44f241e` subtask runner, `678dba76` tool runner, `a2008ec3` 구조 정리. `a2008ec3`의 `core/orchestrator/orchestrator.ts`, `core/subtask/subtask-runner.ts`, `core/tool/tool-runner.ts`를 확인했다.
+**고정된 prompt와 ground truth를 준비하면 모델의 다음 예측을 분리해서 비교할 수 있었다.**
 
-Orchestrator가 SubtaskPlanner를 반복 호출하고, SubtaskRunner가 다시 ToolPlanner와 ToolRunner를 반복한다. 상위 loop에는 subtask 결과가, 하위 loop에는 observation과 memory가 누적된다. 완료 조건과 반복 상한을 애플리케이션 코드가 직접 관리한다. 이 시점의 ToolRunner는 등록된 도구에 빈 argument 객체를 전달하는 초기 구현이다.
+- **당시의 질문:** 발화·문맥이 주어졌을 때 올바른 agent, 함수, 파라미터, plan을 생성하는가?
+- **구성:** `llm-train`이 TC를 읽어 WorldState와 prompt/target을 구성하고, 모델의 예측을 파일로 남겨 사후 평가한다.
+- **서비스와의 연결:** prompt builder와 parser는 `plan-llm`, WorldState와 schema 표현은 `nl-lib`의 구조를 활용한다.
+- **비교 대상:** 모델·LoRA·학습 checkpoint와 prompt의 변경.
+- **상대적으로 단순한 경계:** 입력과 기대 결과를 미리 정할 수 있고, 평가기가 실제 도구 실행과 상태 변화를 끝까지 관리하지 않아도 된다.
 
-```mermaid
-flowchart LR
-    Task["Task: utterance + histories"] --> O["Orchestrator"]
-    O --> SP["SubtaskPlanner"]
-    O --> SR["SubtaskRunner"]
-    SR --> TP["ToolPlanner"]
-    SR --> TR["ToolRunner"]
-    SP --> L["LLM Client<br/>OpenAI / IPS adapter"]
-    TP --> L
-    Registry["ToolRegistry"] --> SP
-    Registry --> TP
-    TR --> Registry
-    TR --> Tool["등록된 Tool"]
-    Tool --> Obs["Observation / Tool history"]
-    Obs --> TP
-    SR --> Hist["Subtask result / Task history"]
-    Hist --> SP
-```
-
-```mermaid
-sequenceDiagram
-    participant Caller
-    participant O as Orchestrator
-    participant P as SubtaskPlanner
-    participant R as SubtaskRunner
-    participant T as ToolPlanner
-    participant X as ToolRunner
-    Caller->>O: Task와 기존 history
-    loop subtask planning 상한까지
-        O->>P: utterance + histories + tools
-        P-->>O: subtask 또는 complete
-        opt subtask가 생성됨
-            O->>R: subtask 실행
-            loop tool planning 상한까지
-                R->>T: instruction + memory + observation
-                T-->>R: tool 또는 complete
-                opt tool 실행이 필요함
-                    R->>X: 선택된 tool 실행
-                    X-->>R: observation
-                end
-            end
-            R-->>O: state + summary + tool histories
-        end
-    end
-    O-->>Caller: histories가 추가된 Task
-```
-
-**평가에 미친 영향:** 실행 결과가 이미 여러 판단과 도구 호출로 이루어진다. 현재 AES의 Path/Step 평가와 문제의식은 이어지지만, 현재 evaluator가 이 초기 클래스를 그대로 옮겨 왔다는 증거는 없다. 당시 현재 형태의 AES도 존재하지 않았다.
-
-## Phase 2 — Deep Agents와 외부 계약의 등장
-
-**기간:** 2026-04-10 ~ 05-07.
-
-대표 근거: `8e470a79` Deep Agents 도입, `074914a8` tool calling, `5afba726` skills, `7cdab641` agent registry. `8e470a79`는 기존 Orchestrator/SubtaskPlanner/ToolPlanner를 삭제하고 AgentAdapter와 DeepAgentAdapter를 추가한다.
-
-반복 실행을 Deep Agents runtime에 맡기고, 서비스는 Adapter를 통해 메시지와 stream을 외부 계약으로 바꾼다. 4월 중순의 계약에는 `completed`, `isDone`, `messages`, `toolCalls`가 있다. 따라서 이벤트 이름이 `completed`여도 `isDone: false`이면 외부 도구 결과를 기다리는 상태다. 아래 그림은 4월 중순 이후 대표 흐름이다.
+### 블록 다이어그램
 
 ```mermaid
 flowchart LR
-    Client["호출자"] --> HTTP["HTTP API"]
-    HTTP --> Controller["AgentController"]
-    Controller --> Adapter["AgentAdapter / DeepAgentAdapter"]
-    Adapter --> Runtime["Deep Agents + Model"]
-    Agents["Agent prompt / registry"] --> Runtime
-    Skills["Skill files"] --> Runtime
-    Tools["ToolRegistry / tool schemas"] --> Runtime
-    Runtime --> Assembler["Message stream assembler"]
-    Assembler --> Events["assistantMessage<br/>completed + isDone + toolCalls"]
-    Events --> Client
+    TC["TC / Schema / 대화 문맥"] --> B["ExampleBuilder<br/>WorldState와 prompt 구성"]
+    B --> Input["고정 input / ground truth"]
+    Input --> Infer["모델 추론"]
+    Model["학습 모델 / LoRA checkpoint"] --> Infer
+    Infer --> Prediction["Prediction 파일"]
+    Input --> G["출력 비교"]
+    Prediction --> G
+    G --> R["정확도 / 오류 분석"]
 ```
+
+### 시퀀스 다이어그램
 
 ```mermaid
 sequenceDiagram
-    participant C as 호출자
-    participant A as API / Adapter
-    participant R as Deep Agents
-    participant T as 외부 도구 실행자
-    C->>A: messages + request context
-    A->>R: stream 시작
-    alt 응답으로 종료
-        R-->>A: AI text
-        A-->>C: assistantMessage와 completed(isDone=true)
-    else 외부 tool call 반환
-        R-->>A: tool call
-        A-->>C: completed(isDone=false, toolCalls, messages)
-        C->>T: 도구 실행
-        T-->>C: tool result
-        C->>A: tool result를 포함한 messages
-    end
+    participant T as TC
+    participant B as ExampleBuilder
+    participant M as Model
+    participant G as Grader
+    T->>B: 문맥과 정답 plan
+    B->>M: 고정 prompt
+    M-->>G: prediction
+    B-->>G: ground truth
+    G->>G: 출력과 기대값 비교
+    G-->>T: 평가 결과 기록
 ```
 
-**평가에 미친 영향:** 내부 class 호출보다 서비스의 messages/tool-call 계약이 안정적인 평가 경계가 된다. 이후 SSE client와 output adapter가 필요한 배경이다. 단, 현재 AES의 SSE parser가 이 초기 `completed/isDone` 계약까지 지원하는 것은 아니다. 현재 parser는 `type: result` terminal event를 요구한다.
+- **드러난 한계:** 올바른 tool call을 생성했다고 실제 작업이 성공한 것은 아니다.
+- **예시:** 타이머 생성 함수를 올바르게 출력했어도, 중복 생성·실패 후 복구·최종 활성 상태는 그 출력만으로 확인할 수 없다. 이후 예시도 평가 경계를 설명하기 위한 가상 사례다.
+- **다음 단계:** 복잡한 plan과 다양한 표현을 잘못 판정하지 않도록 채점과 분석을 정교하게 만든다.
 
-## Phase 3 — Fast 우선, 실패하면 내부에서 Deep으로 전환
+## Phase 2 — 판정을 정교하게 만들어도 실행 전체는 보이지 않았다
 
-**기간:** 2026-05-08 ~ 05-20.
+**출력을 더 정확하게 판정하는 것과, 실제 행동이 이어진 episode의 성공을 확인하는 것은 다른 문제였다.**
 
-대표 근거: `468426c6` planner/responder 분리, `74485351` FastPlanner, `a2e40ae6` planner/responder 통합. 아래 그림은 **05-08의 도입 시점**을 나타낸다. DisplayTextResponder 등 세부 구성은 이 기간 안에서도 바뀐다.
+- **문제:** full plan과 중첩 함수가 복잡해지고, 의미가 같아도 문자열이 다른 출력이 생긴다.
+- **발전:** 함수·파라미터 재귀 비교, 의미 유사도·양방향 entailment, LLM judge, step·turn·conversation 집계, 평가 결과 간 회귀 비교.
+- **연도 내 변화:** 7월 SA full-plan, 8월 DA full-plan 관련 변경과 10월 LLM judge 통합을 확인했다. 문장 유사도·entailment와 일부 다단계 집계는 그 이전에도 존재했다.
+- **핵심 한계:** 정교한 grader를 추가해도 입력을 정답 문맥으로 복원하면 실제 실패의 전파와 복구 과정은 측정하지 못한다.
 
-FastPlanner가 tool interrupt를 반환하면 바로 호출자에게 넘긴다. Fast가 structured status `completed`를 반환하면 응답을 생성하고, 실패 상태 또는 예외이면 Adapter가 같은 요청 안에서 DeepPlanner를 호출한다.
+### 블록 다이어그램
 
 ```mermaid
 flowchart LR
-    Client["호출자"] --> Adapter["DeepCsaAdapter"]
-    Adapter --> Fast["FastPlanner"]
-    Fast -->|"실패 / 예외"| Deep["DeepPlanner"]
-    Fast -->|"계획 완료"| Respond["Display / Speech responders"]
-    Deep -->|"계획 완료"| Respond
-    Fast -->|"tool interrupt"| Handoff["Tool call 반환"]
-    Deep -->|"tool interrupt"| Handoff
-    Respond --> Client
-    Handoff --> Client
+    Data["Prompt + Expected + Prediction"] --> Parse["Plan parser / 재귀 구조 비교"]
+    Data --> Semantic["유사도 / 양방향 entailment"]
+    Data --> Judge["선택적 LLM judge"]
+    Parse --> Aggregate["Step / Turn / Conversation 집계"]
+    Semantic --> Aggregate
+    Judge --> Aggregate
+    Aggregate --> Report["Excel / 로그 / 변경 비교"]
+    Old["이전 평가 결과"] --> Report
 ```
+
+### 시퀀스 다이어그램: 정답 prefix를 사용하는 평가
 
 ```mermaid
 sequenceDiagram
-    participant C as 호출자
-    participant A as DeepCsaAdapter
-    participant F as FastPlanner
-    participant D as DeepPlanner
-    participant R as Responders
-    C->>A: invoke(messages)
-    A->>F: 먼저 계획
-    alt Fast에서 tool call
-        F-->>A: tool interrupt
-        A-->>C: toolCalls, isDone=false
-    else Fast에서 계획 완료
-        F-->>A: status=completed
-        A->>R: 응답 생성
-        R-->>C: display / speech
-    else Fast 실패 또는 예외
-        A->>D: 같은 요청 안에서 Deep 실행
-        D-->>A: 계획 또는 tool interrupt
-        A-->>C: 응답 또는 toolCalls
-    end
+    participant T as 정답 TC
+    participant B as ExampleBuilder
+    participant M as Model
+    participant G as Grader
+    T->>B: 여러 줄의 정답 plan
+    B->>M: 초기 문맥
+    M-->>G: 첫 줄 예측
+    T-->>G: 첫 줄 정답
+    B->>B: 입력에 첫 줄 정답 추가
+    B->>M: 초기 문맥 + 첫 줄 정답
+    M-->>G: 둘째 줄 예측
+    T-->>G: 둘째 줄 정답
+    Note over B,M: 이전 실제 예측이 다음 입력을 결정하지 않음
+    G->>G: 개별 판정을 Turn / Conversation으로 집계
 ```
 
-**평가에 미친 영향:** ‘어떤 행동을 선택했는가’ 외에 ‘Fast에서 처리할 수 있었는가, Deep으로 넘겼는가’가 평가 대상이 된다. AES도 05-12부터 별도 저장소에서 SSE replay, routing-correctness, Langfuse score push를 갖추기 시작했다. 따라서 AES가 8월에 처음 생긴 것은 아니다.
-
-## Phase 4 — client가 이어 호출하는 프로토콜로 전환
-
-**기간:** 2026-05-21 ~ 06-15.
-
-가장 큰 경계 변화는 `6d8bb75d`다. 커밋 설명도 내부 fast/deep escalation에서 client가 `deliberate`로 tier를 구분해 호출하는 방식으로 바꾼다고 명시한다. 응답은 `completed/isDone`에서 `result/status`로 바뀌며, `completed | incompleted`와 `retryHints`를 사용한다.
-
-이 기간에는 A2A 연동, progressive stream, Controller/ToolCallHandler 분리, internal tool 실행도 추가된다. `10c2b1fc`의 ToolRunner는 BOS 소유 도구를 직접 실행하지 않고, internal/A2A 도구는 AIC에서 실행한다. 아래 sequence의 escalation은 05-21 계약 기준이다. 06-04에는 재시도 표식을 messages에 두는 변경도 들어간다.
-
-```mermaid
-flowchart LR
-    C["Client / BOS"] -->|"messages + deliberate"| Controller["CSA Controller"]
-    Controller --> Adapter["MultiTierCsaAdapter"]
-    Adapter --> F["FastTierCsa"]
-    Adapter --> D["DeepTierCsa"]
-    Adapter --> Stream["응답 / progressive stream"]
-    Stream --> Controller
-    Controller --> Handler["ToolCallHandler / ToolRunner"]
-    Handler --> Internal["Internal / A2A 실행"]
-    Handler -->|"BOS tool handoff"| C
-    Controller -->|"result: incompleted / completed"| C
-    C -->|"도구 결과 또는 deliberate=true로 재호출"| Controller
-```
-
-```mermaid
-sequenceDiagram
-    participant C as Client / BOS
-    participant A as CSA
-    participant F as FastTier
-    participant D as DeepTier
-    participant T as BOS 도구
-    C->>A: messages, deliberate=false
-    A->>F: Fast 실행
-    F-->>A: escalation 필요
-    A-->>C: result(incompleted, retryHints.deliberation=true)
-    C->>A: messages, deliberate=true
-    A->>D: Deep 실행
-    D-->>A: BOS tool call
-    A-->>C: tool call + result(incompleted)
-    C->>T: 도구 실행
-    T-->>C: 결과
-    C->>A: messages에 tool result 추가하여 재호출
-    A-->>C: 후속 행동 또는 completed
-```
-
-**평가에 미친 영향:** 사용자 발화 한 번(Turn), 평가하는 행동 한 단계(Step), HTTP 요청 한 번이 서로 다른 단위가 된다. AES에 multi-step fixture와 재생 요청 생성이 필요한 배경이다. `tier` 채점은 현재 구현상 escalation 여부 비교이고, 모든 실제 model route를 완전히 추적하는 지표는 아니다.
-
-## Phase 5 — 로컬 skill 중심에서 CDS discovery 중심으로
-
-**기간:** 2026-06-16 ~ 07-05.
-
-대표 근거: `f1f63595` DeepTier CDS search, `810568b2` FastTier CDS, `c8304dca` 확장 CDS resource, `52801454` ToolSpec/ToolRunnable, `0162aa27` callDeviceAgent 이름 변경.
-
-Fast에는 discovery middleware가 후보를 주입하고, Deep에는 필요할 때 CDS를 검색하는 도구가 들어온다. 06-16 커밋은 기존 Fast/Deep의 skill file 주입을 제거한다고 명시한다. 이는 이후 로컬 CDS fallback 지원까지 사라졌다는 뜻은 아니다.
-
-```mermaid
-flowchart LR
-    Request["발화 / 문맥"] --> FastMW["Fast CDS middleware"]
-    FastMW <--> CDS["Capability Discovery Service"]
-    FastMW --> Fast["FastTier: 후보가 주입된 prompt"]
-    Request --> Deep["DeepTier"]
-    Deep --> Search["capability discovery search tool"]
-    Search <--> CDS
-    Search --> Deep
-    Fast --> Choice["도구 / Domain Agent 선택"]
-    Deep --> Choice
-    Spec["ToolSpec: 호출 계약"] --> Choice
-    Choice --> Runner["AIC Runnable 또는 client handoff"]
-```
-
-```mermaid
-sequenceDiagram
-    participant C as 호출자
-    participant A as AIC
-    participant M as Tier Model
-    participant D as CDS
-    C->>A: 발화 + 문맥
-    alt Fast tier
-        A->>D: capability discovery
-        D-->>A: 후보 capability
-        A->>M: 후보를 포함한 prompt
-        M-->>A: 선택한 action
-    else Deep tier에서 검색 필요
-        A->>M: 계획 요청
-        M-->>A: capability discovery tool call
-        A->>D: 검색 실행
-        D-->>A: capability definition
-        A-->>C: 검색 결과가 포함된 응답
-        C->>A: 결과를 반영한 후속 요청
-        A->>M: 후속 판단
-        M-->>A: 선택한 action
-    end
-    A-->>C: action / 응답
-```
-
-**평가에 미친 영향:** 잘못된 action의 원인이 ‘CDS가 필요한 후보를 못 찾음’인지 ‘후보는 있었지만 CSA가 잘못 선택함’인지 나누어야 한다. 현재 AES의 `cds_expected`와 discovery failure 분류가 다루는 구분이다. 이 분류기가 6월에 이미 존재했다는 뜻은 아니다.
-
-## Phase 6 — snapshot과 capability fetch로 재개 가능한 상태 전달
-
-**기간:** 2026-07-06 ~ 08-10.
-
-대표 근거: `4e5c1fea` SnapshotStore, `f6896738` fetchCapability, `38d78010` fetchFastCapability, `62f0993e` debug stream, `562c6020` Deep CDS debug, `6545c058` capability hierarchy.
-
-messages만으로 표현되지 않는 runtime 상태를 snapshot으로 호출자에게 내보내고 다시 복원한다. 도입 시점부터 `incompleted`에는 전체 상태를, `completed`에는 persistent namespace 상태만 유지하는 수명 구분이 있다. 동시에 skill 이름의 발견과 실제 본문의 로드가 다른 단계가 되고, CDS 결과에는 skills/domain agents/tools/subagents/A2A 같은 구분이 생긴다.
-
-```mermaid
-flowchart LR
-    C["Client"] -->|"messages + snapshot"| A["CSA / Tier runtime"]
-    A <--> Store["SnapshotStore<br/>turn / persistent state"]
-    A --> Fetch["fetchCapability / fetchFastCapability"]
-    Fetch <--> CDS["CDS"]
-    Fetch --> Result["해결된 tool result / capability artifact"]
-    Result --> C
-    Store -->|"snapshot 반환"| C
-    A --> Debug["Structured debug events"]
-    Debug --> C
-```
-
-```mermaid
-sequenceDiagram
-    participant C as 호출자
-    participant A as AIC
-    participant S as SnapshotStore
-    participant D as CDS
-    C->>A: messages + 이전 snapshot
-    A->>S: 상태 복원
-    A->>D: 모델이 요청한 capability fetch 실행
-    D-->>A: skill / tool / agent 정보
-    A-->>C: incompleted + 해결된 tool message + snapshot
-    C->>A: 반환된 messages와 snapshot으로 재호출
-    A->>S: capability 관련 상태 복원
-    A->>A: 로드된 capability를 이용해 후속 action 선택
-    A-->>C: action 또는 최종 응답
-    Note over A,S: 완료 시 turn 상태와 persistent 상태의 수명을 구분
-```
-
-**평가에 미친 영향:** 기대 action 앞에 capability fetch라는 내부 절차가 들어갈 수 있다. fetch를 곧바로 오답 action으로 보면 올바른 후속 행동을 놓친다. 반대로 fetch를 요청했다는 사실만으로 skill을 읽었다고 판단하면 실제 로드 실패를 놓친다. AES의 continuation과 skill evidence가 필요한 배경이다.
-
-이 snapshot은 **AIC의 대화/runtime 상태**다. AES의 checkpoint는 **평가 배치의 완료 결과**를 저장한다. 두 상태는 목적과 저장 단위가 다르다.
-
-## Phase 7 — 현재 경계: AIC는 runtime, AES는 계약 기반 평가
-
-**기간:** 2026-08-11 ~ 08-31. AES는 08-27 checkout 기준.
-
-직접적인 근거와 순서는 다음과 같다.
-
-1. **AIC `3005d3d3`, 08-11:** LLM·환경 의존 평가 runner와 dataset 제거. “Evaluations will be managed in AES”라고 명시한다. 기존 AES로 평가 책임을 모으는 변경이다.
-2. **AIC `76cafb3c`, 08-12:** escalation을 일반 built-in tool의 `artifact.retryHints`로 바꿈. Controller는 호출자가 결과를 돌려주는 **다음 invoke 진입 시** 이를 처리한다.
-3. **AIC `44def33e`, 08-13 / `2b77f6a6`, 08-19:** CDS 결과 수집과 소비를 정리하고 DynamicCapabilitiesMiddleware에서 prompt와 bound tools를 구성한다. tool content에는 manifest를, artifact에는 구조화된 결과를 둔다.
-4. **AIC `6bb94265`, 08-14:** escalation 이후 대화의 deliberate 상태를 persistent snapshot에 유지한다.
-5. **AES `ac430cb02b` ~ `abd6eafd67`, 08-19~22:** unified schema, validator, preflight, HTTP client, execution budget, deterministic scorer, executor/CLI를 순차 도입한다.
-6. **AES `cbf80e2527`, 08-25 / `7499d0c372`, 08-26:** skill 채점과 remote capability continuation을 도입한다. 후자에서 AES의 로컬 skill 실행기를 제거한다.
-7. **AES `5da87bdf9f` / `68093a5e2b`, 08-27:** checkpoint/resume와 등록된 bixby4-agents schema 로딩을 추가한다.
-8. **AIC `fcd56240`, 08-26:** callDeviceAgent built-in 구현을 제거하고 request ID 관리를 BOS로 모은다.
-9. **AIC `b2dc4d18`, 08-28:** gRPC 추가. 제목은 migration이지만 현재 `server/main.ts`는 HTTP와 gRPC를 함께 시작한다.
-
-```mermaid
-flowchart TB
-    subgraph AES["AES: 검증된 입력의 재생과 채점"]
-        Data["Canonical Dataset + Schemas"] --> V["ValidatedDatasetLoader"]
-        V --> P["TestCaseProjector<br/>기대 이력으로 실행 계획 생성"]
-        P --> E["Runner / Executor<br/>Turn - Path - Step"]
-        E --> H["Paced HTTP Client"]
-        H --> O["OutputAdapter<br/>실제 행동 / evidence 정규화"]
-        O --> E
-        E --> Score["DeterministicPathScorer"]
-        Score --> Artifact["JSON / checkpoint / reports"]
-    end
-    subgraph AIC["AIC: 상태와 capability를 이용한 실행"]
-        HTTP["HTTP / SSE"] --> C["CSA Controller"]
-        GRPC["gRPC"] --> C
-        C --> Pre["Escalation / Snapshot GC / Confirmation"]
-        Pre --> Route["Subagent / PCS / Tier 경로 선택"]
-        Route --> Tier["Fast / Deep runtime"]
-        Tier --> Dynamic["DynamicCapabilitiesMiddleware<br/>prompt + bound tools"]
-        Dynamic <--> CDS["CDS client<br/>Remote 또는 Local fallback"]
-        Tier <--> Store["SnapshotStore"]
-        Tier --> Tools["ToolCallHandler / ToolRunner"]
-        Tools -->|"capability 도구 실행"| CDS
-        Tools -->|"built-in 실행"| Builtin["Task 등 서버 도구"]
-        Tools -->|"client-owned tool handoff"| BOS["BOS / Client"]
-    end
-    H -->|"POST /api/csa/invoke"| HTTP
-    HTTP -->|"SSE events + result"| O
-    BOS -->|"도구 결과로 다음 invoke"| C
-```
-
-이 블록도는 책임 경계를 보여준다. Controller의 실제 조건 순서는 escalation·snapshot 정리 → confirmation → subagent continuation → PCS → 일반 tier 경로다. speech/view/progressive responder와 tracing은 가독성을 위해 생략했다. CDS의 remote/local 선택은 AIC 설정에 속하며, AES가 직접 CDS 구현을 선택하거나 skill 파일을 실행하는 구조가 아니다.
-
-```mermaid
-sequenceDiagram
-    participant R as AES Runner / Projector
-    participant E as AES Executor
-    participant A as AIC Controller / Tier
-    participant D as CDS
-    participant S as AES Scorer
-    participant F as JSON Artifact
-    R->>R: Dataset 검증 및 기대 이력으로 실행 계획 생성
-    R->>E: TC / run 실행
-    loop Turn 안의 후보 Path와 Step
-        E->>A: 해당 Step의 projected request
-        A->>D: 필요 시 baseline discovery
-        D-->>A: 후보 capability
-        alt 모델이 예상 밖 capability-only 호출을 선택
-            A->>D: fetch 또는 search 도구 실행
-            D-->>A: 구조화된 capability 결과
-            A-->>E: 해결된 role=tool + messages + snapshot
-            E->>E: 로드 증거 기록 / continuation 한도 확인
-            E->>A: 반환된 messages + snapshot으로 재호출
-            A-->>E: 후속 action 또는 다음 capability 응답
-        else 일반 action / 응답
-            A-->>E: SSE result
-        end
-        E->>E: OutputAdapter로 정규화
-        Note over E,A: 일반 다음 Step은 TC의 기대 이력으로 생성한 요청 사용
-    end
-    E->>S: Path의 actual outcomes와 expected steps 비교
-    S-->>E: 필드별 score / skill strategy
-    E-->>R: TC 결과
-    R->>F: CLI writer를 통해 결과 및 checkpoint 저장
-```
-
-이 sequence는 한 후보 Path의 채점을 중심으로 단순화했다. 실제 executor는 Path별로 채점하고, Turn 안에서 하나가 맞거나 AIC 오류가 발생하면 다른 Path 시도를 멈춘다. 모든 Turn이 맞아야 TC가 맞는다. capability continuation은 한 번으로 고정되지 않고 설정 상한 내에서 반복된다.
-
-## 왜 현재 evaluator가 이 모듈들로 나뉘었는가
-
-| 현재 AES 구성 | 대응하는 AIC 특성 / 평가 요구 | 코드상 의미와 범위 |
+| 구분 | 확인한 당시 동작 | 점수 해석의 범위 |
 | --- | --- | --- |
-| SchemaRegistry / Validator / Loader | 도구·device·context 계약의 확대 | 잘못된 fixture를 AIC 품질 실패로 혼동하지 않도록 preflight. 정책상 허용된 유효 TC만 선택 |
-| TestCaseProjector | AIC는 messages와 context를 입력으로 받음 | canonical TC를 AIC payload로 변환하고 기대 tool output을 history에 넣음 |
-| Turn / Path / Step executor | 한 발화에서 여러 호출, 여러 허용 경로 가능 | 경로별 판정. 실제 응답을 끝까지 자유롭게 이어 가는 대화 엔진은 아님 |
-| HTTP/SSE Client | text·progress·tool·debug·result가 섞인 stream | terminal result와 전체 events를 분리해서 해석 |
-| CompatibleAicOutputAdapter | tool call 표현 위치와 escalation 표현의 변화 | result.toolCalls → 새 messages의 toolCalls → toolCall event 순서로 읽음 |
-| Capability continuation | fetch/search 뒤 후속 행동이 별도 invoke에 올 수 있음 | 예상 밖 capability-only 응답에 한해 실제 messages/snapshot으로 이어 호출 |
-| DeterministicPathScorer | 행동 선택과 skill/tier 결과를 재현 가능하게 비교 | 설정된 action/tool/tier/skill 필드, 조건부 NLG exact 비교 |
-| Discovery failure classifier | 후보 검색과 최종 선택은 별도 단계 | 구조화된 증거로 CDS-fail / gbfs-fail / CSA-fail 등을 분류 |
-| Rate limit / concurrency / repetitions | 원격 runtime 반복 평가 | 호출 시작 간격과 동시 실행을 제한. 특정 AIC 커밋에 강제된 것은 아닌 평가 운영 설계 |
-| Checkpoint / provenance / report | 장시간 배치와 버전별 비교 | 계획 digest·실행 조건·소스 revision을 확인하고 완료 결과 재사용, artifact로 재보고 |
+| 평가용 plan 분할 | `clone_prompts_by_split_target()`이 이전 정답 줄을 다음 prompt에 추가 | 정답 문맥에서 다음 예측을 평가 |
+| Turn / Conversation 집계 | 여러 판정에 `all()`을 적용하는 집계 존재 | 실제 연속 실행의 성공률과 같지 않음 |
+| SA full-plan 배치 클라이언트 | 추출된 agent 목록에 `expectedAgent`가 포함되는지 판정 | 전체 plan의 모든 인자·순서·실행 효과를 보장하지 않음 |
+| 결과 간 비교 | 추가·삭제·수정된 TC와 공통 TC를 구분 | 데이터 모수 변화와 모델 결과 변화를 분리하려는 장치 |
 
-## 해석할 때 지켜야 할 경계
+- **전제:** 정답 prefix 분할은 해당 평가 경로의 동작이며 모든 prompt에 적용되지 않는다. NLG·grounding·summarization 등은 제외된다.
+- **CI와 모델 평가의 구분:** 2025년 말 `plan-llm`의 기본 pytest 설정은 IES·plan·service 테스트 디렉터리 일부를 제외한다. CI 통과를 실제 모델의 전체 업무 성공으로 해석할 수 없다.
+- **다음 단계:** 모델 출력 외에 실행을 조율하는 하네스까지 평가 대상으로 포함해야 한다.
 
-### 1. 현재 AES는 golden-history 기반 평가다
+## Phase 3 — 하네스가 등장하면서 평가 대상 자체가 달라졌다
 
-`TestCaseProjector.appendExpectedStep()`이 **expected tool call/result**를 다음 step의 입력 이력에 넣는다. `project()`의 다음 Turn 이력도 primary expected path에서 생성한다. Executor는 각 Step의 미리 만들어진 요청을 실행한다.
+**AIC에서는 같은 발화도 검색 결과, 중간 tool output, snapshot과 tier 선택에 따라 이후 실행이 달라진다.**
 
-따라서 이 평가는 ‘정해진 문맥에서 올바른 다음 행동을 선택하는가’를 본다. 앞 단계의 실제 잘못된 출력을 계속 먹였을 때 전체 업무가 성공하는지, 실제 BOS·기기가 작업을 완료했는지를 모두 검증하는 폐루프 E2E 평가와는 범위가 다르다. 이 구조가 오류 전파를 분리해 단계별 판단을 보기 좋게 만든다는 것은 코드에 근거한 해석이다.
+- **변화:** 자체 planner loop에서 Deep Agents 기반 runtime으로 이동하고, Fast/Deep routing, CDS discovery, skill 로딩, tool handoff와 snapshot 복원이 추가된다.
+- **호출 경계의 변화:** 5월 초 내부 Fast→Deep fallback이 5월 21일 client 재호출 계약으로 바뀌고, 7월에는 snapshot이 client를 통해 왕복한다.
+- **새로운 질문:** 최종 출력이 틀렸을 때 모델 선택, capability 검색, 도구 결과, 상태 전달 중 어디가 원인인가?
+- **관찰 대상:** 한 번의 텍스트 출력에 더해 호출 과정, messages, tool 결과, snapshot과 종료 조건이 중요해진다.
 
-### 2. Capability continuation은 제한적인 실제 상태 재개다
+### 블록 다이어그램
 
-`fetchCapability`, `fetchFastCapability`, `capabilityDiscoverySearch`만 대상이며, TC가 이 도구를 명시적으로 기대하면 일반 채점 대상으로 취급한다. TC가 다른 행동을 기대하는데 capability-only 응답이 오면, 성공한 대응 tool message를 확인하고 messages/snapshot을 이어 보낸다. 기본 최대 continuation은 expected Step마다 3회다.
-
-capability와 다른 action이 섞인 응답, tool 결과 누락/실패, 상한 초과는 오류로 기록한다. 일반 다른 action은 자동 재시도하지 않는다. 서버가 실행한 모든 built-in tool을 AES가 자동으로 이어 주는 것도 아니다.
-
-### 3. Skill 요청, 로드, 행동 성공은 각각 다르다
-
-실제 로드는 반환된 tool artifact의 `cdsResults.skills`에서 name과 content를 확인한다. 요청한 이름만으로 로드를 인정하지 않는다. 기본 action 평가에서는 기대 action을 바로 선택한 경우도 통과할 수 있다. skill 사용까지 요구하려면 `skill` match field가 필요하다.
-
-### 4. Deterministic은 판단 규칙을 뜻한다
-
-LLM 자체의 출력을 결정적으로 만드는 것이 아니다. 일반 action argument 비교에서는 `message`, `query`, `referenceRequestId`를 정규화 과정에서 제외한다. 명시적으로 기대하는 capability 도구는 전체 parameters를 exact match한다. 따라서 ‘모든 parameter의 무조건 완전일치’라고 표현하면 부정확하다.
-
-### 5. 원인 분류는 증거가 있을 때만 한다
-
-CDS 후보에 기대 agent가 없으면 CDS-fail, agent는 있지만 기대 function이 없으면 gbfs-fail, 필요한 후보가 있는데 action이 틀리면 CSA-fail로 분류한다. 증거가 부족하면 unverifiable이다. 이것은 AES 분류 규칙이며 CDS 서버 내부 구현을 직접 추적해서 입증한 인과관계는 아니다.
-
-### 6. Schema와 transport의 범위를 과장하지 않는다
-
-현재 외부 bixby4-agents loader에는 startTimer, getRemainingTimerTime, findTimers의 3개 function schema가 등록되어 있다. 모든 domain function을 자동으로 동기화한다고 볼 수 없다.
-
-AIC는 현재 HTTP/SSE와 gRPC를 함께 제공하지만 AES는 HTTP/SSE client다. 또한 현재 output adapter의 호환성은 일부 응답 표현 차이에 대한 것이며 AIC의 2월~8월 모든 버전을 직접 평가할 수 있다는 뜻이 아니다.
-
-## 소스 근거
-
-소스 링크는 분석에 사용한 커밋에 고정되어 있으며, 해당 GitHub Enterprise 저장소의 접근 권한이 필요하다.
-
-### AIC 현재 구현
-
-- [HTTP와 gRPC 동시 시작](https://github.ecodesamsung.com/bixby-platform/agentic-intelligence-core/blob/fde590ecc4e56fe1c04d58ee538f28ddcba137be/server/main.ts#L9)
-- [Controller의 준비·분기·도구 실행 결과 수집](https://github.ecodesamsung.com/bixby-platform/agentic-intelligence-core/blob/fde590ecc4e56fe1c04d58ee538f28ddcba137be/core/csa/cognitive-supervisor-agent-controller.ts#L76)
-- [Fast/Deep 선택과 snapshot 복원](https://github.ecodesamsung.com/bixby-platform/agentic-intelligence-core/blob/fde590ecc4e56fe1c04d58ee538f28ddcba137be/deepagents/multi-tier-csa-adapter.ts#L71)
-- [Dynamic capability 수집·prompt·tool binding](https://github.ecodesamsung.com/bixby-platform/agentic-intelligence-core/blob/fde590ecc4e56fe1c04d58ee538f28ddcba137be/deepagents/middlewares/dynamic-capabilities-middleware.ts#L82)
-- [Retry hints와 지속되는 deliberate 상태](https://github.ecodesamsung.com/bixby-platform/agentic-intelligence-core/blob/fde590ecc4e56fe1c04d58ee538f28ddcba137be/core/csa/escalation.ts#L56)
-- [Capability fetch의 구조화된 tool result](https://github.ecodesamsung.com/bixby-platform/agentic-intelligence-core/blob/fde590ecc4e56fe1c04d58ee538f28ddcba137be/tools/cds/fetch-capability-tool.ts)
-
-### AES 현재 구현
-
-- [Golden history와 projection](https://github.ecodesamsung.com/bixby-platform/agentic-evaluation-service/blob/68093a5e2b0e498ca62d56e3fe10db51ded026fc/evaluator/projection/test-case-projector.ts#L127)
-- [Path/Step 실행과 continuation](https://github.ecodesamsung.com/bixby-platform/agentic-evaluation-service/blob/68093a5e2b0e498ca62d56e3fe10db51ded026fc/evaluator/execution/aic-test-case-executor.ts#L90)
-- [응답 호환 처리](https://github.ecodesamsung.com/bixby-platform/agentic-evaluation-service/blob/68093a5e2b0e498ca62d56e3fe10db51ded026fc/evaluator/execution/aic/aic-output-adapter.ts)
-- [Terminal result 파싱](https://github.ecodesamsung.com/bixby-platform/agentic-evaluation-service/blob/68093a5e2b0e498ca62d56e3fe10db51ded026fc/evaluator/execution/aic/aic-sse-response.ts#L37)
-- [Deterministic scorer](https://github.ecodesamsung.com/bixby-platform/agentic-evaluation-service/blob/68093a5e2b0e498ca62d56e3fe10db51ded026fc/evaluator/scoring/deterministic-path-scorer.ts#L113)
-- [Discovery 실패 분류](https://github.ecodesamsung.com/bixby-platform/agentic-evaluation-service/blob/68093a5e2b0e498ca62d56e3fe10db51ded026fc/evaluator/analysis/discovery-failure-classifier.ts)
-- [등록된 외부 function schema](https://github.ecodesamsung.com/bixby-platform/agentic-evaluation-service/blob/68093a5e2b0e498ca62d56e3fe10db51ded026fc/validator/schema/bixby4-agent-schema-loader.ts#L32)
-
-### 과거 구현 재확인
-
-과거 파일은 현재 작업 트리를 checkout하지 않고 `git show`로 읽었다. 아래 명령은 두 저장소가 있는 상위 디렉터리에서 실행한다:
-
-```bash
-git -C agentic-intelligence-core show a2008ec3:core/orchestrator/orchestrator.ts
-git -C agentic-intelligence-core show 74485351:deepagents/deep-csa-adapter.ts
-git -C agentic-intelligence-core show 6d8bb75d:deepagents/multi-tier-csa-adapter.ts
-git -C agentic-intelligence-core show 3005d3d3
-git -C agentic-evaluation-service show 7499d0c372
+```mermaid
+flowchart LR
+    C["Caller"] --> H["Agent harness<br/>AIC Controller / Tier runtime"]
+    H <--> M["Model"]
+    H <--> CDS["Capability discovery / skill load"]
+    H <--> S["Snapshot / 실행 상태"]
+    H --> Builtin["AIC가 실행하는 도구"]
+    H -->|"외부 도구 handoff"| C
+    C <--> External["Client가 실행하는 도구 / 환경"]
+    H --> Trace["메시지 · 도구 결과 · 실행 증거"]
 ```
 
-문서 작성 중 runtime 코드와 데이터셋은 변경하지 않았으며, AIC 또는 CDS로 평가 요청을 보내지 않았다.
+### 시퀀스 다이어그램
+
+```mermaid
+sequenceDiagram
+    participant C as Caller
+    participant H as AIC Harness
+    participant M as Model
+    participant D as Capability Service
+    participant T as 외부 도구
+    C->>H: messages + context + snapshot
+    H->>D: 필요한 capability 조회
+    D-->>H: 후보 / 사용 가능한 도구
+    H->>M: 문맥과 capability 반영
+    M-->>H: 외부 tool call
+    H-->>C: incompleted + tool call + snapshot
+    C->>T: 실제 도구 실행
+    T-->>C: observation
+    C->>H: tool result와 snapshot으로 재호출
+    H->>M: 후속 판단
+    M-->>H: 다음 행동 또는 응답
+    H-->>C: 실행 결과
+```
+
+- **복잡해진 이유:** 한 사용자 요청, 한 API 호출, 한 모델 생성, 한 평가 step이 더 이상 같은 단위가 아니다.
+- **필요한 구분:** 무엇을 했는지 남기는 **transcript**와, 그 행동으로 실제 무엇이 바뀌었는지 보여주는 **outcome**을 구분해야 한다.
+- **근거의 범위:** 모든 AIC 도구가 위 외부 handoff 경로를 따르지는 않는다. Built-in 도구는 AIC가 실행한다.
+- **다음 단계:** 먼저 요청·응답 계약을 고정하고, 동일한 조건에서 판단을 재현할 평가 체계를 만든다.
+
+## Phase 4 — AES로 실행 계약을 고정하고 판단을 재현한다
+
+**현재 AES는 고정된 문맥에서의 판단과 회귀를 재현하고, 일부 capability 절차를 실제 상태로 이어 실행한다.**
+
+- **해결한 문제:** 잘못된 TC와 runtime 실패를 구분하고, 서비스 응답 표현을 통일하며, 비교 가능한 실행 근거를 남긴다.
+- **구성:** canonical schema와 preflight, 기대 이력 projection, Step·Path 실행, 응답 정규화, deterministic scoring, JSON artifact와 checkpoint.
+- **하네스 대응:** TC가 다른 행동을 기대하는데 capability-only 응답이 오면, AIC가 해결한 tool message와 snapshot으로 제한적으로 재호출한다.
+- **역사적 위치:** AES는 2026년 5월부터 존재했다. 8월 AIC의 평가 자산 제거는 기존 AES로 평가 책임을 모으는 변경이다.
+
+### 블록 다이어그램
+
+```mermaid
+flowchart LR
+    TC["Canonical TC + Schema"] --> V["Validation / Preflight"]
+    V --> P["Projector<br/>기대 history로 요청 생성"]
+    P --> E["Runner / Executor"]
+    E --> AIC["AIC runtime"]
+    AIC --> O["OutputAdapter<br/>action / evidence 정규화"]
+    O -->|"capability continuation"| E
+    O --> G["Path / Step Scorer"]
+    G --> Artifact["JSON artifact / Report"]
+    E --> Checkpoint["배치 checkpoint"]
+```
+
+### 시퀀스 다이어그램
+
+```mermaid
+sequenceDiagram
+    participant P as AES Projector
+    participant E as AES Executor
+    participant A as AIC
+    participant D as CDS
+    participant G as Scorer
+    P->>E: TC의 기대 history로 만든 Step 요청
+    E->>A: invoke
+    opt 예상 밖 capability-only 응답
+        A->>D: capability 도구 실행
+        D-->>A: capability 결과
+        A-->>E: 해결된 tool message + messages + snapshot
+        E->>E: 로드 증거와 continuation 상한 확인
+        E->>A: 반환된 messages + snapshot으로 재호출
+    end
+    A-->>E: action / 응답
+    E->>G: Path에 모인 actual과 expected 비교
+    Note over P,E: 일반 다음 Step에는 TC의 기대 history 사용
+```
+
+| 현재 AES가 잘 답하는 질문 | 현재 점수만으로 답하기 어려운 질문 |
+| --- | --- |
+| 주어진 문맥에서 올바른 action을 선택하는가? | 실제 이전 오답이 누적되어도 목표에 도달하는가? |
+| 기대 도구와 인자, 설정한 skill/tier 조건이 맞는가? | 실제 환경 상태가 기대대로 변경됐는가? |
+| 구조화된 CDS 증거상 후보가 있었는가? | client-owned 도구의 실제 실행과 부작용이 올바른가? |
+| 동일 TC에서 회귀가 생겼는가? | 예상하지 못한 observation에서 올바르게 복구하는가? |
+
+- **평가 경계:** 일반 다음 step과 turn의 history는 기대값으로 만들어진다. 모든 실제 tool output을 끝까지 이어 가는 episode 실행은 아니다.
+- **Continuation 범위:** 모든 built-in·외부 도구를 자동으로 이어 주는 기능이 아니다. 예상 밖 capability-only 응답을 제한적으로 처리한다.
+- **점수 의미:** 현재 executor는 후보 Path별로 별도 실행할 수 있다. 그 점수를 실제 trajectory 하나의 성공률로 바꾸어 부르면 안 된다.
+- **남은 문제:** 환경이 바뀌었을 때 fixture가 낡고, 허용 가능한 경로가 늘면 기대 경로 관리가 비싸지며, 상태 변화와 recovery가 평가 밖에 남는다.
+- **다음 단계:** simulator가 실제 action에 반응해 다음 observation을 만들도록 한다.
+
+## Phase 5 — Simulator가 state와 tool output을 제공한다
+
+**향후 설계 제안: agent의 실제 행동이 다음 state와 observation을 결정하는 episode 평가를 추가한다.**
+
+- **입력 계약:** 고정 tool output의 나열 대신 초기 state, 사용자 요청, 필요 시 사용자 응답 정책, 성공 조건과 금지된 부작용을 정의한다.
+- **실행 책임:** simulator가 맡은 도구는 실제 action에 따라 상태를 전이시키고 그 결과를 tool output으로 반환한다.
+- **재호출:** episode driver가 실제 observation을 AIC의 continuation 계약에 맞게 전달하고 종료·오류·budget 소진까지 실행한다.
+- **채점:** 최종 상태뿐 아니라 필수 중간 조건, 부작용, 실패 후 복구, 호출 수·시간·비용을 구분해 기록한다.
+- **범위:** 상태·도구 규칙이 명확한 결정적 simulator부터 시작한다. LLM 기반 사용자 simulator는 대화 분기가 필요한 task에 별도로 추가할 수 있다.
+
+### 블록 다이어그램 — 제안 구조
+
+```mermaid
+flowchart LR
+    Task["Task<br/>초기 state / 목표 / 제약"] --> Driver["AES Episode Driver<br/>향후 구현"]
+    Driver <--> AIC["실제 Model + AIC Harness"]
+    AIC -->|"도구 호출을 driver에 반환"| Driver
+    Driver -->|"simulator 담당 action"| Sim["Stateful Tool Simulator"]
+    Sim <--> State["Environment State"]
+    Sim -->|"실제 action의 observation"| Driver
+    Driver --> Trace["Transcript / 종료 이유"]
+    State --> G["State + Process Grader"]
+    Trace --> G
+    G --> Outcome["Episode 결과"]
+```
+
+### 시퀀스 다이어그램 — 제안 구조
+
+```mermaid
+sequenceDiagram
+    participant D as AES Episode Driver
+    participant S as Simulator
+    participant A as AIC Harness + Model
+    participant G as Grader
+    D->>S: 초기 state와 seed로 환경 reset
+    D->>A: 사용자 요청과 초기 문맥
+    loop 종료 또는 budget 소진까지
+        A-->>D: simulator가 담당하는 tool call
+        D->>S: 실제 action 실행
+        S->>S: 현재 state에 규칙 적용
+        S-->>D: tool output / observation
+        D->>A: 실제 observation + 필요한 messages / snapshot
+    end
+    A-->>D: 종료 결과
+    D->>S: 최종 state 조회
+    S-->>G: state와 상태 전이 기록
+    D->>G: transcript / 종료 이유 / 비용
+    G->>G: 목표와 필수 조건, 금지된 효과 판정
+```
+
+- **예시:** “10분 타이머 하나 만들기”의 성공 조건은 특정 문자열 출력보다, 타이머가 정확히 하나 생성되고 지속시간과 활성 상태가 맞는지로 정의할 수 있다.
+- **Recovery 사례:** 생성 요청이 처리된 뒤 응답만 유실되는 상황에서 재시도가 중복 생성으로 이어지는지도 상태로 확인한다. 이 동작은 실제 도구 계약에 맞게 simulator에 정의해야 한다.
+- **구현상 주의:** 현재 AES executor에 simulator를 붙이기만 하면 완성되는 것은 아니다. 실제 history를 유지하는 driver, tool 실행 경계와 episode 종료 계약이 필요하다.
+- **실행 경계:** AIC 내부에서 직접 실행되는 built-in 도구까지 모사하려면 해당 runtime의 tool backend 주입 또는 별도 sandbox 연동이 필요하다. 외부 handoff만 가로채서는 전체 도구를 통제할 수 없다.
+- **Simulator 검증:** 실제 tool 계약과 상태 전이의 일치, reset 격리, 시간·seed 제어, 실패 주입 규칙을 검증한다. simulator가 틀리면 agent 점수도 왜곡된다.
+- **다음 단계:** 비용과 발견하는 실패 종류가 다른 replay·episode 평가를 역할에 맞게 함께 운영한다.
+
+## Phase 6 — Fixture와 simulator가 서로 보완하는 하이브리드 AES
+
+**목표 운영 형태: 빠르고 재현 가능한 판단 평가와, 실제 상태 전이를 확인하는 episode 평가를 함께 유지한다.**
+
+### 블록 다이어그램 — 제안 구조
+
+```mermaid
+flowchart TD
+    Task["공유 Task 의도 / 식별자 / Tool 계약"] --> ReplaySpec["Replay 계약<br/>고정 문맥 / expected action / fixture"]
+    Task --> EpisodeSpec["Episode 계약<br/>초기 state / 목표 / 전이 규칙"]
+    ReplaySpec --> Replay["Fixture Replay"]
+    EpisodeSpec --> Episode["Stateful Episode"]
+    Replay --> Decision["판단 정확도 / 회귀 결과"]
+    Episode --> State["Task 성공 / 제약 / 비용"]
+    Decision --> Report["공통 Artifact / 모드별 보고"]
+    State --> Report
+    Report --> Triage["실패 분석 / 사람의 검토"]
+    Triage -->|"최소 판단 사례"| ReplaySpec
+    Triage -->|"state와 실패 조건 재현"| EpisodeSpec
+```
+
+### 시퀀스 다이어그램 — 제안 운영 흐름
+
+```mermaid
+sequenceDiagram
+    participant Change as Model / Harness 변경
+    participant AES
+    participant R as Replay Suite
+    participant S as Simulator Suite
+    participant Review as 실패 분석 / 검토
+    Change->>AES: 평가 실행
+    AES->>R: 계약·판단 회귀 검사
+    R-->>AES: replay 결과
+    AES->>S: 위험에 맞는 task를 반복 trial
+    S-->>AES: 실제 trajectory / 최종 state / 비용
+    AES->>Review: 모드별 결과와 실패 증거
+    opt 새로운 stateful failure 발견
+        Review->>S: 초기 state와 실패 조건을 scenario로 고정
+        Review->>R: 분리 가능한 판단 실패는 최소 fixture로 추가
+    end
+    Note over R,S: 두 모드의 점수와 성공 기준을 따로 유지
+```
+
+| 기준 | Fixture replay | Stateful episode |
+| --- | --- | --- |
+| 질문 | 주어진 문맥에서 다음 판단이 맞는가? | 실제 행동을 이어 목표 상태에 도달하는가? |
+| Tool output 소유자 | TC에 기록된 fixture | 실제 action과 현재 state를 처리하는 환경 |
+| 다음 입력 | 기대 history로 재구성한 문맥 | 실제 transcript와 observation |
+| 성공 기준 | 정의한 action·tool·skill 등 판단 계약 | 목표 state + 필수 조건 + 금지 효과 |
+| 주요 용도 | 빠른 회귀, 특정 경계와 edge case | 상태 변화, recovery, 여러 허용 경로 |
+| 주요 비용 | fixture 작성·갱신과 경로 관리 | simulator 구현·검증, 실행 시간과 반복 trial |
+| 보고 지표 | decision/replay accuracy | episode success, 제약 위반, 비용·일관성 |
+
+- **공유할 것:** task 식별자, tool 계약, model·harness·dataset revision, 실행 기록과 보고 체계.
+- **모드별로 둘 것:** observation의 생성 주체, 초기화 방식, 실행 종료 조건, grader와 성공의 의미. 하나의 기존 TC가 자동으로 두 모드 모두의 계약이 되지는 않는다.
+- **버전과 재현성:** episode 결과에는 simulator revision, 초기 state, seed·시간 조건, budget도 남긴다.
+- **반복 실행:** trial 수와 성공·오류의 분포를 보존한다. 평균 한 숫자로 환경 오류와 agent 실패를 합치지 않는다.
+- **복수 정답:** 한 trial에서 생성된 실제 trajectory 하나를 여러 허용 outcome과 비교한다. 기대 경로마다 다시 실행해 성공 기회를 늘리지 않는다.
+- **실패 환류:** 복구·상태 전이 문제는 episode scenario로 보존하고, 그 안의 특정 판단 오류는 필요할 때 최소 fixture로 분리한다.
+- **기존 자산 활용:** golden-history replay는 폐기 대상이 아니라 좁고 빠른 회귀 검사로 계속 사용한다.
+
+## 무엇이 달라졌는지 확인할 기준
+
+| 단계 | 성과를 확인할 질문 |
+| --- | --- |
+| 현재 replay 유지 | 같은 실행 조건에서 알려진 판단 회귀를 재현하고 원인을 분리하는가? |
+| Simulator 도입 | replay에서는 통과했지만 실제 state가 틀리는 실패를 발견하는가? |
+| Tool 환경 검증 | simulator의 전이와 observation이 실제 도구 계약과 일치하는가? |
+| 하이브리드 운영 | episode 실패를 재현 가능한 scenario와 필요한 fixture로 환류하는가? |
+| 결과 비교 | 모드·revision·초기 조건·trial 수를 고정하거나 차이를 명시하고 비교하는가? |
+
+**평가의 발전은 정답 비교를 버리는 과정이 아니라, 정답 비교가 답할 수 있는 질문을 명확히 하고 실제 실행이 필요한 질문에 환경과 상태 검증을 추가하는 과정이다.**
+
+## 분석 범위와 근거
+
+- **로컬 분석일:** 2026-09-20~21. 평가 방식은 로컬 소스와 Git 이력으로 조사했다. 모델·서비스·simulator를 실행해 성능 수치를 검증한 글은 아니다.
+- **2025년 기준:** `llm-train`의 `8880d7ca`(2025-12-27), `plan-llm`의 `cbe8e164`(2025-12-31), 초기 구조는 2월 `6fa05d77`도 확인했다.
+- **현재 구현 기준:** AIC `fde590ec`(2026-08-31), AES `68093a5e2b`(2026-08-27). ‘현재’는 이 분석 기준이며 이후 배포 상태를 뜻하지 않는다.
+- **해석의 경계:** 한계와 다음 설계의 연결은 코드에 근거한 분석이다. 모든 변경이 당시 그 이유로 추진되었다거나 과거 코드를 그대로 이식했다고 단정하지 않는다.
+- **접근 조건:** 아래 구현 링크는 분석 커밋에 고정한 GitHub Enterprise 링크이며 저장소 접근 권한이 필요하다.
+
+### 2025년 평가 구현
+
+- [Prompt와 WorldState 구성](https://github.ecodesamsung.com/bixby-platform/llm-train/blob/8880d7ca707db1a4d65729b1dd92d78822c7a4cc/data_builder/example_builder.py)
+- [정답 prefix를 다음 평가 입력에 붙이는 구현](https://github.ecodesamsung.com/bixby-platform/llm-train/blob/8880d7ca707db1a4d65729b1dd92d78822c7a4cc/data_builder/example_builder.py#L411)
+- [예측과 ground truth 기록](https://github.ecodesamsung.com/bixby-platform/llm-train/blob/8880d7ca707db1a4d65729b1dd92d78822c7a4cc/inference/prompt_inference.py#L78)
+- [함수·파라미터 비교](https://github.ecodesamsung.com/bixby-platform/llm-train/blob/8880d7ca707db1a4d65729b1dd92d78822c7a4cc/evaluation/eval_scorer.py#L157)
+- [의미 유사도와 entailment](https://github.ecodesamsung.com/bixby-platform/llm-train/blob/8880d7ca707db1a4d65729b1dd92d78822c7a4cc/evaluation/eval_nlg.py)
+- [LLM judge](https://github.ecodesamsung.com/bixby-platform/llm-train/blob/8880d7ca707db1a4d65729b1dd92d78822c7a4cc/evaluation/eval_llm_judge.py)
+- [추가·삭제·변경된 TC와 공통 결과 비교](https://github.ecodesamsung.com/bixby-platform/llm-train/blob/8880d7ca707db1a4d65729b1dd92d78822c7a4cc/evaluation/performance/eval_comparison.py)
+- [SA full-plan 배치의 agent 포함 판정](https://github.ecodesamsung.com/bixby-platform/plan-llm/blob/cbe8e1646c748152adaac6f65feb98391b0e857a/tests/test_clients/sa_test_client.py#L134)
+- [당시 pytest 실행 범위](https://github.ecodesamsung.com/bixby-platform/plan-llm/blob/cbe8e1646c748152adaac6f65feb98391b0e857a/pyproject.toml)
+
+### 현재 AES와 AIC
+
+- [AES의 기대 history projection](https://github.ecodesamsung.com/bixby-platform/agentic-evaluation-service/blob/68093a5e2b0e498ca62d56e3fe10db51ded026fc/evaluator/projection/test-case-projector.ts#L127)
+- [AES Step 실행과 capability continuation](https://github.ecodesamsung.com/bixby-platform/agentic-evaluation-service/blob/68093a5e2b0e498ca62d56e3fe10db51ded026fc/evaluator/execution/aic-test-case-executor.ts#L90)
+- [AIC Controller의 실행 경계](https://github.ecodesamsung.com/bixby-platform/agentic-intelligence-core/blob/fde590ecc4e56fe1c04d58ee538f28ddcba137be/core/csa/cognitive-supervisor-agent-controller.ts#L76)
+- [AIC 7단계 구현 이력과 기존 블록·시퀀스 다이어그램 14개](aic-runtime-history.md)
+
+### 연결해서 읽을 기존 글
+
+- [Anthropic agent eval 정리](../data/posts/2026-08-31-demystifying-agent-evals-korean.md)
+- [TC 기반 평가와 simulator 기반 평가](../data/posts/2026-08-31-test-case-vs-simulator-evaluation.md)
+- [Hybrid Evaluation Architecture](../data/posts/2026-08-31-hybrid-agent-evaluation-strategy.md)
