@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="550" viewBox="0 0 660 550" role="img" aria-labelledby="title desc" data-article-diagram="true" class="article-diagram-art">
+<title id="title">여러 방식으로 모은 뒤 결합하기</title><desc id="desc">각 head가 서로 다른 Q K V 가중치로 attention을 수행하고 결과를 특성 축으로 이어 붙여 출력 투영한다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--color-link, #78b8ff)"/></marker></defs>
+<style>
+.article-diagram-art {font-family:var(--font-body, sans-serif);font-size:16px;color:var(--color-text,#ddd)}
+.article-diagram-art text {fill:var(--color-heading,#eee);font-family:var(--font-body, sans-serif);font-size:1rem}
+.article-diagram-art .heading {font-size:1.125rem;font-weight:var(--weight-semibold,600)}
+.article-diagram-art .label {font-weight:var(--weight-semibold,600)}
+.article-diagram-art .note {font-size:.875rem;fill:var(--color-label,#b5b5b5)}
+.article-diagram-art .box {fill:var(--color-card,#242424);stroke:var(--color-border,#555);stroke-width:1;rx:8}
+.article-diagram-art .active {fill:var(--color-card,#242424);stroke:var(--color-link,#78b8ff);stroke-width:1.5;rx:8}
+.article-diagram-art .edge {fill:none;stroke:var(--color-link,#78b8ff);stroke-width:1.5;marker-end:url(#arrow)}
+.article-diagram-art .life {fill:none;stroke:var(--color-border,#555);stroke-width:1;stroke-dasharray:5 5}
+</style>
+<text x="24" y="32" text-anchor="start" class="heading">여러 방식으로 모은 뒤 결합하기</text>
+<rect x="210" y="60" width="240" height="50" class="box"/>
+<text x="330.0" y="90.0" text-anchor="middle" class="label">공통 입력 표현</text>
+<path d="M330 110V146H118V180" class="edge"/>
+<rect x="24" y="180" width="188" height="96" class="active"/>
+<text x="118.0" y="209.0" text-anchor="middle" class="label">Head 1</text>
+<text x="118.0" y="233.0" text-anchor="middle" class="note">자체 Q·K·V 변환</text>
+<text x="118.0" y="257.0" text-anchor="middle" class="note">자체 참고 비율</text>
+<path d="M118 276V318H330V350" class="edge"/>
+<path d="M330 110V146H330V180" class="edge"/>
+<rect x="236" y="180" width="188" height="96" class="active"/>
+<text x="330.0" y="209.0" text-anchor="middle" class="label">Head 2</text>
+<text x="330.0" y="233.0" text-anchor="middle" class="note">자체 Q·K·V 변환</text>
+<text x="330.0" y="257.0" text-anchor="middle" class="note">자체 참고 비율</text>
+<path d="M330 276V318H330V350" class="edge"/>
+<path d="M330 110V146H542V180" class="edge"/>
+<rect x="448" y="180" width="188" height="96" class="active"/>
+<text x="542.0" y="209.0" text-anchor="middle" class="label">Head 3</text>
+<text x="542.0" y="233.0" text-anchor="middle" class="note">자체 Q·K·V 변환</text>
+<text x="542.0" y="257.0" text-anchor="middle" class="note">자체 참고 비율</text>
+<path d="M542 276V318H330V350" class="edge"/>
+<rect x="150" y="350" width="360" height="52" class="box"/>
+<text x="330.0" y="381.0" text-anchor="middle" class="label">결과 A │ 결과 B │ 결과 C</text>
+<path d="M330 402L330 438" class="edge"/>
+<rect x="150" y="438" width="360" height="48" class="box"/>
+<text x="330.0" y="467.0" text-anchor="middle" class="label">출력 투영 W_O</text>
+<text x="330" y="530" text-anchor="middle" class="note">head별 의미 역할은 미리 지정하지 않음</text>
+</svg>

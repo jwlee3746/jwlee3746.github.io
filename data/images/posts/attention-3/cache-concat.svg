@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="530" viewBox="0 0 660 530" role="img" aria-labelledby="title desc" data-article-diagram="true" class="article-diagram-art">
+<title id="title">KV 캐시는 토큰 축으로 concat</title><desc id="desc">K는 K끼리 V는 V끼리 이어 붙인다. n행에서 n+1행으로 늘어나며 head 차원은 유지된다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--color-link, #78b8ff)"/></marker></defs>
+<style>
+.article-diagram-art {font-family:var(--font-body, sans-serif);font-size:16px;color:var(--color-text,#ddd)}
+.article-diagram-art text {fill:var(--color-heading,#eee);font-family:var(--font-body, sans-serif);font-size:1rem}
+.article-diagram-art .heading {font-size:1.125rem;font-weight:var(--weight-semibold,600)}
+.article-diagram-art .label {font-weight:var(--weight-semibold,600)}
+.article-diagram-art .note {font-size:.875rem;fill:var(--color-label,#b5b5b5)}
+.article-diagram-art .box {fill:var(--color-card,#242424);stroke:var(--color-border,#555);stroke-width:1;rx:8}
+.article-diagram-art .active {fill:var(--color-card,#242424);stroke:var(--color-link,#78b8ff);stroke-width:1.5;rx:8}
+.article-diagram-art .edge {fill:none;stroke:var(--color-link,#78b8ff);stroke-width:1.5;marker-end:url(#arrow)}
+.article-diagram-art .life {fill:none;stroke:var(--color-border,#555);stroke-width:1;stroke-dasharray:5 5}
+</style>
+<text x="24" y="32" text-anchor="start" class="heading">KV 캐시는 토큰 축으로 concat</text>
+<text x="170" y="78" text-anchor="middle" class="label">K 캐시</text>
+<rect x="40" y="106" width="260" height="44" class="box"/>
+<text x="170.0" y="133.0" text-anchor="middle" class="label">K₁ · I</text>
+<rect x="40" y="162" width="260" height="44" class="box"/>
+<text x="170.0" y="189.0" text-anchor="middle" class="label">K₂ · am</text>
+<rect x="40" y="250" width="260" height="44" class="active"/>
+<text x="170.0" y="277.0" text-anchor="middle" class="label">K₃ · a (새 토큰)</text>
+<text x="170" y="234" text-anchor="middle" class="note">토큰 축으로 추가 ↓</text>
+<path d="M170 294L170 344" class="edge"/>
+<rect x="40" y="344" width="260" height="106" class="active"/>
+<text x="170.0" y="378.0" text-anchor="middle" class="label">K₁</text>
+<text x="170.0" y="402.0" text-anchor="middle" class="note">K₂</text>
+<text x="170.0" y="426.0" text-anchor="middle" class="note">K₃</text>
+<text x="490" y="78" text-anchor="middle" class="label">V 캐시</text>
+<rect x="360" y="106" width="260" height="44" class="box"/>
+<text x="490.0" y="133.0" text-anchor="middle" class="label">V₁ · I</text>
+<rect x="360" y="162" width="260" height="44" class="box"/>
+<text x="490.0" y="189.0" text-anchor="middle" class="label">V₂ · am</text>
+<rect x="360" y="250" width="260" height="44" class="active"/>
+<text x="490.0" y="277.0" text-anchor="middle" class="label">V₃ · a (새 토큰)</text>
+<text x="490" y="234" text-anchor="middle" class="note">토큰 축으로 추가 ↓</text>
+<path d="M490 294L490 344" class="edge"/>
+<rect x="360" y="344" width="260" height="106" class="active"/>
+<text x="490.0" y="378.0" text-anchor="middle" class="label">V₁</text>
+<text x="490.0" y="402.0" text-anchor="middle" class="note">V₂</text>
+<text x="490.0" y="426.0" text-anchor="middle" class="note">V₃</text>
+<text x="330" y="490" text-anchor="middle" class="label">[n, d_h] + [1, d_h] → [n+1, d_h]</text>
+<text x="330" y="516" text-anchor="middle" class="note">벡터 폭 d_h 유지 · 구현은 사전 할당 공간에 기록 가능</text>
+</svg>

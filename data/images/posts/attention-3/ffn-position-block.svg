@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="520" viewBox="0 0 660 520" role="img" aria-labelledby="title desc" data-article-diagram="true" class="article-diagram-art">
+<title id="title">각 위치의 가공과 위치 정보의 주입</title><desc id="desc">FFN은 차원을 확장하고 ReLU를 거쳐 축소한다. 위치 인코딩은 스택 입력에서 토큰 임베딩에 더한다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--color-link, #78b8ff)"/></marker></defs>
+<style>
+.article-diagram-art {font-family:var(--font-body, sans-serif);font-size:16px;color:var(--color-text,#ddd)}
+.article-diagram-art text {fill:var(--color-heading,#eee);font-family:var(--font-body, sans-serif);font-size:1rem}
+.article-diagram-art .heading {font-size:1.125rem;font-weight:var(--weight-semibold,600)}
+.article-diagram-art .label {font-weight:var(--weight-semibold,600)}
+.article-diagram-art .note {font-size:.875rem;fill:var(--color-label,#b5b5b5)}
+.article-diagram-art .box {fill:var(--color-card,#242424);stroke:var(--color-border,#555);stroke-width:1;rx:8}
+.article-diagram-art .active {fill:var(--color-card,#242424);stroke:var(--color-link,#78b8ff);stroke-width:1.5;rx:8}
+.article-diagram-art .edge {fill:none;stroke:var(--color-link,#78b8ff);stroke-width:1.5;marker-end:url(#arrow)}
+.article-diagram-art .life {fill:none;stroke:var(--color-border,#555);stroke-width:1;stroke-dasharray:5 5}
+</style>
+<text x="24" y="32" text-anchor="start" class="heading">각 위치의 가공과 위치 정보의 주입</text>
+<text x="167" y="72" text-anchor="middle" class="label">FFN · 각 층에서</text>
+<text x="493" y="72" text-anchor="middle" class="label">위치 정보 · 스택 입력에서</text>
+<rect x="28" y="104" width="278" height="76" class="box"/>
+<text x="167.0" y="135.0" text-anchor="middle" class="label">토큰 벡터</text>
+<text x="167.0" y="159.0" text-anchor="middle" class="note">512차원</text>
+<rect x="28" y="224" width="278" height="76" class="box"/>
+<text x="167.0" y="255.0" text-anchor="middle" class="label">선형 변환 + ReLU</text>
+<text x="167.0" y="279.0" text-anchor="middle" class="note">2048차원</text>
+<path d="M167 180L167 224" class="edge"/>
+<rect x="28" y="344" width="278" height="76" class="box"/>
+<text x="167.0" y="375.0" text-anchor="middle" class="label">선형 변환</text>
+<text x="167.0" y="399.0" text-anchor="middle" class="note">512차원</text>
+<path d="M167 300L167 344" class="edge"/>
+<rect x="354" y="104" width="278" height="76" class="box"/>
+<text x="493.0" y="135.0" text-anchor="middle" class="label">토큰 임베딩 × √d_model</text>
+<text x="493.0" y="159.0" text-anchor="middle" class="note">512차원</text>
+<rect x="354" y="224" width="278" height="76" class="box"/>
+<text x="493.0" y="255.0" text-anchor="middle" class="label">사인·코사인 PE</text>
+<text x="493.0" y="279.0" text-anchor="middle" class="note">512차원</text>
+<rect x="354" y="344" width="278" height="76" class="active"/>
+<text x="493.0" y="375.0" text-anchor="middle" class="label">두 벡터의 덧셈</text>
+<text x="493.0" y="399.0" text-anchor="middle" class="note">512차원 유지</text>
+<path d="M632 142H648V382H632" class="edge"/>
+<path d="M493 300L493 344" class="edge"/>
+<text x="167" y="470" text-anchor="middle" class="note">같은 층의 가중치를 위치별 공유</text>
+<text x="493" y="470" text-anchor="middle" class="note">concat이 아닌 원소별 덧셈</text>
+</svg>
