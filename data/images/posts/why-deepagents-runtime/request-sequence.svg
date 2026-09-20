@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="650" viewBox="0 0 960 650" role="img" aria-labelledby="title desc" data-article-diagram="true" class="article-diagram-art">
+<title id="title">Phase 2 요청 처리 시퀀스</title><desc id="desc">클라이언트 요청을 Adapter가 변환하고 런타임은 모델 호출과 상태 저장을 수행하며 결과를 서비스 이벤트로 반환한다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--color-link,#78b8ff)"/></marker></defs>
+<style>
+.article-diagram-art{font-family:var(--font-body,sans-serif);font-size:16px}
+.article-diagram-art text{fill:var(--color-heading,#eee);font-family:var(--font-body,sans-serif);font-size:1rem}
+.article-diagram-art .heading{font-size:1.125rem;font-weight:var(--weight-semibold,600)}
+.article-diagram-art .label{font-weight:var(--weight-semibold,600)}
+.article-diagram-art .note{font-size:.875rem;fill:var(--color-label,#b5b5b5)}
+.article-diagram-art .box{fill:var(--color-card,#242424);stroke:var(--color-border,#555);stroke-width:1;rx:8}
+.article-diagram-art .active{fill:var(--color-card,#242424);stroke:var(--color-link,#78b8ff);stroke-width:1.5;rx:8}
+.article-diagram-art .edge{fill:none;stroke:var(--color-link,#78b8ff);stroke-width:1.5;marker-end:url(#arrow)}
+.article-diagram-art .life{fill:none;stroke:var(--color-border,#555);stroke-width:1;stroke-dasharray:5 5}
+</style>
+<text x="24" y="32" class="heading" text-anchor="start">Phase 2 · 한 요청의 실행과 변환</text>
+<path d="M85 120V575" class="life"/>
+<rect x="7" y="65" width="156" height="54" class="box"/><text x="85.0" y="98.0" class="label" text-anchor="middle">클라이언트</text>
+<path d="M280 120V575" class="life"/>
+<rect x="202" y="65" width="156" height="54" class="box"/><text x="280.0" y="98.0" class="label" text-anchor="middle">API / Adapter</text>
+<path d="M475 120V575" class="life"/>
+<rect x="397" y="65" width="156" height="54" class="box"/><text x="475.0" y="98.0" class="label" text-anchor="middle">Deep Agents</text>
+<path d="M670 120V575" class="life"/>
+<rect x="592" y="65" width="156" height="54" class="box"/><text x="670.0" y="98.0" class="label" text-anchor="middle">모델</text>
+<path d="M865 120V575" class="life"/>
+<rect x="787" y="65" width="156" height="54" class="box"/><text x="865.0" y="98.0" class="label" text-anchor="middle">MemorySaver</text>
+<path d="M85 162H280" class="edge"/>
+<text x="182.5" y="150" class="note" text-anchor="middle">messages / requestId</text>
+<path d="M280 222H475" class="edge"/>
+<text x="377.5" y="210" class="note" text-anchor="middle">변환한 messages / files</text>
+<path d="M475 282H670" class="edge"/>
+<text x="572.5" y="270" class="note" text-anchor="middle">모델 호출</text>
+<path d="M670 342H475" class="edge"/>
+<text x="572.5" y="330" class="note" text-anchor="middle">텍스트 / 도구 호출</text>
+<path d="M475 402H865" class="edge"/>
+<text x="670.0" y="390" class="note" text-anchor="middle">실행 상태 체크포인트</text>
+<path d="M475 470H280" class="edge"/>
+<text x="377.5" y="458" class="note" text-anchor="middle">스트리밍 출력</text>
+<path d="M280 538H85" class="edge"/>
+<text x="182.5" y="526" class="note" text-anchor="middle">서비스 SSE 이벤트</text>
+<text x="480" y="600" class="note" text-anchor="middle">도구 호출이 남으면 isDone=false · 저장 시점과 중간 이벤트는 단순화</text>
+<text x="480" y="625" class="note" text-anchor="middle">MemorySaver는 프로세스 메모리 · 업무 상태와 외부 도구 재개는 서비스의 책임</text>
+</svg>

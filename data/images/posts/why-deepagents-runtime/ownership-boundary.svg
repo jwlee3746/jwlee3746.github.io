@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="620" viewBox="0 0 960 620" role="img" aria-labelledby="title desc" data-article-diagram="true" class="article-diagram-art">
+<title id="title">직접 구현에서 런타임 통합으로</title><desc id="desc">왼쪽은 두 단계 계획 루프, 오른쪽은 Controller와 Adapter 뒤에 Deep Agents를 배치한 구조다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--color-link,#78b8ff)"/></marker></defs>
+<style>
+.article-diagram-art{font-family:var(--font-body,sans-serif);font-size:16px}
+.article-diagram-art text{fill:var(--color-heading,#eee);font-family:var(--font-body,sans-serif);font-size:1rem}
+.article-diagram-art .heading{font-size:1.125rem;font-weight:var(--weight-semibold,600)}
+.article-diagram-art .label{font-weight:var(--weight-semibold,600)}
+.article-diagram-art .note{font-size:.875rem;fill:var(--color-label,#b5b5b5)}
+.article-diagram-art .box{fill:var(--color-card,#242424);stroke:var(--color-border,#555);stroke-width:1;rx:8}
+.article-diagram-art .active{fill:var(--color-card,#242424);stroke:var(--color-link,#78b8ff);stroke-width:1.5;rx:8}
+.article-diagram-art .edge{fill:none;stroke:var(--color-link,#78b8ff);stroke-width:1.5;marker-end:url(#arrow)}
+.article-diagram-art .life{fill:none;stroke:var(--color-border,#555);stroke-width:1;stroke-dasharray:5 5}
+</style>
+<text x="24" y="32" class="heading" text-anchor="start">실행 책임의 이동</text>
+<text x="250" y="82" class="label" text-anchor="middle">이전 · 직접 구현</text>
+<text x="730" y="82" class="label" text-anchor="middle">Phase 2 · 런타임 통합</text>
+<rect x="70" y="115" width="350" height="70" class="box"/><text x="245.0" y="145.0" class="label" text-anchor="middle">Orchestrator / SubtaskPlanner</text><text x="245.0" y="171.0" class="note" text-anchor="middle">하위 작업 선택과 완료 판단</text>
+<rect x="70" y="235" width="350" height="70" class="box"/><text x="245.0" y="265.0" class="label" text-anchor="middle">SubtaskRunner</text><text x="245.0" y="291.0" class="note" text-anchor="middle">도구 계획·실행 루프 관리</text>
+<rect x="70" y="355" width="350" height="70" class="box"/><text x="245.0" y="385.0" class="label" text-anchor="middle">ToolPlanner</text><text x="245.0" y="411.0" class="note" text-anchor="middle">memory + observation 반영</text>
+<rect x="70" y="475" width="350" height="70" class="box"/><text x="245.0" y="505.0" class="label" text-anchor="middle">ToolRunner</text><text x="245.0" y="531.0" class="note" text-anchor="middle">등록된 도구 실행</text>
+<path d="M245 185V235" class="edge"/>
+<path d="M245 305V355" class="edge"/>
+<path d="M245 425V475" class="edge"/>
+<path d="M420 510H450V390H420" class="edge"/>
+<path d="M70 270H34V150H70" class="edge"/>
+<text x="245" y="590" class="note" text-anchor="middle">실행 반복과 이력 전달을 애플리케이션이 관리</text>
+<rect x="550" y="115" width="350" height="70" class="box"/><text x="725.0" y="145.0" class="label" text-anchor="middle">HTTP / AgentController</text><text x="725.0" y="171.0" class="note" text-anchor="middle">서비스 요청과 응답 계약</text>
+<rect x="550" y="235" width="350" height="70" class="active"/><text x="725.0" y="265.0" class="label" text-anchor="middle">AgentAdapter</text><text x="725.0" y="291.0" class="note" text-anchor="middle">도메인 메시지와 런타임 출력 변환</text>
+<rect x="550" y="355" width="350" height="70" class="active"/><text x="725.0" y="385.0" class="label" text-anchor="middle">Deep Agents</text><text x="725.0" y="411.0" class="note" text-anchor="middle">모델·도구 실행 구성</text>
+<rect x="550" y="475" width="165" height="70" class="box"/><text x="632.5" y="505.0" class="label" text-anchor="middle">모델</text><text x="632.5" y="531.0" class="note" text-anchor="middle">LangChain 인터페이스</text>
+<rect x="735" y="475" width="165" height="70" class="box"/><text x="817.5" y="505.0" class="label" text-anchor="middle">도구 / 스킬</text><text x="817.5" y="531.0" class="note" text-anchor="middle">서비스 정의 연결</text>
+<path d="M725 185V235" class="edge"/>
+<path d="M725 305V355" class="edge"/>
+<path d="M725 425V450H632V475" class="edge"/>
+<path d="M725 450H817V475" class="edge"/>
+<text x="725" y="590" class="note" text-anchor="middle">서비스 경계를 남기고 실행 기반을 런타임에 위임</text>
+</svg>
