@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="724" height="618" viewBox="0 0 724 618" data-article-diagram="true" class="article-diagram-art" role="img" aria-labelledby="title desc">
+<title id="title">2025년 prompt 기반 평가 파이프라인</title><desc id="desc">TC와 schema를 입력과 정답으로 바꾸고 모델 prediction을 파일로 기록한 뒤 grader로 비교한다. 도구의 실제 실행과 최종 환경 상태 확인은 이 경로에 포함되지 않는다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10" fill="#93b3d8"/></marker></defs>
+<style>.article-diagram-art text{font-family:var(--font-body);font-size:1rem;fill:#e1e6ef}.article-diagram-art .heading{font-size:1.125rem;font-weight:var(--weight-semibold,600)}.article-diagram-art .label{font-weight:var(--weight-semibold,600)}.article-diagram-art .note{font-size:.875rem;fill:#b9c8db}</style>
+<rect width="724" height="618" rx="12" fill="#181c24"/>
+<text x="24" y="34" class="heading" text-anchor="start"><tspan x="24" dy="0">고정 입력에서 prediction을 비교하는 평가</tspan></text>
+<text x="24" y="62" class="note" text-anchor="start"><tspan x="24" dy="0">준비 → 추론 → 기록 → 채점</tspan></text>
+<rect x="24" y="90" width="310" height="104" rx="10" fill="#232b39" stroke="#506581"/><text x="40" y="118" class="label" text-anchor="start"><tspan x="40" dy="0">TC · Schema</tspan></text><text x="40" y="144" class="note" text-anchor="start"><tspan x="40" dy="0">발화 / 대화 문맥 / 기대 plan</tspan><tspan x="40" dy="24">사용 가능한 함수 정보</tspan></text>
+<rect x="390" y="90" width="310" height="104" rx="10" fill="#232b39" stroke="#506581"/><text x="406" y="118" class="label" text-anchor="start"><tspan x="406" dy="0">ExampleBuilder</tspan></text><text x="406" y="144" class="note" text-anchor="start"><tspan x="406" dy="0">WorldState 구성</tspan><tspan x="406" dy="24">Prompt builder로 입력 변환</tspan></text>
+<path d="M334 142 H390" fill="none" stroke="#93b3d8" stroke-width="1.5"  marker-end="url(#arrow)"/>
+<rect x="390" y="238" width="310" height="104" rx="10" fill="#232b39" stroke="#506581"/><text x="406" y="266" class="label" text-anchor="start"><tspan x="406" dy="0">평가 예제</tspan></text><text x="406" y="292" class="note" text-anchor="start"><tspan x="406" dy="0">input + ground_truth</tspan><tspan x="406" dy="24">target_type</tspan></text>
+<path d="M545 194 V238" fill="none" stroke="#93b3d8" stroke-width="1.5"  marker-end="url(#arrow)"/>
+<rect x="24" y="238" width="310" height="104" rx="10" fill="#232b39" stroke="#506581"/><text x="40" y="266" class="label" text-anchor="start"><tspan x="40" dy="0">모델 추론</tspan></text><text x="40" y="292" class="note" text-anchor="start"><tspan x="40" dy="0">고정 input → prediction</tspan><tspan x="40" dy="24">Checkpoint / 추론 설정</tspan></text>
+<path d="M390 290 H334" fill="none" stroke="#93b3d8" stroke-width="1.5"  marker-end="url(#arrow)"/>
+<rect x="24" y="386" width="310" height="104" rx="10" fill="#232b39" stroke="#506581"/><text x="40" y="414" class="label" text-anchor="start"><tspan x="40" dy="0">Prediction 파일</tspan></text><text x="40" y="440" class="note" text-anchor="start"><tspan x="40" dy="0">input / ground_truth / prediction</tspan><tspan x="40" dy="24">CSV + 줄 단위 JSON</tspan></text>
+<path d="M179 342 V386" fill="none" stroke="#93b3d8" stroke-width="1.5"  marker-end="url(#arrow)"/>
+<rect x="390" y="386" width="310" height="104" rx="10" fill="#183c3b" stroke="#64c5b8"/><text x="406" y="414" class="label" text-anchor="start"><tspan x="406" dy="0">Grader</tspan></text><text x="406" y="440" class="note" text-anchor="start"><tspan x="406" dy="0">함수·파라미터 등 비교</tspan><tspan x="406" dy="24">정오답 / 오류 정보</tspan></text>
+<path d="M334 438 H390" fill="none" stroke="#93b3d8" stroke-width="1.5"  marker-end="url(#arrow)"/>
+<text x="24" y="540" class="label" text-anchor="start"><tspan x="24" dy="0">이 경로 밖의 질문</tspan></text>
+<text x="24" y="570" class="note" text-anchor="start"><tspan x="24" dy="0">도구가 실제로 실행되었는가?</tspan><tspan x="24" dy="24">환경이 바뀌고 사용자의 목표에 도달했는가?</tspan></text>
+</svg>
