@@ -126,11 +126,6 @@
     }
     item.replaceWith(trigger);
     trigger.append(item);
-    const hint = document.createElement('span');
-    hint.className = 'image-zoom-hint';
-    hint.textContent = '확대 보기 ↗';
-    hint.setAttribute('aria-hidden', 'true');
-    trigger.append(hint);
     trigger.addEventListener('click', () => open(item, trigger, label));
   }
 })();
