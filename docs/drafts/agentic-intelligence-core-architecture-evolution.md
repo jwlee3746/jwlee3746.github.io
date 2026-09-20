@@ -67,6 +67,8 @@ sequenceDiagram
 
 ## Phase 2 — Deep Agents 런타임으로 교체 (4월 10일–말)
 
+선택 배경과 책임 분담은 [왜 Deep Agents를 선택했나: 실행 루프와 상태 관리의 경계](../../data/posts/2026-09-20-why-deepagents-runtime.md)에서 자세히 다룬다.
+
 `8e470a79`에서 기존 Orchestrator·SubtaskPlanner·ToolPlanner를 제거하고 `AgentController → AgentAdapter → DeepAgentAdapter`로 교체한다. 처음에는 기본 프롬프트와 빈 도구 목록으로 시작한다. 4월 14일 도구 호출, 15일 도구·스킬·에이전트 레지스트리, 20일 DI 부트스트랩이 추가된다.
 
 **시스템 — 4월 중순 이후 구성 요약**
