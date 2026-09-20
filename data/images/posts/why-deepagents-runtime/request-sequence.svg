@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="650" viewBox="0 0 960 650" role="img" aria-labelledby="title desc" data-article-diagram="true" class="article-diagram-art">
-<title id="title">Phase 2 요청 처리 시퀀스</title><desc id="desc">클라이언트 요청을 Adapter가 변환하고 런타임은 모델 호출과 상태 저장을 수행하며 결과를 서비스 이벤트로 반환한다.</desc>
+<title id="title">요청 처리 시퀀스</title><desc id="desc">클라이언트 요청을 Adapter가 변환하고 런타임은 모델 호출과 상태 저장을 수행하며 결과를 서비스 이벤트로 반환한다.</desc>
 <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--color-link,#78b8ff)"/></marker></defs>
 <style>
 .article-diagram-art{font-family:var(--font-body,sans-serif);font-size:16px}
@@ -12,7 +12,7 @@
 .article-diagram-art .edge{fill:none;stroke:var(--color-link,#78b8ff);stroke-width:1.5;marker-end:url(#arrow)}
 .article-diagram-art .life{fill:none;stroke:var(--color-border,#555);stroke-width:1;stroke-dasharray:5 5}
 </style>
-<text x="24" y="32" class="heading" text-anchor="start">Phase 2 · 한 요청의 실행과 변환</text>
+<text x="24" y="32" class="heading" text-anchor="start">한 요청의 실행과 변환</text>
 <path d="M85 120V575" class="life"/>
 <rect x="7" y="65" width="156" height="54" class="box"/><text x="85.0" y="98.0" class="label" text-anchor="middle">클라이언트</text>
 <path d="M280 120V575" class="life"/>
