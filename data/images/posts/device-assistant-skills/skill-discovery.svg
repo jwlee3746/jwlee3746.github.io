@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="500" viewBox="0 0 780 500" role="img" aria-labelledby="skills-title skills-desc" data-article-diagram="true" class="article-diagram-art">
+<title id="skills-title">탐색한 후보와 실행 가능한 절차를 구분한다</title><desc id="skills-desc">사용자 요청에서 후보 탐색, 본문 로드, 적합성 판단, 도구 실행, 결과 확인으로 이어진다.</desc>
+<defs><marker id="skills-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#8ddacb"/></marker></defs>
+<style>
+.article-diagram-art text { font-family:var(--font-body,sans-serif); font-size:1rem; fill:#e7edf4; }
+.article-diagram-art .heading { font-size:1.125rem; font-weight:var(--weight-semibold,600); }
+.article-diagram-art .label { font-weight:var(--weight-semibold,600); }
+.article-diagram-art .note { font-size:.875rem; fill:#b8c4d4; }
+.article-diagram-art .box { fill:#202c3b; stroke:#617287; stroke-width:1.5; }
+.article-diagram-art .focus { fill:#163a37; stroke:#8ddacb; stroke-width:1.5; }
+.article-diagram-art .line { fill:none; stroke:#8ddacb; stroke-width:1.5; marker-end:url(#skills-arrow); }
+.article-diagram-art .lifeline { stroke:#617287; stroke-dasharray:5 5; }
+</style><rect width="780" height="500" rx="12" fill="#121b26"/>
+<text x="28" y="38" class="heading">탐색한 후보와 실행 가능한 절차를 구분한다</text>
+<rect x="28" y="80" width="220" height="112" rx="10" class="box"/>
+<text x="44" y="110" class="label" text-anchor="start">사용자 요청</text>
+<text x="44" y="138" class="note" text-anchor="start">의도 · 대상 · 제약</text>
+<rect x="280" y="80" width="220" height="112" rx="10" class="box"/>
+<text x="296" y="110" class="label" text-anchor="start">후보 탐색</text>
+<text x="296" y="138" class="note" text-anchor="start">이름·설명으로 검색</text>
+<rect x="532" y="80" width="220" height="112" rx="10" class="box"/>
+<text x="548" y="110" class="label" text-anchor="start">Skill 본문 로드</text>
+<text x="548" y="138" class="note" text-anchor="start">사용 조건 · 제외 조건</text>
+<rect x="532" y="286" width="220" height="112" rx="10" class="focus"/>
+<text x="548" y="316" class="label" text-anchor="start">적합성 판단</text>
+<text x="548" y="344" class="note" text-anchor="start">범위 밖이면 다시 탐색</text>
+<rect x="280" y="286" width="220" height="112" rx="10" class="box"/>
+<text x="296" y="316" class="label" text-anchor="start">도구 실행</text>
+<text x="296" y="344" class="note" text-anchor="start">절차와 스키마 준수</text>
+<rect x="28" y="286" width="220" height="112" rx="10" class="box"/>
+<text x="44" y="316" class="label" text-anchor="start">결과 확인</text>
+<text x="44" y="344" class="note" text-anchor="start">완료 · 추가 입력 · 오류</text>
+<path d="M248 136H280" class="line"/>
+<path d="M500 136H532" class="line"/>
+<path d="M642 192V286" class="line"/>
+<path d="M532 342H500" class="line"/>
+<path d="M280 342H248" class="line"/>
+<text x="28" y="454" class="note" text-anchor="start">Skill은 판단 지침이다. 실행 권한과 입력 검증은 하네스가 담당한다.</text>
+</svg>
