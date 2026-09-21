@@ -3,14 +3,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node scripts/clean-site.ts && eleventy",
+    "build": "npm run check:content && node scripts/clean-site.ts && eleventy",
     "dev": "node scripts/clean-site.ts && eleventy --serve",
     "build:resume": "node scripts/build-resume-html.ts",
     "build:resume:pdf": "node scripts/build-resume-pdf.ts",
     "check:resume": "node scripts/build-resume-html.ts --check",
     "typecheck": "tsc --noEmit",
     "test": "node --test scripts/resume/*.test.ts scripts/site/*.test.ts",
-    "check:site": "node scripts/check-site.ts"
+    "check:site": "node scripts/check-site.ts",
+    "check:content": "node scripts/check-content.ts"
   },
   "devDependencies": {
     "@11ty/eleventy": "3.1.6",

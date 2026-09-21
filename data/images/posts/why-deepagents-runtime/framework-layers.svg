@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="610" viewBox="0 0 960 610" role="img" aria-labelledby="title desc" data-article-diagram="true" class="article-diagram-art">
+<title id="title">서비스와 LangChain LangGraph Deep Agents의 책임</title><desc id="desc">서비스는 제품 계약을 유지하고 Deep Agents는 LangChain과 LangGraph 기반의 실행 구성을 제공한다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--color-link,#78b8ff)"/></marker></defs>
+<style>
+.article-diagram-art{font-family:var(--font-body,sans-serif);font-size:16px}
+.article-diagram-art text{fill:var(--color-heading,#eee);font-family:var(--font-body,sans-serif);font-size:1rem}
+.article-diagram-art .heading{font-size:1.125rem;font-weight:var(--weight-semibold,600)}
+.article-diagram-art .label{font-weight:var(--weight-semibold,600)}
+.article-diagram-art .note{font-size:.875rem;fill:var(--color-label,#b5b5b5)}
+.article-diagram-art .box{fill:var(--color-card,#242424);stroke:var(--color-border,#555);stroke-width:1;rx:8}
+.article-diagram-art .active{fill:var(--color-card,#242424);stroke:var(--color-link,#78b8ff);stroke-width:1.5;rx:8}
+.article-diagram-art .edge{fill:none;stroke:var(--color-link,#78b8ff);stroke-width:1.5;marker-end:url(#arrow)}
+.article-diagram-art .life{fill:none;stroke:var(--color-border,#555);stroke-width:1;stroke-dasharray:5 5}
+</style>
+<text x="24" y="32" class="heading" text-anchor="start">라이브러리별 책임과 서비스 경계</text>
+<rect x="80" y="65" width="800" height="80" class="active"/><text x="480.0" y="100.0" class="label" text-anchor="middle">서비스 / 연결 계층</text><text x="480.0" y="126.0" class="note" text-anchor="middle">도메인 요청·응답 · 도구 결과 대응 · 식별자 정책</text>
+<rect x="80" y="195" width="800" height="80" class="box"/><text x="480.0" y="230.0" class="label" text-anchor="middle">Deep Agents</text><text x="480.0" y="256.0" class="note" text-anchor="middle">에이전트 실행 구성 · 스킬과 문맥 연결</text>
+<rect x="80" y="325" width="800" height="80" class="box"/><text x="480.0" y="360.0" class="label" text-anchor="middle">LangChain</text><text x="480.0" y="386.0" class="note" text-anchor="middle">모델 · 메시지 · 도구 · 에이전트 구성 요소</text>
+<rect x="80" y="455" width="800" height="80" class="box"/><text x="480.0" y="490.0" class="label" text-anchor="middle">LangGraph</text><text x="480.0" y="516.0" class="note" text-anchor="middle">상태를 가진 실행 기반 · 체크포인터</text>
+<path d="M480 145V195" class="edge"/>
+<path d="M480 275V325" class="edge"/>
+<path d="M480 405V455" class="edge"/>
+<text x="480" y="580" class="note" text-anchor="middle">하나의 애플리케이션에서 조합하는 개념적 계층 · 별도 서버 구성이 아님</text>
+</svg>

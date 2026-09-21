@@ -102,6 +102,7 @@ npm run typecheck
 npm test
 npm run build                  # 이전 _site/를 비우고 전체 생성
 npm run check:site             # URL·리소스·소스 제외 검사
+npm run check:content          # 원본 프로젝트 식별자 재등장 검사 (build에서도 필수 실행)
 npm run check:resume           # 생성된 이력서와 데이터 동기화 검사
 ```
 
