@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1360" viewBox="0 0 1440 1360" role="img" aria-labelledby="seq-title seq-desc" data-article-diagram="true" class="article-diagram-art">
+<title id="seq-title">Fast 완료와 Deep 전환: 두 경로의 메시지 비교</title><desc id="seq-desc">왼쪽은 Fast의 음량 조회와 결과 응답이다. 오른쪽은 추가 기능 탐색을 위해 첫 요청을 종료하고 클라이언트가 후속 요청을 보내 Deep을 실행하는 예시다. 모든 도구 이름과 값은 설명용이며 승격 안내는 애플리케이션 제어 정보다.</desc>
+<defs><marker id="seq-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--color-link,#78b8ff)"/></marker></defs>
+<style>
+.article-diagram-art text{font-family:var(--font-body,sans-serif);font-size:1rem;fill:var(--color-heading,#eee)}
+.article-diagram-art .heading{font-size:1.125rem;font-weight:var(--weight-semibold,600)}
+.article-diagram-art .label{font-weight:var(--weight-semibold,600)}
+.article-diagram-art .note{font-size:.875rem;fill:var(--color-label,#b5b5b5)}
+.article-diagram-art .panel{fill:none;stroke:var(--color-border,#555);stroke-width:1}
+.article-diagram-art .box{fill:var(--color-card,#242424);stroke:var(--color-border,#555);stroke-width:1}
+.article-diagram-art .active{fill:var(--color-card,#242424);stroke:var(--color-link,#78b8ff);stroke-width:1.5}
+.article-diagram-art .edge{fill:none;stroke:var(--color-link,#78b8ff);stroke-width:1.5;marker-end:url(#seq-arrow)}
+.article-diagram-art .life{fill:none;stroke:var(--color-border,#555);stroke-dasharray:5 5}
+</style>
+<text x="24" y="32" class="heading" text-anchor="start">Fast 완료와 Deep 전환을 나란히 보기</text>
+<text x="24" y="59" class="note" text-anchor="start">도구·호출 ID·결과는 설명용 예시 · 메시지는 주요 필드만 표시</text>
+<rect x="16" y="80" width="688" height="1200" rx="8" class="panel"/>
+<text x="34" y="113" class="heading" text-anchor="start">A. 현재 정보로 Fast에서 완료</text>
+<path d="M86 168V1240" class="life"/>
+<rect x="26" y="128" width="120" height="40" rx="8" class="box"/>
+<text x="86" y="154" class="label" text-anchor="middle">클라이언트</text>
+<path d="M266 168V1240" class="life"/>
+<rect x="206" y="128" width="120" height="40" rx="8" class="box"/>
+<text x="266" y="154" class="label" text-anchor="middle">앱 / 실행</text>
+<path d="M446 168V1240" class="life"/>
+<rect x="386" y="128" width="120" height="40" rx="8" class="box"/>
+<text x="446" y="154" class="label" text-anchor="middle">Fast</text>
+<path d="M626 168V1240" class="life"/>
+<rect x="566" y="128" width="120" height="40" rx="8" class="box"/>
+<text x="626" y="154" class="label" text-anchor="middle">외부 도구</text>
+<rect x="736" y="80" width="688" height="1200" rx="8" class="panel"/>
+<text x="754" y="113" class="heading" text-anchor="start">B. 추가 탐색을 위해 Deep으로 전환</text>
+<path d="M806 168V1240" class="life"/>
+<rect x="746" y="128" width="120" height="40" rx="8" class="box"/>
+<text x="806" y="154" class="label" text-anchor="middle">클라이언트</text>
+<path d="M986 168V1240" class="life"/>
+<rect x="926" y="128" width="120" height="40" rx="8" class="box"/>
+<text x="986" y="154" class="label" text-anchor="middle">애플리케이션</text>
+<path d="M1166 168V1240" class="life"/>
+<rect x="1106" y="128" width="120" height="40" rx="8" class="box"/>
+<text x="1166" y="154" class="label" text-anchor="middle">Fast</text>
+<path d="M1346 168V1240" class="life"/>
+<rect x="1286" y="128" width="120" height="40" rx="8" class="box"/>
+<text x="1346" y="154" class="label" text-anchor="middle">Deep</text>
+<rect x="48" y="188" width="624" height="81" rx="8" class="active"/>
+<text x="66" y="216" class="label" text-anchor="start">HumanMessage · 사용자 질문</text>
+<text x="66" y="245" class="" text-anchor="start">content: &quot;현재 음량 알려줘&quot;</text>
+<path d="M86 310H266" class="edge"/>
+<text x="176.0" y="297" class="note" text-anchor="middle">질문 전달</text>
+<path d="M266 365H446" class="edge"/>
+<text x="356.0" y="352" class="note" text-anchor="middle">현재 도구로 판단</text>
+<path d="M446 420H266" class="edge"/>
+<text x="356.0" y="407" class="note" text-anchor="middle">도구 호출 요청</text>
+<rect x="48" y="444" width="624" height="107" rx="8" class="active"/>
+<text x="66" y="472" class="label" text-anchor="start">AIMessage · 음량 조회 요청</text>
+<text x="66" y="501" class="" text-anchor="start">tool_calls: [{ name: &quot;demo_read_volume&quot;,</text>
+<text x="66" y="527" class="" text-anchor="start">  args: {}, id: &quot;example_volume_1&quot; }]</text>
+<path d="M266 590H626" class="edge"/>
+<text x="446.0" y="577" class="note" text-anchor="middle">음량 조회 실행</text>
+<path d="M626 650H266" class="edge"/>
+<text x="446.0" y="637" class="note" text-anchor="middle">결과 반환</text>
+<rect x="48" y="674" width="624" height="107" rx="8" class="active"/>
+<text x="66" y="702" class="label" text-anchor="start">ToolMessage · 실행 결과</text>
+<text x="66" y="731" class="" text-anchor="start">tool_call_id: &quot;example_volume_1&quot;</text>
+<text x="66" y="757" class="" text-anchor="start">content: &quot;현재 음량 30%&quot;</text>
+<path d="M266 820H446" class="edge"/>
+<text x="356.0" y="807" class="note" text-anchor="middle">기존 대화 + 결과</text>
+<path d="M446 885H266" class="edge"/>
+<text x="356.0" y="872" class="note" text-anchor="middle">최종 답변</text>
+<rect x="48" y="909" width="624" height="81" rx="8" class="active"/>
+<text x="66" y="937" class="label" text-anchor="start">AIMessage · 최종 답변</text>
+<text x="66" y="966" class="" text-anchor="start">content: &quot;현재 음량은 30%예요.&quot;</text>
+<path d="M266 1040H86" class="edge"/>
+<text x="176.0" y="1027" class="note" text-anchor="middle">답변 전달 · 완료</text>
+<text x="360" y="1155" class="label" text-anchor="middle">도구 호출이 있어도 Fast로 처리 가능</text>
+<text x="360" y="1184" class="note" text-anchor="middle">Deep 호출 없이 같은 경로에서 완료</text>
+<rect x="768" y="188" width="624" height="81" rx="8" class="active"/>
+<text x="786" y="216" class="label" text-anchor="start">HumanMessage · 사용자 질문</text>
+<text x="786" y="245" class="" text-anchor="start">content: &quot;이번 주 회의 사이에 두 시간 비는 때 찾아줘&quot;</text>
+<path d="M806 310H986" class="edge"/>
+<text x="896.0" y="297" class="note" text-anchor="middle">첫 요청</text>
+<path d="M986 365H1166" class="edge"/>
+<text x="1076.0" y="352" class="note" text-anchor="middle">현재 도구로 판단</text>
+<path d="M1166 420H986" class="edge"/>
+<text x="1076.0" y="407" class="note" text-anchor="middle">추가 탐색 필요</text>
+<rect x="768" y="444" width="624" height="107" rx="8" class="active"/>
+<text x="786" y="472" class="label" text-anchor="start">애플리케이션 제어 정보</text>
+<text x="786" y="501" class="" text-anchor="start">부족한 기능: 일정 조회·시간 비교</text>
+<text x="786" y="527" class="" text-anchor="start">다음 경로: Deep</text>
+<path d="M986 590H806" class="edge"/>
+<text x="896.0" y="577" class="note" text-anchor="middle">첫 요청 종료</text>
+<path d="M754 620H1406" class="life"/>
+<text x="768" y="644" class="label" text-anchor="start">후속 요청 · 사용자 질문 재입력 없이 진행</text>
+<path d="M806 688H986" class="edge"/>
+<text x="896.0" y="675" class="note" text-anchor="middle">대화 + 실행 상태</text>
+<path d="M986 744H1346" class="edge"/>
+<text x="1166.0" y="731" class="note" text-anchor="middle">Deep 선택 · 문맥 전달</text>
+<rect x="768" y="768" width="624" height="159" rx="8" class="active"/>
+<text x="786" y="796" class="label" text-anchor="start">Deep · 기능 탐색 후 조회·비교 (도구 실행 생략)</text>
+<text x="786" y="825" class="" text-anchor="start">AIMessage.tool_calls: [{ name: &quot;demo_find_free_time&quot;,</text>
+<text x="786" y="851" class="" text-anchor="start">  args: { duration_minutes: 120 }, id: &quot;example_slot_1&quot; }]</text>
+<text x="786" y="877" class="" text-anchor="start">ToolMessage.tool_call_id: &quot;example_slot_1&quot;</text>
+<text x="786" y="903" class="" text-anchor="start">ToolMessage.content: &quot;이번 주 화요일 14:00–16:00&quot;</text>
+<path d="M1346 970H986" class="edge"/>
+<text x="1166.0" y="957" class="note" text-anchor="middle">최종 답변</text>
+<rect x="768" y="994" width="624" height="81" rx="8" class="active"/>
+<text x="786" y="1022" class="label" text-anchor="start">AIMessage · 최종 답변</text>
+<text x="786" y="1051" class="" text-anchor="start">content: &quot;화요일 오후 2시부터 4시까지 비어 있어요.&quot;</text>
+<path d="M986 1130H806" class="edge"/>
+<text x="896.0" y="1117" class="note" text-anchor="middle">답변 전달 · 완료</text>
+<text x="1080" y="1200" class="label" text-anchor="middle">앞선 요청과 결과를 이어받아 추가 탐색</text>
+<text x="720" y="1310" class="note" text-anchor="middle">ToolMessage는 도구 실행 결과 · Deep 전환은 애플리케이션의 경로 선택</text>
+<text x="720" y="1337" class="note" text-anchor="middle">서버 도구 실행을 가정 · 모델 호출·상태 저장·중간 스트리밍은 단순화</text>
+</svg>

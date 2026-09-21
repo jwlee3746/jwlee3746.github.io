@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="500" viewBox="0 0 780 500" role="img" aria-labelledby="tiers-title tiers-desc" data-article-diagram="true" class="article-diagram-art">
+<title id="tiers-title">현재 정보로 처리할 수 있는지 먼저 판단한다</title><desc id="tiers-desc">Fast가 현재 도구·정보로 처리 가능한 요청을 실행하고 추가 탐색이 필요한 요청은 Deep으로 문맥과 함께 인계한다.</desc>
+<defs><marker id="tiers-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#8ddacb"/></marker></defs>
+<style>
+.article-diagram-art text { font-family:var(--font-body,sans-serif); font-size:1rem; fill:#e7edf4; }
+.article-diagram-art .heading { font-size:1.125rem; font-weight:var(--weight-semibold,600); }
+.article-diagram-art .label { font-weight:var(--weight-semibold,600); }
+.article-diagram-art .note { font-size:.875rem; fill:#b8c4d4; }
+.article-diagram-art .box { fill:#202c3b; stroke:#617287; stroke-width:1.5; }
+.article-diagram-art .focus { fill:#163a37; stroke:#8ddacb; stroke-width:1.5; }
+.article-diagram-art .line { fill:none; stroke:#8ddacb; stroke-width:1.5; marker-end:url(#tiers-arrow); }
+.article-diagram-art .lifeline { stroke:#617287; stroke-dasharray:5 5; }
+</style><rect width="780" height="500" rx="12" fill="#121b26"/>
+<text x="28" y="38" class="heading">현재 정보로 처리할 수 있는지 먼저 판단한다</text>
+<rect x="240" y="75" width="300" height="86" rx="10" class="box"/>
+<text x="256" y="105" class="label" text-anchor="start">요청 + 현재 도구·정보</text>
+<text x="256" y="133" class="note" text-anchor="start">의도 · 기능 범위 · 실행 상태</text>
+<path d="M390 161V205" class="line"/>
+<rect x="240" y="205" width="300" height="86" rx="10" class="focus"/>
+<text x="256" y="235" class="label" text-anchor="start">Fast: 다음 행동 판단</text>
+<text x="256" y="263" class="note" text-anchor="start">현재 정보로 다음 행동을 정할 수 있나?</text>
+<path d="M240 247H138V337" class="line"/>
+<path d="M540 247H642V337" class="line"/>
+<text x="143" y="227" class="note" text-anchor="middle">처리 가능</text>
+<text x="637" y="227" class="note" text-anchor="middle">추가 탐색 필요</text>
+<rect x="28" y="337" width="300" height="102" rx="10" class="box"/>
+<text x="44" y="367" class="label" text-anchor="start">Fast에서 실행·대화 지속</text>
+<text x="44" y="395" class="note" text-anchor="start">제공된 도구·확인 절차 사용</text>
+<text x="44" y="417" class="note" text-anchor="start">이미 실행한 결과를 보존</text>
+<rect x="452" y="337" width="300" height="102" rx="10" class="box"/>
+<text x="468" y="367" class="label" text-anchor="start">Deep으로 인계</text>
+<text x="468" y="395" class="note" text-anchor="start">부족한 정보와 실행 문맥 전달</text>
+<text x="468" y="417" class="note" text-anchor="start">탐색 · 계획 · 후속 실행</text>
+<text x="28" y="478" class="note" text-anchor="start">계층이 달라도 실행 권한·확인 정책은 동일하게 지켜야 한다.</text>
+</svg>
