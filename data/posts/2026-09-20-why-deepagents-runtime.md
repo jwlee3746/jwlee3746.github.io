@@ -43,8 +43,10 @@ toc: true
 
 그림 2. 외부 도구를 애플리케이션이 실행하는 구성 예시. 도구 이름·호출 ID·날씨 값은 설명용으로 새로 만들었다. 메시지는 주요 필드만 표시하고 모델 호출·상태 저장·중간 스트리밍은 단순화했다.
 
+- **사용자 질문:** `HumanMessage.content`에 “서울 날씨 알려줘”를 담는다.
 - **호출 요청:** 모델은 `AIMessage.tool_calls`에 사용할 도구와 입력값을 담는다.
-- **실행 결과:** `ToolMessage.content`에 도구 실행 결과를 담고, `tool_call_id`를 호출 요청의 `id`와 맞춘다. 모델은 이 결과를 읽어 최종 답변을 만든다. [메시지 공식 문서](https://docs.langchain.com/oss/javascript/langchain/messages#tool-message)
+- **실행 결과:** `ToolMessage.content`에 도구 실행 결과를 담고, `tool_call_id`를 호출 요청의 `id`와 맞춘다. [메시지 공식 문서](https://docs.langchain.com/oss/javascript/langchain/messages#tool-message)
+- **최종 답변:** 모델이 결과를 읽고 `AIMessage.content`에 “서울은 맑고 22°C예요.”를 담는다.
 
 ## 애플리케이션에서 직접 처리한 부분
 
