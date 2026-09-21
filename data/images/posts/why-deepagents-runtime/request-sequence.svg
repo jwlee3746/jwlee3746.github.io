@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="650" viewBox="0 0 960 650" role="img" aria-labelledby="title desc" data-article-diagram="true" class="article-diagram-art">
-<title id="title">요청 처리 시퀀스</title><desc id="desc">클라이언트 요청을 연결 계층이 변환하고 런타임은 모델 호출과 상태 저장을 수행하며 결과를 서비스 이벤트로 반환한다.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="1270" viewBox="0 0 1120 1270" role="img" aria-labelledby="title desc" data-article-diagram="true" class="article-diagram-art">
+<title id="title">날씨 조회: HumanMessage부터 최종 AIMessage까지</title><desc id="desc">사용자 질문을 받은 모델이 날씨 도구 호출을 요청한다. 애플리케이션이 외부 도구를 실행하고 같은 호출 ID의 ToolMessage를 전달하면 모델이 결과를 읽어 답변한다. 도구 이름과 값은 독립적으로 만든 설명용 예시다.</desc>
 <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="var(--color-link,#78b8ff)"/></marker></defs>
 <style>
 .article-diagram-art{font-family:var(--font-body,sans-serif);font-size:16px}
@@ -12,31 +12,58 @@
 .article-diagram-art .edge{fill:none;stroke:var(--color-link,#78b8ff);stroke-width:1.5;marker-end:url(#arrow)}
 .article-diagram-art .life{fill:none;stroke:var(--color-border,#555);stroke-width:1;stroke-dasharray:5 5}
 </style>
-<text x="24" y="32" class="heading" text-anchor="start">한 요청의 실행과 변환</text>
-<path d="M85 120V575" class="life"/>
-<rect x="7" y="65" width="156" height="54" class="box"/><text x="85.0" y="98.0" class="label" text-anchor="middle">클라이언트</text>
-<path d="M280 120V575" class="life"/>
-<rect x="202" y="65" width="156" height="54" class="box"/><text x="280.0" y="98.0" class="label" text-anchor="middle">요청 처리 계층</text>
-<path d="M475 120V575" class="life"/>
-<rect x="397" y="65" width="156" height="54" class="box"/><text x="475.0" y="98.0" class="label" text-anchor="middle">Deep Agents</text>
-<path d="M670 120V575" class="life"/>
-<rect x="592" y="65" width="156" height="54" class="box"/><text x="670.0" y="98.0" class="label" text-anchor="middle">모델</text>
-<path d="M865 120V575" class="life"/>
-<rect x="787" y="65" width="156" height="54" class="box"/><text x="865.0" y="98.0" class="label" text-anchor="middle">MemorySaver</text>
-<path d="M85 162H280" class="edge"/>
-<text x="182.5" y="150" class="note" text-anchor="middle">메시지 / 요청 식별자</text>
-<path d="M280 222H475" class="edge"/>
-<text x="377.5" y="210" class="note" text-anchor="middle">메시지 / 스킬 문서</text>
-<path d="M475 282H670" class="edge"/>
-<text x="572.5" y="270" class="note" text-anchor="middle">모델 호출</text>
-<path d="M670 342H475" class="edge"/>
-<text x="572.5" y="330" class="note" text-anchor="middle">텍스트 / 도구 호출</text>
-<path d="M475 402H865" class="edge"/>
-<text x="670.0" y="390" class="note" text-anchor="middle">실행 상태 체크포인트</text>
-<path d="M475 470H280" class="edge"/>
-<text x="377.5" y="458" class="note" text-anchor="middle">스트리밍 출력</text>
-<path d="M280 538H85" class="edge"/>
-<text x="182.5" y="526" class="note" text-anchor="middle">서비스 SSE 이벤트</text>
-<text x="480" y="600" class="note" text-anchor="middle">도구 호출이 남으면 실행 미완료 · 저장 시점과 중간 이벤트는 단순화</text>
-<text x="480" y="625" class="note" text-anchor="middle">MemorySaver는 프로세스 메모리 · 업무 상태와 외부 도구 재개는 서비스의 책임</text>
+<text x="24" y="32" class="heading" text-anchor="start">날씨 조회: 도구 호출 요청 → 실행 결과 → 최종 답변</text>
+<text x="24" y="57" class="note" text-anchor="start">외부 도구를 애플리케이션이 실행하는 구성 예시</text>
+<path d="M120 148V1180" class="life"/>
+<rect x="30" y="82" width="180" height="66" class="box"/>
+<text x="120" y="109" class="label" text-anchor="middle">사용자</text>
+<text x="120" y="134" class="note" text-anchor="middle">질문과 답변</text>
+<path d="M400 148V1180" class="life"/>
+<rect x="310" y="82" width="180" height="66" class="box"/>
+<text x="400" y="109" class="label" text-anchor="middle">애플리케이션</text>
+<text x="400" y="134" class="note" text-anchor="middle">실행 판단 · 결과 전달</text>
+<path d="M700 148V1180" class="life"/>
+<rect x="610" y="82" width="180" height="66" class="box"/>
+<text x="700" y="109" class="label" text-anchor="middle">Deep Agents</text>
+<text x="700" y="134" class="note" text-anchor="middle">모델 포함</text>
+<path d="M990 148V1180" class="life"/>
+<rect x="900" y="82" width="180" height="66" class="box"/>
+<text x="990" y="109" class="label" text-anchor="middle">외부 도구</text>
+<text x="990" y="134" class="note" text-anchor="middle">설명용 날씨 조회</text>
+<path d="M120 190H400" class="edge"/>
+<text x="260.0" y="177" class="note" text-anchor="middle">① “서울 날씨 알려줘”</text>
+<path d="M400 245H700" class="edge"/>
+<text x="550.0" y="232" class="note" text-anchor="middle">HumanMessage + 스킬</text>
+<rect x="430" y="266" width="560" height="88" class="active"/>
+<text x="450" y="295" class="label" text-anchor="start">HumanMessage · 사용자 질문</text>
+<text x="450" y="326" text-anchor="start">content: &quot;서울 날씨 알려줘&quot;</text>
+<path d="M700 425H400" class="edge"/>
+<text x="550.0" y="412" class="note" text-anchor="middle">② AIMessage · 도구 호출 요청</text>
+<rect x="430" y="446" width="560" height="172" class="active"/>
+<text x="450" y="472" class="label" text-anchor="start">AIMessage · 도구 호출 요청</text>
+<text x="450" y="500" class="" text-anchor="start">tool_calls: [{</text>
+<text x="450" y="522" class="" text-anchor="start">  name: &quot;demo_weather&quot;,</text>
+<text x="450" y="544" class="" text-anchor="start">  args: { city: &quot;서울&quot; },</text>
+<text x="450" y="566" class="" text-anchor="start">  id: &quot;demo_weather_1&quot;</text>
+<text x="450" y="588" class="" text-anchor="start">}]</text>
+<path d="M400 660H990" class="edge"/>
+<text x="695.0" y="647" class="note" text-anchor="middle">③ 실행 허용 여부 확인 후 날씨 조회</text>
+<path d="M990 720H400" class="edge"/>
+<text x="695.0" y="707" class="note" text-anchor="middle">④ 조회 결과: 맑음, 22°C</text>
+<path d="M400 780H700" class="edge"/>
+<text x="550.0" y="767" class="note" text-anchor="middle">⑤ ToolMessage + 기존 대화</text>
+<rect x="430" y="800" width="560" height="138" class="active"/>
+<text x="450" y="827" class="label" text-anchor="start">ToolMessage · 도구 실행 결과</text>
+<text x="450" y="857" class="" text-anchor="start">tool_call_id: &quot;demo_weather_1&quot;</text>
+<text x="450" y="883" class="" text-anchor="start">name: &quot;demo_weather&quot;</text>
+<text x="450" y="909" class="" text-anchor="start">content: &quot;서울: 맑음, 22°C&quot;</text>
+<path d="M700 1000H400" class="edge"/>
+<text x="550.0" y="987" class="note" text-anchor="middle">⑥ AIMessage · 결과를 읽고 답변 생성</text>
+<rect x="165" y="1020" width="570" height="70" class="box"/>
+<text x="190" y="1049" class="label" text-anchor="start">AIMessage · 최종 답변</text>
+<text x="190" y="1074" class="" text-anchor="start">content: &quot;서울은 맑고 22°C예요.&quot;</text>
+<path d="M400 1140H120" class="edge"/>
+<text x="260.0" y="1127" class="note" text-anchor="middle">⑦ 답변 전달 (SSE)</text>
+<text x="560" y="1218" class="note" text-anchor="middle">도구 이름·호출 ID·날씨 값은 설명용 예시 · 메시지는 주요 필드만 표시</text>
+<text x="560" y="1245" class="note" text-anchor="middle">모델 호출·상태 저장·중간 스트리밍은 단순화</text>
 </svg>
