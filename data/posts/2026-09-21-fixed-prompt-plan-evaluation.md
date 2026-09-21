@@ -9,8 +9,12 @@ tags:
 - Planning
 - Evaluation Harness
 permalink: /posts/fixed-prompt-plan-evaluation/
-toc: true
+toc: false
 ---
+
+![고정 프롬프트 기반 평가의 블록 다이어그램](/data/images/posts/fixed-prompt-plan-evaluation/evaluation-pipeline.svg)
+
+*그림 1. 평가 사례를 입력·정답 쌍으로 바꾸고 모델 예측을 기록한 뒤 채점하는 구조. 실제 업무 도구 실행과 최종 환경 상태 검증은 이 경로의 바깥에 있다.*
 
 **고정 프롬프트 기반 평가는 미리 준비한 입력을 모델에 주고, 생성한 출력을 기대 결과와 비교하는 방법이다.** 같은 조건에서 모델이나 프롬프트를 바꿔 보며 도구 선택과 인자가 올바른지 확인할 때 유용하다.
 
@@ -54,10 +58,6 @@ toc: true
 여기서는 고정 입력에 대한 판단 평가를 **single-turn/component 평가**라고 부른다. 한 사례가 반드시 첫 발화만 담아야 한다는 뜻은 아니다. 여러 개별 판정을 대화 단위로 집계한 점수 역시 실제 대화를 끝까지 실행한 성공률과 구분해야 한다.
 
 ## 평가 흐름: 사례 구성부터 추론 기록까지
-
-![고정 프롬프트 기반 평가의 블록 다이어그램](/data/images/posts/fixed-prompt-plan-evaluation/evaluation-pipeline.svg)
-
-*그림 1. 평가 사례를 입력·정답 쌍으로 바꾸고 모델 예측을 기록한 뒤 채점하는 구조. 실제 업무 도구 실행과 최종 환경 상태 검증은 이 경로의 바깥에 있다.*
 
 1. **예제 구성:** 사용자 요청, 대화 문맥, 도구 명세로 입력 상태와 기대 출력을 준비.
 2. **입력 생성:** 문맥과 도구 정보를 프롬프트로 구성하고, 비교할 정답을 함께 준비.
