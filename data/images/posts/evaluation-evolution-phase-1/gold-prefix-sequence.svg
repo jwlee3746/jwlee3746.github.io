@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="660" viewBox="0 0 780 660" data-article-diagram="true" class="article-diagram-art" role="img" aria-labelledby="title desc">
+<title id="title">정답 prefix로 여러 줄의 plan을 분리 평가하는 순서</title><desc id="desc">초기 문맥으로 첫 줄을 예측한다. 평가 예제 구성 단계에서는 실제 예측과 무관하게 첫 정답 줄을 다음 입력에 추가한다. 둘째 예측은 정답 문맥에서 평가된다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10" fill="#93b3d8"/></marker></defs>
+<style>.article-diagram-art text{font-family:var(--font-body);font-size:1rem;fill:#e1e6ef}.article-diagram-art .heading{font-size:1.125rem;font-weight:var(--weight-semibold,600)}.article-diagram-art .label{font-weight:var(--weight-semibold,600)}.article-diagram-art .note{font-size:.875rem;fill:#b9c8db}</style>
+<rect width="780" height="660" rx="12" fill="#181c24"/>
+<text x="24" y="34" class="heading" text-anchor="start"><tspan x="24" dy="0">다음 입력에는 실제 예측 대신 정답이 들어간다</tspan></text>
+<rect x="24" y="64" width="192" height="48" rx="8" fill="#232b39" stroke="#506581"/>
+<text x="120" y="94" class="label" text-anchor="middle"><tspan x="120" dy="0">평가 예제 구성</tspan></text>
+<path d="M120 112 V635" stroke="#506581" stroke-dasharray="5 5"/>
+<rect x="274" y="64" width="192" height="48" rx="8" fill="#232b39" stroke="#506581"/>
+<text x="370" y="94" class="label" text-anchor="middle"><tspan x="370" dy="0">Model</tspan></text>
+<path d="M370 112 V635" stroke="#506581" stroke-dasharray="5 5"/>
+<rect x="554" y="64" width="192" height="48" rx="8" fill="#232b39" stroke="#506581"/>
+<text x="650" y="94" class="label" text-anchor="middle"><tspan x="650" dy="0">Grader</tspan></text>
+<path d="M650 112 V635" stroke="#506581" stroke-dasharray="5 5"/>
+<text x="245" y="152" class="note" text-anchor="middle"><tspan x="245" dy="0">초기 문맥</tspan></text>
+<path d="M120 168 H370" fill="none" stroke="#93b3d8" stroke-width="1.5"  marker-end="url(#arrow)"/>
+<text x="510" y="213" class="note" text-anchor="middle"><tspan x="510" dy="0">첫 줄 예측</tspan></text>
+<path d="M370 229 H650" fill="none" stroke="#93b3d8" stroke-width="1.5"  stroke-dasharray="5 5" marker-end="url(#arrow)"/>
+<text x="385" y="265" class="note" text-anchor="middle"><tspan x="385" dy="0">첫 줄 정답 → 비교</tspan></text>
+<path d="M120 281 H650" fill="none" stroke="#93b3d8" stroke-width="1.5"  stroke-dasharray="5 5" marker-end="url(#arrow)"/>
+<rect x="24" y="316" width="246" height="80" rx="10" fill="#183c3b" stroke="#64c5b8"/><text x="40" y="344" class="label" text-anchor="start"><tspan x="40" dy="0">이전 정답 줄을 추가</tspan></text><text x="40" y="370" class="note" text-anchor="start"><tspan x="40" dy="0">실제 예측에 의존하지 않음</tspan></text>
+<text x="245" y="437" class="note" text-anchor="middle"><tspan x="245" dy="0">초기 문맥 + 첫 줄 정답</tspan></text>
+<path d="M120 453 H370" fill="none" stroke="#93b3d8" stroke-width="1.5"  marker-end="url(#arrow)"/>
+<text x="510" y="498" class="note" text-anchor="middle"><tspan x="510" dy="0">둘째 줄 예측</tspan></text>
+<path d="M370 514 H650" fill="none" stroke="#93b3d8" stroke-width="1.5"  stroke-dasharray="5 5" marker-end="url(#arrow)"/>
+<text x="385" y="550" class="note" text-anchor="middle"><tspan x="385" dy="0">둘째 줄 정답 → 비교</tspan></text>
+<path d="M120 566 H650" fill="none" stroke="#93b3d8" stroke-width="1.5"  stroke-dasharray="5 5" marker-end="url(#arrow)"/>
+<text x="24" y="617" class="note" text-anchor="start"><tspan x="24" dy="0">입력 간 논리적 관계를 표현한 그림 · 배치의 실제 실행 순서는 별개</tspan></text>
+</svg>
