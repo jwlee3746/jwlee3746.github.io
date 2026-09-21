@@ -29,7 +29,7 @@ test('inline diagrams keep accessible labels, unique IDs and local marker refere
 test('external, non-opt-in and traversal image paths remain images', () => {
   const sources = [
     'https://example.com/chart.svg',
-    '/data/images/posts/openclaw-component-application/component-boundaries.svg',
+    '/data/images/posts/test-case-vs-simulator-evaluation/tc-vs-simulator.svg',
     '/data/images/posts/../secret.svg',
     '/data/images/profile/avatar.jpg',
   ];

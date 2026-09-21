@@ -14,6 +14,7 @@ const legacyCategories = [
 export function legacyRedirects(posts: readonly Post[]): LegacyRedirect[] {
   const categories = groupCategories(posts);
   const redirects: LegacyRedirect[] = [
+    { from: '/posts/evaluation-evolution-phase-1/', to: '/posts/fixed-prompt-plan-evaluation/' },
     { from: '/blog/', to: '/posts/' },
     { from: '/blog/posts/', to: '/posts/' },
     { from: '/blog/search/', to: '/posts/' },
