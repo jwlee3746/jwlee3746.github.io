@@ -11,18 +11,18 @@
 <text x="290" y="94" class="label" text-anchor="middle"><tspan x="290" dy="0">모델 호출</tspan></text>
 <path d="M290 112 V580" stroke="#506581" stroke-dasharray="5 5"/>
 <rect x="412" y="64" width="156" height="48" rx="8" fill="#232b39" stroke="#506581"/>
-<text x="490" y="94" class="label" text-anchor="middle"><tspan x="490" dy="0">Model</tspan></text>
+<text x="490" y="94" class="label" text-anchor="middle"><tspan x="490" dy="0">모델</tspan></text>
 <path d="M490 112 V580" stroke="#506581" stroke-dasharray="5 5"/>
 <rect x="612" y="64" width="156" height="48" rx="8" fill="#232b39" stroke="#506581"/>
-<text x="690" y="94" class="label" text-anchor="middle"><tspan x="690" dy="0">결과 / Grader</tspan></text>
+<text x="690" y="94" class="label" text-anchor="middle"><tspan x="690" dy="0">결과 / 채점기</tspan></text>
 <path d="M690 112 V580" stroke="#506581" stroke-dasharray="5 5"/>
 <text x="195.0" y="152" class="note" text-anchor="middle"><tspan x="195.0" dy="0">입력 + 정답</tspan></text>
 <path d="M100 164 H290" fill="none" stroke="#93b3d8" stroke-width="1.5"  marker-end="url(#arrow)"/>
-<text x="390.0" y="232" class="note" text-anchor="middle"><tspan x="390.0" dy="0">전처리한 prompt</tspan></text>
+<text x="390.0" y="232" class="note" text-anchor="middle"><tspan x="390.0" dy="0">전처리한 프롬프트</tspan></text>
 <path d="M290 244 H490" fill="none" stroke="#93b3d8" stroke-width="1.5"  marker-end="url(#arrow)"/>
-<text x="390.0" y="300" class="note" text-anchor="middle"><tspan x="390.0" dy="0">prediction</tspan></text>
+<text x="390.0" y="300" class="note" text-anchor="middle"><tspan x="390.0" dy="0">모델 예측</tspan></text>
 <path d="M490 312 H290" fill="none" stroke="#93b3d8" stroke-width="1.5"  stroke-dasharray="5 5" marker-end="url(#arrow)"/>
-<text x="490.0" y="380" class="note" text-anchor="middle"><tspan x="490.0" dy="0">input · 정답 · prediction 저장</tspan></text>
+<text x="490.0" y="380" class="note" text-anchor="middle"><tspan x="490.0" dy="0">입력 · 정답 · 예측 저장</tspan></text>
 <path d="M290 392 H690" fill="none" stroke="#93b3d8" stroke-width="1.5"  marker-end="url(#arrow)"/>
 <rect x="494" y="430" width="274" height="80" rx="10" fill="#183c3b" stroke="#64c5b8"/><text x="510" y="458" class="label" text-anchor="start"><tspan x="510" dy="0">사후 채점</tspan></text><text x="510" y="484" class="note" text-anchor="start"><tspan x="510" dy="0">출력 구조와 기대값 비교</tspan></text>
 <text x="24" y="560" class="note" text-anchor="start"><tspan x="24" dy="0">모델의 출력과 도구를 실행한 결과는 서로 다른 증거다.</tspan></text>

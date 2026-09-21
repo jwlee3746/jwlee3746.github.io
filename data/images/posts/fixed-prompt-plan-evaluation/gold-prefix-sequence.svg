@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="780" height="660" viewBox="0 0 780 660" data-article-diagram="true" class="article-diagram-art" role="img" aria-labelledby="title desc">
-<title id="title">정답 prefix로 여러 줄의 plan을 분리 평가하는 순서</title><desc id="desc">초기 문맥으로 첫 줄을 예측한다. 평가 예제 구성 단계에서는 실제 예측과 무관하게 첫 정답 줄을 다음 입력에 추가한다. 둘째 예측은 정답 문맥에서 평가된다.</desc>
+<title id="title">정답 이력로 여러 줄의 계획을 분리 평가하는 순서</title><desc id="desc">초기 문맥으로 첫 줄을 예측한다. 평가 예제 구성 단계에서는 실제 예측과 무관하게 첫 정답 줄을 다음 입력에 추가한다. 둘째 예측은 정답 문맥에서 평가된다.</desc>
 <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10" fill="#93b3d8"/></marker></defs>
 <style>.article-diagram-art text{font-family:var(--font-body);font-size:1rem;fill:#e1e6ef}.article-diagram-art .heading{font-size:1.125rem;font-weight:var(--weight-semibold,600)}.article-diagram-art .label{font-weight:var(--weight-semibold,600)}.article-diagram-art .note{font-size:.875rem;fill:#b9c8db}</style>
 <rect width="780" height="660" rx="12" fill="#181c24"/>
@@ -8,10 +8,10 @@
 <text x="120" y="94" class="label" text-anchor="middle"><tspan x="120" dy="0">평가 예제 구성</tspan></text>
 <path d="M120 112 V635" stroke="#506581" stroke-dasharray="5 5"/>
 <rect x="274" y="64" width="192" height="48" rx="8" fill="#232b39" stroke="#506581"/>
-<text x="370" y="94" class="label" text-anchor="middle"><tspan x="370" dy="0">Model</tspan></text>
+<text x="370" y="94" class="label" text-anchor="middle"><tspan x="370" dy="0">모델</tspan></text>
 <path d="M370 112 V635" stroke="#506581" stroke-dasharray="5 5"/>
 <rect x="554" y="64" width="192" height="48" rx="8" fill="#232b39" stroke="#506581"/>
-<text x="650" y="94" class="label" text-anchor="middle"><tspan x="650" dy="0">Grader</tspan></text>
+<text x="650" y="94" class="label" text-anchor="middle"><tspan x="650" dy="0">채점기</tspan></text>
 <path d="M650 112 V635" stroke="#506581" stroke-dasharray="5 5"/>
 <text x="245" y="152" class="note" text-anchor="middle"><tspan x="245" dy="0">초기 문맥</tspan></text>
 <path d="M120 168 H370" fill="none" stroke="#93b3d8" stroke-width="1.5"  marker-end="url(#arrow)"/>
