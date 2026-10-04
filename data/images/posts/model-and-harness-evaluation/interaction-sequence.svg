@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="826" viewBox="0 0 880 826" data-article-diagram="true" class="article-diagram-art" role="img" aria-labelledby="title desc">
+<title id="title">요청과 실제 도구 결과가 후속 판단으로 이어지는 순서</title><desc id="desc">평가 진행자가 환경을 초기화한 뒤 실행 하네스에 요청을 전달한다. 하네스는 모델의 도구 호출을 실행하고 실제 결과를 모델에 전달한다. 실행 기록과 별도로 조회한 최종 상태를 채점기에 제공한다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10" fill="#93b3d8"/></marker></defs>
+<style>.article-diagram-art text{font-family:var(--font-body);font-size:1rem;fill:#e1e6ef}.article-diagram-art .heading{font-size:1.125rem;font-weight:var(--weight-semibold,600)}.article-diagram-art .label{font-weight:var(--weight-semibold,600)}.article-diagram-art .note{font-size:.875rem;fill:#b9c8db}</style>
+<rect width="880" height="826" rx="12" fill="#181c24"/>
+<text x="24" y="32" class="heading" text-anchor="start"><tspan x="24" dy="0">한 요청 안에서 판단과 실행을 연결한다</tspan></text>
+<rect x="14" y="64" width="144" height="44" rx="8" fill="#232b39" stroke="#506581"/>
+<text x="86" y="92" class="label" text-anchor="middle"><tspan x="86" dy="0">평가 진행</tspan></text>
+<path d="M86 108 V778" stroke="#506581" stroke-dasharray="5 5"/>
+<rect x="192" y="64" width="144" height="44" rx="8" fill="#232b39" stroke="#506581"/>
+<text x="264" y="92" class="label" text-anchor="middle"><tspan x="264" dy="0">실행 하네스</tspan></text>
+<path d="M264 108 V778" stroke="#506581" stroke-dasharray="5 5"/>
+<rect x="366" y="64" width="144" height="44" rx="8" fill="#232b39" stroke="#506581"/>
+<text x="438" y="92" class="label" text-anchor="middle"><tspan x="438" dy="0">모델</tspan></text>
+<path d="M438 108 V778" stroke="#506581" stroke-dasharray="5 5"/>
+<rect x="544" y="64" width="144" height="44" rx="8" fill="#232b39" stroke="#506581"/>
+<text x="616" y="92" class="label" text-anchor="middle"><tspan x="616" dy="0">도구·환경</tspan></text>
+<path d="M616 108 V778" stroke="#506581" stroke-dasharray="5 5"/>
+<rect x="722" y="64" width="144" height="44" rx="8" fill="#232b39" stroke="#506581"/>
+<text x="794" y="92" class="label" text-anchor="middle"><tspan x="794" dy="0">채점기</tspan></text>
+<path d="M794 108 V778" stroke="#506581" stroke-dasharray="5 5"/>
+<text x="351.0" y="141" class="note" text-anchor="middle"><tspan x="351.0" dy="0">초기 환경 준비</tspan></text>
+<path d="M86 153 H616" fill="none" stroke="#93b3d8" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="175.0" y="196" class="note" text-anchor="middle"><tspan x="175.0" dy="0">요청 · 실행 조건</tspan></text>
+<path d="M86 208 H264" fill="none" stroke="#93b3d8" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="351.0" y="251" class="note" text-anchor="middle"><tspan x="351.0" dy="0">문맥 · 도구 정보</tspan></text>
+<path d="M264 263 H438" fill="none" stroke="#93b3d8" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="351.0" y="306" class="note" text-anchor="middle"><tspan x="351.0" dy="0">도구 호출 제안</tspan></text>
+<path d="M438 318 H264" fill="none" stroke="#93b3d8" stroke-width="1.5" stroke-dasharray="5 5" marker-end="url(#arrow)"/>
+<text x="440.0" y="361" class="note" text-anchor="middle"><tspan x="440.0" dy="0">호출 실행</tspan></text>
+<path d="M264 373 H616" fill="none" stroke="#93b3d8" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="440.0" y="416" class="note" text-anchor="middle"><tspan x="440.0" dy="0">해당 호출의 결과</tspan></text>
+<path d="M616 428 H264" fill="none" stroke="#93b3d8" stroke-width="1.5" stroke-dasharray="5 5" marker-end="url(#arrow)"/>
+<text x="351.0" y="471" class="note" text-anchor="middle"><tspan x="351.0" dy="0">실제 결과 반영</tspan></text>
+<path d="M264 483 H438" fill="none" stroke="#93b3d8" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="351.0" y="526" class="note" text-anchor="middle"><tspan x="351.0" dy="0">응답 또는 다음 행동</tspan></text>
+<path d="M438 538 H264" fill="none" stroke="#93b3d8" stroke-width="1.5" stroke-dasharray="5 5" marker-end="url(#arrow)"/>
+<text x="175.0" y="592" class="note" text-anchor="middle"><tspan x="175.0" dy="0">실행 기록 · 종료 이유</tspan></text>
+<path d="M264 604 H86" fill="none" stroke="#93b3d8" stroke-width="1.5" stroke-dasharray="5 5" marker-end="url(#arrow)"/>
+<text x="440.0" y="647" class="note" text-anchor="middle"><tspan x="440.0" dy="0">기록 · 목표 · 제약</tspan></text>
+<path d="M86 659 H794" fill="none" stroke="#93b3d8" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="705.0" y="702" class="note" text-anchor="middle"><tspan x="705.0" dy="0">최종 상태 조회 결과</tspan></text>
+<path d="M616 714 H794" fill="none" stroke="#93b3d8" stroke-width="1.5" stroke-dasharray="5 5" marker-end="url(#arrow)"/>
+<text x="24" y="798" class="note" text-anchor="start"><tspan x="24" dy="0">추가 행동이 필요하면 판단 → 실행 → 결과 전달을 반복</tspan></text>
+</svg>
