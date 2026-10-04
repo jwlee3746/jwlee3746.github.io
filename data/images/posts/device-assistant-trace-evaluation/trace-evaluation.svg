@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="500" viewBox="0 0 780 500" role="img" aria-labelledby="eval-title eval-desc" data-article-diagram="true" class="article-diagram-art">
+<title id="eval-title">기록에서 성공 조건이 명시된 평가로</title><desc id="eval-desc">실행 trace에서 사례를 선택하고 정보를 정제해 초기 조건과 성공 기준을 고정한 뒤 평가하고 실패를 다시 조사한다.</desc>
+<defs><marker id="eval-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#8ddacb"/></marker></defs>
+<style>
+.article-diagram-art text { font-family:var(--font-body,sans-serif); font-size:1rem; fill:#e7edf4; }
+.article-diagram-art .heading { font-size:1.125rem; font-weight:var(--weight-semibold,600); }
+.article-diagram-art .label { font-weight:var(--weight-semibold,600); }
+.article-diagram-art .note { font-size:.875rem; fill:#b8c4d4; }
+.article-diagram-art .box { fill:#202c3b; stroke:#617287; stroke-width:1.5; }
+.article-diagram-art .focus { fill:#163a37; stroke:#8ddacb; stroke-width:1.5; }
+.article-diagram-art .line { fill:none; stroke:#8ddacb; stroke-width:1.5; marker-end:url(#eval-arrow); }
+.article-diagram-art .lifeline { stroke:#617287; stroke-dasharray:5 5; }
+</style><rect width="780" height="500" rx="12" fill="#121b26"/>
+<text x="28" y="38" class="heading">기록에서 성공 조건이 명시된 평가로</text>
+<rect x="28" y="80" width="220" height="112" rx="10" class="box"/>
+<text x="44" y="110" class="label" text-anchor="start">실행 trace</text>
+<text x="44" y="138" class="note" text-anchor="start">탐색 · 모델 · 도구 결과</text>
+<rect x="280" y="80" width="220" height="112" rx="10" class="box"/>
+<text x="296" y="110" class="label" text-anchor="start">사례 선별·정제</text>
+<text x="296" y="138" class="note" text-anchor="start">필요한 문맥 · 가상 식별자</text>
+<rect x="532" y="80" width="220" height="112" rx="10" class="box"/>
+<text x="548" y="110" class="label" text-anchor="start">재현 조건 고정</text>
+<text x="548" y="138" class="note" text-anchor="start">상태 · 외부 관측 · 버전</text>
+<rect x="532" y="286" width="220" height="112" rx="10" class="focus"/>
+<text x="548" y="316" class="label" text-anchor="start">성공 기준 작성</text>
+<text x="548" y="344" class="note" text-anchor="start">목표 상태 · 금지 행동</text>
+<rect x="280" y="286" width="220" height="112" rx="10" class="box"/>
+<text x="296" y="316" class="label" text-anchor="start">변경 전후 평가</text>
+<text x="296" y="344" class="note" text-anchor="start">정확도 · 지연 · 비용</text>
+<rect x="28" y="286" width="220" height="112" rx="10" class="box"/>
+<text x="44" y="316" class="label" text-anchor="start">실패 경로 조사</text>
+<text x="44" y="344" class="note" text-anchor="start">관측 결과와 원인 연결</text>
+<path d="M248 136H280" class="line"/>
+<path d="M500 136H532" class="line"/>
+<path d="M642 192V286" class="line"/>
+<path d="M532 342H500" class="line"/>
+<path d="M280 342H248" class="line"/>
+<text x="28" y="454" class="note" text-anchor="start">trace는 관측 기록이다. 평가에는 재현 가능한 환경과 검토된 정답이 더 필요하다.</text>
+</svg>
