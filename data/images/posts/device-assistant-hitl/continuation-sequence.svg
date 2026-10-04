@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="570" viewBox="0 0 780 570" role="img" aria-labelledby="hitl-title hitl-desc" data-article-diagram="true" class="article-diagram-art">
+<title id="hitl-title">사용자 답변을 대기 중인 실행과 연결한다</title><desc id="hitl-desc">사용자, 어시스턴트와 하네스, 외부 기능 사이의 후보 선택과 실행 재개 시퀀스.</desc>
+<defs><marker id="hitl-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#8ddacb"/></marker></defs>
+<style>
+.article-diagram-art text { font-family:var(--font-body,sans-serif); font-size:1rem; fill:#e7edf4; }
+.article-diagram-art .heading { font-size:1.125rem; font-weight:var(--weight-semibold,600); }
+.article-diagram-art .label { font-weight:var(--weight-semibold,600); }
+.article-diagram-art .note { font-size:.875rem; fill:#b8c4d4; }
+.article-diagram-art .box { fill:#202c3b; stroke:#617287; stroke-width:1.5; }
+.article-diagram-art .focus { fill:#163a37; stroke:#8ddacb; stroke-width:1.5; }
+.article-diagram-art .line { fill:none; stroke:#8ddacb; stroke-width:1.5; marker-end:url(#hitl-arrow); }
+.article-diagram-art .lifeline { stroke:#617287; stroke-dasharray:5 5; }
+</style><rect width="780" height="570" rx="12" fill="#121b26"/>
+<text x="28" y="38" class="heading">사용자 답변을 대기 중인 실행과 연결한다</text>
+<rect x="15" y="70" width="180" height="48" rx="8" class="box"/>
+<text x="105" y="100" class="label" text-anchor="middle">사용자</text>
+<path d="M105 118V515" class="lifeline"/>
+<rect x="300" y="70" width="180" height="48" rx="8" class="box"/>
+<text x="390" y="100" class="label" text-anchor="middle">어시스턴트 / 하네스</text>
+<path d="M390 118V515" class="lifeline"/>
+<rect x="585" y="70" width="180" height="48" rx="8" class="box"/>
+<text x="675" y="100" class="label" text-anchor="middle">외부 기능</text>
+<path d="M675 118V515" class="lifeline"/>
+<path d="M105 160H390" class="line"/>
+<text x="247.5" y="150" class="note" text-anchor="middle">메시지 전송 요청</text>
+<path d="M390 205H675" class="line"/>
+<text x="532.5" y="195" class="note" text-anchor="middle">실행 요청</text>
+<path d="M675 250H390" class="line"/>
+<text x="532.5" y="240" class="note" text-anchor="middle">후보 목록 + 실행 참조</text>
+<path d="M390 300H105" class="line"/>
+<text x="247.5" y="290" class="note" text-anchor="middle">대상 선택 질문</text>
+<path d="M105 350H390" class="line"/>
+<text x="247.5" y="340" class="note" text-anchor="middle">“첫 번째”</text>
+<path d="M390 415H675" class="line"/>
+<text x="532.5" y="405" class="note" text-anchor="middle">선택한 값 + 이전 실행 참조</text>
+<path d="M675 460H390" class="line"/>
+<text x="532.5" y="450" class="note" text-anchor="middle">실제 완료 결과</text>
+<path d="M390 505H105" class="line"/>
+<text x="247.5" y="495" class="note" text-anchor="middle">완료 안내</text>
+<text x="390" y="385" class="note" text-anchor="middle">대기 상태·질문 당시 후보 확인</text>
+<text x="28" y="550" class="note" text-anchor="start">설명용 시퀀스: 대화 세션과 외부 실행의 참조는 별도로 보존한다.</text>
+</svg>
