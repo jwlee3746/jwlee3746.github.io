@@ -1,0 +1,297 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Claude Code · 프롬프트 조립 구조",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1380,
+      810
+    ],
+    "views": [
+      {
+        "id": "system-path",
+        "label": "① system 조립",
+        "focus": [
+          "defaults",
+          "selection",
+          "system",
+          "request"
+        ],
+        "note": "기본 섹션 → 실행 모드별 선택 → 저장소 문맥과 식별 정보 → 캐시 블록"
+      },
+      {
+        "id": "message-path",
+        "label": "② messages 조립",
+        "focus": [
+          "context",
+          "history",
+          "messages",
+          "request",
+          "execution"
+        ],
+        "note": "CLAUDE.md·날짜는 user 문맥으로, 스킬·동적 알림은 대화 메시지로 들어간다."
+      },
+      {
+        "id": "tools-path",
+        "label": "③ tools와 반복",
+        "focus": [
+          "toolset",
+          "schemas",
+          "request",
+          "execution",
+          "history"
+        ],
+        "note": "도구 스키마는 별도 필드. 실행 결과를 이력에 넣고 다음 모델 요청을 만든다."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "defaults",
+      "type": "database",
+      "label": "기본 지침과 실행 설정",
+      "sublabel": "정적 규칙 · 메모리 안내 · 환경 · MCP",
+      "pos": [
+        40,
+        80
+      ],
+      "size": [
+        252,
+        78
+      ]
+    },
+    {
+      "id": "selection",
+      "type": "backend",
+      "label": "시스템 지침 선택",
+      "sublabel": "대화형 / SDK 실행 모드",
+      "pos": [
+        400,
+        80
+      ],
+      "size": [
+        252,
+        78
+      ]
+    },
+    {
+      "id": "system",
+      "type": "backend",
+      "label": "system 블록 구성",
+      "sublabel": "저장소 문맥 + 식별 정보 + 캐시 경계",
+      "pos": [
+        760,
+        80
+      ],
+      "size": [
+        252,
+        78
+      ]
+    },
+    {
+      "id": "context",
+      "type": "database",
+      "label": "프로젝트 문맥과 사용자 입력",
+      "sublabel": "CLAUDE.md · 날짜 · 입력 · 첨부",
+      "pos": [
+        40,
+        315
+      ],
+      "size": [
+        252,
+        78
+      ]
+    },
+    {
+      "id": "history",
+      "type": "backend",
+      "label": "메인 대화 루프",
+      "sublabel": "대화 이력 · 압축 · 초기 문맥 앞삽입",
+      "pos": [
+        400,
+        315
+      ],
+      "size": [
+        252,
+        78
+      ]
+    },
+    {
+      "id": "messages",
+      "type": "backend",
+      "label": "messages 정규화",
+      "sublabel": "첨부 변환 · 도구 결과 짝 맞춤",
+      "pos": [
+        760,
+        315
+      ],
+      "size": [
+        252,
+        78
+      ]
+    },
+    {
+      "id": "toolset",
+      "type": "database",
+      "label": "사용 가능한 도구 집합",
+      "sublabel": "내장 도구 · MCP · 에이전트 · 스킬",
+      "pos": [
+        400,
+        550
+      ],
+      "size": [
+        252,
+        78
+      ]
+    },
+    {
+      "id": "schemas",
+      "type": "backend",
+      "label": "tools 스키마 구성",
+      "sublabel": "설명 + input_schema · 지연 로딩",
+      "pos": [
+        760,
+        550
+      ],
+      "size": [
+        252,
+        78
+      ]
+    },
+    {
+      "id": "request",
+      "type": "external",
+      "label": "모델 API 요청",
+      "sublabel": "{ system, messages, tools }",
+      "pos": [
+        1090,
+        315
+      ],
+      "size": [
+        252,
+        78
+      ]
+    },
+    {
+      "id": "execution",
+      "type": "backend",
+      "label": "도구 실행과 결과 수집",
+      "sublabel": "tool_use → 실행 → tool_result",
+      "pos": [
+        1090,
+        705
+      ],
+      "size": [
+        252,
+        78
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "resolve-system",
+      "from": "defaults",
+      "to": "selection",
+      "label": "선택·추가"
+    },
+    {
+      "id": "pack-system",
+      "from": "selection",
+      "to": "system",
+      "label": "선택된 지침"
+    },
+    {
+      "id": "send-system",
+      "from": "system",
+      "to": "request",
+      "label": "system"
+    },
+    {
+      "id": "build-history",
+      "from": "context",
+      "to": "history",
+      "label": "입력·문맥"
+    },
+    {
+      "id": "normalize-history",
+      "from": "history",
+      "to": "messages",
+      "label": "messages"
+    },
+    {
+      "id": "send-messages",
+      "from": "messages",
+      "to": "request"
+    },
+    {
+      "id": "schema-tools",
+      "from": "toolset",
+      "to": "schemas",
+      "label": "스키마 변환"
+    },
+    {
+      "id": "send-tools",
+      "from": "schemas",
+      "to": "request",
+      "label": "tools"
+    },
+    {
+      "id": "dispatch-tools",
+      "from": "request",
+      "to": "execution",
+      "label": "tool_use",
+      "variant": "dashed",
+      "labelDy": 24
+    },
+    {
+      "id": "return-results",
+      "from": "execution",
+      "to": "history",
+      "label": "결과 → 다음 요청",
+      "variant": "dashed",
+      "fromSide": "left",
+      "toSide": "bottom",
+      "via": [
+        [
+          340,
+          744
+        ],
+        [
+          340,
+          450
+        ],
+        [
+          526,
+          450
+        ]
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "지침은 세 필드로 합류",
+      "items": [
+        "초기 프로젝트 지침은 user 문맥으로 앞삽입된다.",
+        "<system-reminder> 태그가 API의 system 역할을 부여하지는 않는다."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "캐시를 위한 분리",
+      "items": [
+        "기본 규칙 → 선택적 경계 → 세션별 섹션 순서.",
+        "동적 섹션도 대개 같은 문자열을 재사용한다."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "분석 범위",
+      "items": [
+        "관찰한 조립 구조를 역할 중심으로 일반화한 개념도.",
+        "실제 payload 캡처가 아니며 모드에 따라 달라진다."
+      ]
+    }
+  ]
+}

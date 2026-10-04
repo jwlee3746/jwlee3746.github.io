@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" data-article-diagram="true" class="article-diagram-art" width="940" height="710" viewBox="0 0 940 710" role="img" aria-labelledby="title desc">
+<title id="title">한 사용자 턴 안의 모델 재호출</title><desc id="desc">사용자, 실행 루프, 모델 API, 도구 사이의 요청과 반환. 도구 결과를 받은 실행 루프는 누적 이력을 다시 전송한다.</desc>
+<style>
+.article-diagram-art text{font-family:var(--font-body,sans-serif);font-size:1rem;fill:#e6edf3}
+.article-diagram-art .heading{font-size:1.125rem;font-weight:600}
+.article-diagram-art .label{font-weight:600}
+.article-diagram-art .note{font-size:.875rem;fill:#b4c3d5}
+.article-diagram-art .edge{fill:none;stroke:#9aadbf;stroke-width:2;marker-end:url(#arrow)}
+.article-diagram-art .return{stroke:#c4a5ff;stroke-dasharray:7 5;marker-end:url(#return-arrow)}
+.article-diagram-art .life{stroke:#64748b;stroke-dasharray:5 5}
+</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#9aadbf"/></marker><marker id="return-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#c4a5ff"/></marker></defs>
+<rect width="940" height="710" rx="16" fill="#111c2b"/>
+<text x="28" y="34" class="heading">한 사용자 턴 ≠ 한 API 호출</text>
+<rect x="30" y="60" width="160" height="52" rx="9" fill="#12352f" stroke="#54cbb1"/><text x="110" y="92" text-anchor="middle" class="label">사용자</text><path d="M110 112V657" class="life"/>
+<rect x="270" y="60" width="160" height="52" rx="9" fill="#12352f" stroke="#54cbb1"/><text x="350" y="92" text-anchor="middle" class="label">실행 루프</text><path d="M350 112V657" class="life"/>
+<rect x="540" y="60" width="160" height="52" rx="9" fill="#12352f" stroke="#54cbb1"/><text x="620" y="92" text-anchor="middle" class="label">모델 API</text><path d="M620 112V657" class="life"/>
+<rect x="750" y="60" width="160" height="52" rx="9" fill="#12352f" stroke="#54cbb1"/><text x="830" y="92" text-anchor="middle" class="label">도구</text><path d="M830 112V657" class="life"/>
+<path d="M110 166H350" class="edge"/>
+<text x="230.0" y="154" text-anchor="middle" class="note">질문 1</text>
+<path d="M350 231H620" class="edge"/>
+<text x="485.0" y="219" text-anchor="middle" class="note">요청 A: 지침 + 도구 + 질문</text>
+<path d="M620 296H350" class="edge return"/>
+<text x="485.0" y="284" text-anchor="middle" class="note">tool_use</text>
+<path d="M350 361H830" class="edge"/>
+<text x="590.0" y="349" text-anchor="middle" class="note">도구 실행</text>
+<path d="M830 426H350" class="edge return"/>
+<text x="590.0" y="414" text-anchor="middle" class="note">tool_result</text>
+<path d="M350 491H620" class="edge"/>
+<text x="485.0" y="479" text-anchor="middle" class="note">요청 B: 기존 이력 + 호출 + 결과</text>
+<path d="M620 556H350" class="edge return"/>
+<text x="485.0" y="544" text-anchor="middle" class="note">최종 답변</text>
+<path d="M350 621H110" class="edge return"/>
+<text x="230.0" y="609" text-anchor="middle" class="note">사용자에게 답변</text>
+<text x="28" y="690" class="note">요청 B도 전체 payload를 보낸다. 동일한 앞부분은 서버 캐시로 재사용할 수 있다.</text></svg>

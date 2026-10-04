@@ -1,0 +1,204 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Claude Code · 실행 토폴로지",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1330,
+      760
+    ]
+  },
+  "components": [
+    {
+      "id": "repl",
+      "type": "frontend",
+      "label": "대화형 진입점",
+      "sublabel": "지침 우선순위 선택",
+      "pos": [
+        40,
+        80
+      ],
+      "size": [
+        224,
+        76
+      ]
+    },
+    {
+      "id": "sdk",
+      "type": "frontend",
+      "label": "SDK / 비대화형 진입점",
+      "sublabel": "기본·사용자 지침 조립",
+      "pos": [
+        40,
+        330
+      ],
+      "size": [
+        224,
+        76
+      ]
+    },
+    {
+      "id": "main-loop",
+      "type": "backend",
+      "label": "메인 대화 루프",
+      "sublabel": "지침 · 문맥 · 도구 · 이력",
+      "pos": [
+        400,
+        80
+      ],
+      "size": [
+        224,
+        76
+      ]
+    },
+    {
+      "id": "api-layer",
+      "type": "external",
+      "label": "공통 모델 API 계층",
+      "sublabel": "system / messages / tools 패킹",
+      "pos": [
+        1060,
+        80
+      ],
+      "size": [
+        224,
+        76
+      ]
+    },
+    {
+      "id": "tools-run",
+      "type": "backend",
+      "label": "도구 실행 경로",
+      "sublabel": "내장 도구 · MCP · 스킬 · 에이전트",
+      "pos": [
+        400,
+        330
+      ],
+      "size": [
+        224,
+        76
+      ]
+    },
+    {
+      "id": "agent-tool",
+      "type": "backend",
+      "label": "하위 에이전트 실행기",
+      "sublabel": "에이전트별 지침과 도구 선택",
+      "pos": [
+        730,
+        330
+      ],
+      "size": [
+        224,
+        76
+      ]
+    },
+    {
+      "id": "child-loop",
+      "type": "backend",
+      "label": "하위 에이전트 루프",
+      "sublabel": "별도 이력 · 모델 · 도구 문맥",
+      "pos": [
+        1060,
+        330
+      ],
+      "size": [
+        224,
+        76
+      ]
+    },
+    {
+      "id": "skill-body",
+      "type": "database",
+      "label": "스킬 본문 확장",
+      "sublabel": "SKILL.md → user 메시지",
+      "pos": [
+        400,
+        650
+      ],
+      "size": [
+        224,
+        76
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "repl-query",
+      "from": "repl",
+      "to": "main-loop",
+      "label": "선택한 지침"
+    },
+    {
+      "id": "sdk-query",
+      "from": "sdk",
+      "to": "main-loop",
+      "label": "조립한 지침"
+    },
+    {
+      "id": "main-api",
+      "from": "main-loop",
+      "to": "api-layer",
+      "label": "모델 호출"
+    },
+    {
+      "id": "query-tools",
+      "from": "main-loop",
+      "to": "tools-run",
+      "label": "tool_use 실행",
+      "labelDy": 24
+    },
+    {
+      "id": "tools-agent",
+      "from": "tools-run",
+      "to": "agent-tool",
+      "label": "작업 위임"
+    },
+    {
+      "id": "agent-query",
+      "from": "agent-tool",
+      "to": "child-loop",
+      "label": "루프 시작"
+    },
+    {
+      "id": "child-api",
+      "from": "child-loop",
+      "to": "api-layer",
+      "label": "같은 패킹 경로"
+    },
+    {
+      "id": "tools-skill",
+      "from": "tools-run",
+      "to": "skill-body",
+      "label": "Skill 호출",
+      "labelDy": 24
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "호출 방향을 표시한 구조",
+      "items": [
+        "메인·하위 에이전트는 공통 실행 루프와 API 계층을 사용한다.",
+        "도구 결과는 호출한 루프로 돌아가 다음 요청에 포함된다."
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "독립 실행과 부모 문맥 상속",
+      "items": [
+        "독립 실행: 전용 지침 + 환경 정보, 별도 작업 메시지.",
+        "부모 문맥 상속: 부모 지침·이력·도구 집합을 전달한다."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "스킬과 실행 모드",
+      "items": [
+        "스킬 본문은 user 메시지로 확장되며 별도 실행 분기도 있다.",
+        "대화형과 SDK 실행 모드는 지침 선택 규칙이 다를 수 있다."
+      ]
+    }
+  ]
+}

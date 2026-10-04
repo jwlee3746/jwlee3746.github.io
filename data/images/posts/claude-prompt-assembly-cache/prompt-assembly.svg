@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" data-article-diagram="true" class="article-diagram-art" width="1380" height="810" viewBox="0 0 1380 810" role="img" aria-labelledby="title desc">
+<title id="title">Claude Code · 프롬프트 조립 구조</title><desc id="desc">세 개의 요청 필드로 합류하는 조립 구조와 실행 관계를 역할 중심으로 표시했다. 점선은 결과가 대화에 돌아가는 경로다.</desc>
+<style>
+.article-diagram-art text{font-family:var(--font-body,sans-serif);font-size:1rem;fill:#e6edf3}
+.article-diagram-art .heading{font-size:1.125rem;font-weight:600}
+.article-diagram-art .label{font-weight:600}
+.article-diagram-art .note{font-size:.875rem;fill:#b4c3d5}
+.article-diagram-art .edge{fill:none;stroke:#9aadbf;stroke-width:2;marker-end:url(#arrow)}
+.article-diagram-art .return{stroke:#c4a5ff;stroke-dasharray:7 5;marker-end:url(#return-arrow)}
+.article-diagram-art .life{stroke:#64748b;stroke-dasharray:5 5}
+</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#9aadbf"/></marker><marker id="return-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#c4a5ff"/></marker></defs>
+<rect width="1380" height="810" rx="16" fill="#111c2b"/>
+<text x="40" y="36" class="heading">Claude Code · 프롬프트 조립 구조</text>
+<path d="M 292 119 L 400 119" class="edge"/>
+<rect x="306.3" y="95.0" width="79.4" height="22" rx="4" fill="#111c2b"/>
+<text x="346.0" y="111.0" text-anchor="middle" class="note">선택·추가</text>
+<path d="M 652 119 L 760 119" class="edge"/>
+<rect x="659.3" y="95.0" width="93.4" height="22" rx="4" fill="#111c2b"/>
+<text x="706.0" y="111.0" text-anchor="middle" class="note">선택된 지침</text>
+<path d="M 1012 119 L 1043 119 Q 1051 119 1051 127 L 1051 332 Q 1051 340 1059 340 L 1090 340" class="edge"/>
+<rect x="1020.8" y="205.5" width="60.4" height="22" rx="4" fill="#111c2b"/>
+<text x="1051.0" y="221.5" text-anchor="middle" class="note">system</text>
+<path d="M 292 354 L 400 354" class="edge"/>
+<rect x="306.3" y="330.0" width="79.4" height="22" rx="4" fill="#111c2b"/>
+<text x="346.0" y="346.0" text-anchor="middle" class="note">입력·문맥</text>
+<path d="M 652 354 L 760 354" class="edge"/>
+<rect x="668.4" y="330.0" width="75.19999999999999" height="22" rx="4" fill="#111c2b"/>
+<text x="706.0" y="346.0" text-anchor="middle" class="note">messages</text>
+<path d="M 1012 354 L 1090 354" class="edge"/>
+<path d="M 652 589 L 760 589" class="edge"/>
+<rect x="659.3" y="565.0" width="93.4" height="22" rx="4" fill="#111c2b"/>
+<text x="706.0" y="581.0" text-anchor="middle" class="note">스키마 변환</text>
+<path d="M 1012 589 L 1043 589 Q 1051 589 1051 581 L 1051 376 Q 1051 368 1059 368 L 1090 368" class="edge"/>
+<rect x="1024.5" y="454.5" width="53.0" height="22" rx="4" fill="#111c2b"/>
+<text x="1051.0" y="470.5" text-anchor="middle" class="note">tools</text>
+<path d="M 1216 393 L 1216 705" class="edge return"/>
+<rect x="1178.4" y="393.0" width="75.19999999999999" height="22" rx="4" fill="#111c2b"/>
+<text x="1216.0" y="409.0" text-anchor="middle" class="note">tool_use</text>
+<path d="M 1090 744 L 348 744 Q 340 744 340 736 L 340 458 Q 340 450 348 450 L 518 450 Q 526 450 526 442 L 526 393" class="edge return"/>
+<rect x="275.2" y="573.0" width="129.6" height="22" rx="4" fill="#111c2b"/>
+<text x="340.0" y="589.0" text-anchor="middle" class="note">결과 → 다음 요청</text>
+<rect x="40" y="80" width="252" height="78" rx="10" fill="#28213f" stroke="#ac8df2" stroke-width="1.8"/>
+<text x="166.0" y="108" text-anchor="middle" class="label">기본 지침과 실행 설정</text>
+<text x="166.0" y="131" text-anchor="middle" class="note">정적 규칙 · 메모리 안내 · 환경</text>
+<text x="166.0" y="149" text-anchor="middle" class="note">· MCP</text>
+<rect x="400" y="80" width="252" height="78" rx="10" fill="#12352f" stroke="#54cbb1" stroke-width="1.8"/>
+<text x="526.0" y="108" text-anchor="middle" class="label">시스템 지침 선택</text>
+<text x="526.0" y="131" text-anchor="middle" class="note">대화형 / SDK 실행 모드</text>
+<rect x="760" y="80" width="252" height="78" rx="10" fill="#12352f" stroke="#54cbb1" stroke-width="1.8"/>
+<text x="886.0" y="108" text-anchor="middle" class="label">system 블록 구성</text>
+<text x="886.0" y="131" text-anchor="middle" class="note">저장소 문맥 + 식별 정보 + 캐시</text>
+<text x="886.0" y="149" text-anchor="middle" class="note">경계</text>
+<rect x="40" y="315" width="252" height="78" rx="10" fill="#28213f" stroke="#ac8df2" stroke-width="1.8"/>
+<text x="166.0" y="343" text-anchor="middle" class="label">프로젝트 문맥과 사용자 입력</text>
+<text x="166.0" y="366" text-anchor="middle" class="note">CLAUDE.md · 날짜 · 입력 · 첨부</text>
+<rect x="400" y="315" width="252" height="78" rx="10" fill="#12352f" stroke="#54cbb1" stroke-width="1.8"/>
+<text x="526.0" y="343" text-anchor="middle" class="label">메인 대화 루프</text>
+<text x="526.0" y="366" text-anchor="middle" class="note">대화 이력 · 압축 · 초기 문맥</text>
+<text x="526.0" y="384" text-anchor="middle" class="note">앞삽입</text>
+<rect x="760" y="315" width="252" height="78" rx="10" fill="#12352f" stroke="#54cbb1" stroke-width="1.8"/>
+<text x="886.0" y="343" text-anchor="middle" class="label">messages 정규화</text>
+<text x="886.0" y="366" text-anchor="middle" class="note">첨부 변환 · 도구 결과 짝 맞춤</text>
+<rect x="400" y="550" width="252" height="78" rx="10" fill="#28213f" stroke="#ac8df2" stroke-width="1.8"/>
+<text x="526.0" y="578" text-anchor="middle" class="label">사용 가능한 도구 집합</text>
+<text x="526.0" y="601" text-anchor="middle" class="note">내장 도구 · MCP · 에이전트 ·</text>
+<text x="526.0" y="619" text-anchor="middle" class="note">스킬</text>
+<rect x="760" y="550" width="252" height="78" rx="10" fill="#12352f" stroke="#54cbb1" stroke-width="1.8"/>
+<text x="886.0" y="578" text-anchor="middle" class="label">tools 스키마 구성</text>
+<text x="886.0" y="601" text-anchor="middle" class="note">설명 + input_schema · 지연 로딩</text>
+<rect x="1090" y="315" width="252" height="78" rx="10" fill="#293245" stroke="#a2b1c5" stroke-width="1.8"/>
+<text x="1216.0" y="343" text-anchor="middle" class="label">모델 API 요청</text>
+<text x="1216.0" y="366" text-anchor="middle" class="note">{ system, messages, tools }</text>
+<rect x="1090" y="705" width="252" height="78" rx="10" fill="#12352f" stroke="#54cbb1" stroke-width="1.8"/>
+<text x="1216.0" y="733" text-anchor="middle" class="label">도구 실행과 결과 수집</text>
+<text x="1216.0" y="756" text-anchor="middle" class="note">tool_use → 실행 → tool_result</text>
+</svg>
