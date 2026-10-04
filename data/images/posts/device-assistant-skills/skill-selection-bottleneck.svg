@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="306" viewBox="0 0 780 306" role="img" aria-labelledby="selection-title selection-desc" data-article-diagram="true" class="article-diagram-art">
+<title id="selection-title">상세 지침에 도달하려면 먼저 Skill을 선택해야 한다</title><desc id="selection-desc">요청에서 Skill 선택을 거쳐 상세 레시피를 읽고 실행한다. 하위 에이전트 경계가 겹치면 본문 로드 이전의 선택이 흔들린다.</desc>
+<defs><marker id="selection-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#8ddacb"/></marker></defs>
+<style>
+.article-diagram-art text { font-family:var(--font-body,sans-serif); font-size:1rem; fill:#e7edf4; }
+.article-diagram-art .heading { font-size:1.125rem; font-weight:var(--weight-semibold,600); }
+.article-diagram-art .label { font-weight:var(--weight-semibold,600); }
+.article-diagram-art .note { font-size:.875rem; fill:#b8c4d4; }
+.article-diagram-art .box { fill:#202c3b; stroke:#617287; stroke-width:1.5; }
+.article-diagram-art .focus { fill:#163a37; stroke:#8ddacb; stroke-width:1.5; }
+.article-diagram-art .warn { fill:#3a3023; stroke:#e3b66c; stroke-width:1.5; }
+.article-diagram-art .line { fill:none; stroke:#8ddacb; stroke-width:1.5; marker-end:url(#selection-arrow); }
+</style><rect width="780" height="306" rx="12" fill="#121b26"/>
+<text x="28" y="38" class="heading">상세 지침에 도달하려면 먼저 Skill을 선택해야 한다</text>
+<rect x="28" y="85" width="148" height="110" rx="10" class="box"/>
+<text x="44" y="115" class="label" text-anchor="start">사용자 요청</text>
+<text x="44" y="143" class="note" text-anchor="start">의도 · 대상</text>
+<rect x="204" y="85" width="174" height="110" rx="10" class="warn"/>
+<text x="220" y="115" class="label" text-anchor="start">읽을 Skill 선택</text>
+<text x="220" y="143" class="note" text-anchor="start">이름 · 짧은 설명</text>
+<text x="220" y="165" class="note" text-anchor="start">경계가 겹치면 모호</text>
+<rect x="406" y="85" width="174" height="110" rx="10" class="box"/>
+<text x="422" y="115" class="label" text-anchor="start">상세 본문 로드</text>
+<text x="422" y="143" class="note" text-anchor="start">레시피 · 행동 지침</text>
+<text x="422" y="165" class="note" text-anchor="start">지원 범위 · 제약</text>
+<rect x="608" y="85" width="144" height="110" rx="10" class="box"/>
+<text x="624" y="115" class="label" text-anchor="start">도구 실행</text>
+<text x="624" y="143" class="note" text-anchor="start">절차 적용</text>
+<text x="624" y="165" class="note" text-anchor="start">결과 확인</text>
+<path d="M176 140H204" class="line"/>
+<path d="M378 140H406" class="line"/>
+<path d="M580 140H608" class="line"/>
+<text x="28" y="245" class="note" text-anchor="start">선택을 잘못하면 필요한 본문의 레시피와 행동 규칙도 읽히지 않는다.</text>
+<text x="28" y="273" class="note" text-anchor="start">본문을 정교하게 만드는 것과, 읽을 본문을 찾는 것은 별도의 문제다.</text>
+</svg>
