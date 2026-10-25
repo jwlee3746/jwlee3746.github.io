@@ -9,7 +9,7 @@
     "tool-calling",
     "Re-Act"
   ],
-  "impact": "tool-calling Re-Act 구조 제안·PoC 검증부터 제품 개발용 실행 런타임의 초기 구현·확장까지 담당",
+  "impact": "tool-calling Re-Act 구조를 제안·PoC로 검증하고, 제품 개발용 런타임 구현·확장에 참여",
   "points": [
     {
       "text": "fine-tuned LLM planner가 생성한 계획에 따라 실행하던 흐름을 개선하기 위해, 도구 결과를 보고 다음 행동을 결정하는 **tool-calling Re-Act 구조를 제안**",
@@ -24,7 +24,7 @@
       ]
     },
     {
-      "text": "Action Chaining의 **cross-tool result reference**를 설계·반영해 선행 도구의 결과를 후속 도구가 원본 참조로 사용하도록 연결"
+      "text": "후속 도구 호출에서 수행할 동작과 선행 결과 참조를 분리하도록 **결과 전달 규칙·프롬프트를 설계·정비**"
     },
     {
       "text": "방대하고 복잡한 Skill 지침을 독립 context에서 처리하도록 **subagent 위임 실행 경로**를 구현",
