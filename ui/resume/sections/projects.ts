@@ -1,10 +1,11 @@
 import type { Group, Project } from '../../../scripts/resume/data.ts';
 import { escapeHtml as e, formatPeriod } from '../../shared/html.ts';
+import { renderEmphasis } from '../text.ts';
 
 function renderPoint(point: Project['points'][number]): string {
   const label = point.label ? `<span class="bullet-label">${e(point.label)}</span> — ` : '';
-  const children = point.children ? `<ul>${point.children.map(child => `<li>${e(child)}</li>`).join('')}</ul>` : '';
-  return `          <li>${label}${e(point.text)}${children}</li>`;
+  const children = point.children ? `<ul>${point.children.map(child => `<li>${renderEmphasis(child)}</li>`).join('')}</ul>` : '';
+  return `          <li>${label}${renderEmphasis(point.text)}${children}</li>`;
 }
 
 function renderProject(project: Project): string {

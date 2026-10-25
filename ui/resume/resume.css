@@ -76,6 +76,8 @@ ul { margin: 9px 0 0; padding-left: 18px; font-size: 10.5pt; line-height: 1.7; c
 li { orphans: 3; widows: 3; }
 .history-period-title { margin: 16px 0 0; font-size: 10.5pt; font-weight: 600; line-height: 1.6; break-after: avoid; }
 .history-period ul { margin-top: 5px; }
+.history-details { margin: 7px 0 0; font-size: 9.5pt; color: var(--dim); }
+.history-details a { text-decoration: underline; text-underline-offset: 3px; }
 
 .project-group { margin-top: 28px; }
 .project-group + .project-group { margin-top: 48px; }
@@ -107,6 +109,7 @@ li { orphans: 3; widows: 3; }
 .project-points li + li { margin-top: 7px; }
 .project-points ul { margin-top: 5px; font-size: inherit; line-height: inherit; }
 .project-points ul li + li { margin-top: 4px; }
+.project-points strong { font-weight: 600; color: var(--ink); }
 .bullet-label { color: var(--ink); font-weight: 600; }
 
 /* ── 인쇄 ─────────────────────────────────── */
@@ -125,6 +128,7 @@ li { orphans: 3; widows: 3; }
   .row + .row { margin-top: 20px; }
   .what { font-size: 11.5pt; }
   .history-period-title { margin-top: 10px; font-size: 9.5pt; }
+  .history-details { margin-top: 5px; font-size: 8.8pt; }
   ul { margin-top: 7px; font-size: 9.5pt; line-height: 1.55; }
   .project-group { margin-top: 18px; break-inside: auto; page-break-inside: auto; }
   .project-group + .project-group { margin-top: 26px; }
