@@ -10,7 +10,7 @@
     "KV Cache",
     "DI"
   ],
-  "impact": "모델 연동·provider 분리·DI 정책과 sampling 설정을 담당하고, 전체 변경의 KV 캐시 적중률 개선에 기여",
+  "impact": "LLM 연동과 provider 분리 정책을 구현하고, sampling 설정을 정비해 평가 재현성을 보완",
   "points": [
     {
       "text": "LLM을 기존 에이전트의 모델 호출 구조에 연동"
