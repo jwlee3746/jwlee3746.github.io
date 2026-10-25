@@ -136,11 +136,6 @@ li { orphans: 3; widows: 3; }
   .group-title { font-size: 12.5pt; }
   .group-desc { font-size: 8.8pt; }
   .project { grid-template-columns: 190px 1fr; gap: 24px; padding: 14px 0 18px; }
-  /* 첫 프로젝트는 용지 폭을 활용해 첫 페이지에서 시작하고 문장 단위로 나눈다. */
-  .project:first-of-type { display: block; break-inside: auto; }
-  .project:first-of-type > header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 5px 16px; margin-bottom: 9px; }
-  .project:first-of-type .project-title { flex-basis: 100%; }
-  .project:first-of-type .project-date, .project:first-of-type .project-stack { margin: 0; }
   .project > header, .project-points > li { break-inside: avoid; }
   .project-title { font-size: 11pt; }
   .project-impact { font-size: 10.5pt; line-height: 1.5; break-after: avoid; }
