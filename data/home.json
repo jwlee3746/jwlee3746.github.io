@@ -1,8 +1,8 @@
 {
   "site": {
     "title": "이재원 · ML 엔지니어",
-    "description": "이재원 (Jaewon Lee) — 삼성전자 MX사업부 Language AI. Bixby LLM 모델 개발과 에이전틱 플랫폼 개발.",
-    "socialDescription": "삼성전자 MX사업부 Language AI. LLM을 실제 제품에 태우는 일을 합니다.",
+    "description": "이재원 (Jaewon Lee) — 삼성전자 MX사업부 Language AI. Bixby LLM 에이전트 실행 구조·평가 플랫폼·평가 기반 개선 도구 개발.",
+    "socialDescription": "Bixby LLM 에이전트의 실행 구조와 평가·개선 도구를 개발합니다.",
     "url": "https://jwlee3746.github.io/",
     "schema": {
       "@context": "https://schema.org",
@@ -87,7 +87,7 @@
     "name": "이재원",
     "nameEn": "Jaewon Lee",
     "role": "ML 엔지니어 · 삼성전자 MX사업부 Language AI",
-    "tagline": "LLM을 실제 제품에 태우는 일을 합니다.",
+    "tagline": "Bixby LLM 에이전트와 평가·개선 도구를 개발합니다.",
     "github": "https://github.com/jwlee3746",
     "avatar": "/data/images/profile/avatar.jpg",
     "avatarAlt": "이재원 프로필 사진"
@@ -96,13 +96,13 @@
     "about": [
       "삼성전자 MX사업부 Language AI 팀에서 ",
       {
-        "strong": "Bixby의 LLM 모델"
+        "strong": "Bixby LLM 에이전트의 실행 구조"
       },
-      "과 ",
+      "와 ",
       {
-        "strong": "에이전틱 플랫폼"
+        "strong": "평가·개선 도구"
       },
-      "을 개발합니다. 상위 에이전트의 라우팅 경계를 재현 가능하게 평가하고, 실패 사례를 경계 보강과 회귀 검증으로 되돌리는 evaluation-driven refinement loop를 설계했습니다."
+      "를 개발합니다. 실행 구조 제안·PoC 검증과 제품 개발용 런타임 구현에 참여하고, 평가 결과를 KB·도구 설명 개선으로 연결합니다."
     ],
     "headings": {
       "about": "About",
@@ -114,8 +114,17 @@
       {
         "date": "2024.07 — 현재",
         "title": "ML 엔지니어 · 삼성전자 MX사업부 Language AI",
-        "description": "라우팅 TC로 상위 에이전트의 decision boundary를 평가하고, 실패 버킷 분석과 개선 대상·반대 영역 회귀 검증을 통해 라우팅 설명과 정책을 보강하는 반복 루프를 설계했습니다.",
-        "href": "https://www.linkedin.com/in/jwlee3746/"
+        "href": "https://www.linkedin.com/in/jwlee3746/",
+        "highlights": [
+          {
+            "title": "2026 · Bixby LLM 에이전트 플랫폼 개발",
+            "description": "Bixby 에이전트 실행 구조 제안·PoC 검증과 제품 개발용 런타임 구현·확장에 참여했습니다. 평가 플랫폼·개발자 도구·평가 기반 개선 루프를 구축하고, 모델 호출 구성·프롬프트를 정비했습니다."
+          },
+          {
+            "title": "2024–2025 · LLM 평가·품질 대응",
+            "description": "2025년 LLM 비교 평가로 모델 도입 판단을 지원하고 Locale KB 도입을 주도했으며, Action Chaining 품질 대응에 참여했습니다."
+          }
+        ]
       },
       {
         "date": "2020 — 2023",
@@ -125,89 +134,93 @@
       {
         "date": "2017.03 — 2024.02",
         "title": "KAIST 전산학부 학사",
-        "description": "학부 과정 중 metric learning·준지도 학습 연구 참여.",
         "id": "education",
         "kind": "Education"
       }
     ],
     "projects": [
       {
-        "date": "2024.07 — 현재",
-        "category": "Routing Evaluation",
-        "title": "상위 에이전트 라우팅 경계 평가·보강 루프",
-        "impact": "라우팅 TC를 결정론적으로 평가하고, 경계 실패를 분석해 설명·정책을 보강한 뒤 반대 방향 회귀까지 검증하는 루프를 구축했습니다.",
+        "date": "2026.03 — 현재",
+        "category": "Agent Runtime",
+        "title": "Bixby 상위 LLM 에이전트 설계·개발",
+        "impact": "도구 결과에 따라 다음 행동을 결정하는 tool-calling Re-Act 구조를 제안·검증.",
         "points": [
           {
-            "label": "경계 평가",
-            "text": "실제 action과 기대 routing을 비교하고, 정답 영역 이탈과 다른 영역의 과잉 흡수를 양방향으로 분석했습니다."
-          },
-          {
-            "label": "보강 루프",
-            "text": "실패를 후보 미노출·기능 미노출·후보 내 오선택으로 분해하고, 동일 후보군의 before/after 평가로 기능 설명·경계 지식·도구 계약 변경 효과를 검증했습니다."
-          },
-          {
-            "label": "재현성",
-            "text": "JSON Schema·CI preflight, deterministic scoring, 실행 조건과 revision을 포함한 artifact로 변경 전후 비교 기준을 고정했습니다."
-          },
-          {
-            "label": "확장 과제",
-            "text": "현재 범위는 라우팅 판단 회귀이며, 실제 chaining·자유로운 multi-step trajectory·stateful outcome 평가는 후속 과제로 구분했습니다."
-          }
-        ],
-        "links": []
-      },
-      {
-        "date": "2026.03 — 2026.07",
-        "category": "Server-side Agent PoC",
-        "title": "OpenClaw 기반 서버형 Bixby 에이전트 PoC",
-        "impact": "디바이스 어시스턴트 기능을 서버형 에이전트 실행 구조에 연결하고, 요청 라우팅부터 도구 실행·후속 대화까지 end-to-end로 검증했습니다.",
-        "points": [
-          {
-            "label": "Agent 라우팅",
-            "text": "Skill 정의를 바탕으로 요청에 적합한 Agent를 선택하고 실행 query를 구성하는 흐름을 설계했습니다."
-          },
-          {
-            "label": "도구 연동",
-            "text": "Bixby 기능을 OpenClaw tool interface로 연결하고 세션 문맥을 유지하는 요청·응답 파이프라인을 구현했습니다."
-          },
-          {
-            "label": "멀티턴 처리",
-            "text": "확인과 값 선택이 필요한 대화에서 이전 요청을 참조해 실행을 이어가는 흐름을 구현했습니다."
-          },
-          {
-            "label": "안정성·관측성",
-            "text": "실행 이벤트 정규화, 비정상 응답 방어, URL·이미지 데이터 마스킹과 도구 호출 로깅을 적용했습니다."
-          },
-          {
-            "label": "실행 환경",
-            "text": "Docker Compose 기반 서버 실행·배포 구성과 Agent Skill 정의 주입 구조를 구축했습니다."
-          }
-        ],
-        "links": []
-      },
-      {
-        "date": "2024.07 — 현재",
-        "category": "Agentic Platform",
-        "title": "제품 에이전트 도구 실행·관측 플랫폼",
-        "impact": "서로 다른 모델 제공자와 도구 실행을 공통 계층으로 묶고, 요청부터 실행 결과까지 추적 가능한 제품 기반을 구축했습니다.",
-        "points": [
-          {
-            "label": "실행 구조",
-            "text": "에이전트의 요청 해석과 도구 호출 흐름을 설계하고, 미들웨어로 실행 정책과 예외 처리를 공통화했습니다."
-          },
-          {
-            "label": "Provider 호환",
-            "text": "모델 제공자별 차이를 공통 설정과 adapter 경계로 분리해 제품 코드의 결합도를 낮췄습니다."
-          },
-          {
-            "label": "관측·운영",
-            "text": "Langfuse와 OpenTelemetry를 연결해 요청·모델 판단·도구 실행을 다시 확인할 수 있게 하고, 프롬프트·하네스 전략을 함께 운영했습니다."
+            "text": "제품 개발용 런타임 구현에 참여하고, Bixby의 실행 흐름·도구·미들웨어를 구현·확장."
           }
         ],
         "links": [
           {
-            "label": "공개 플레이북 보기",
-            "href": "https://github.com/jwlee3746/jw-agent-playbook"
+            "label": "이력서에서 상세 보기",
+            "href": "/resume/#project-agent-runtime"
+          }
+        ]
+      },
+      {
+        "date": "2026.05 — 현재",
+        "category": "Agent Evaluation",
+        "title": "에이전트 평가 플랫폼·개발자 도구 구축",
+        "impact": "도구 선택·회귀 평가를 개발자의 품질 확인·정기 평가에 연결.",
+        "points": [
+          {
+            "text": "평가기·실행 및 결과 인터페이스를 개발하고, IDE 개발팀과 CI·IDE 평가 도구를 제공하며 다국어 TC 전환·확장을 담당."
+          }
+        ],
+        "links": [
+          {
+            "label": "이력서에서 상세 보기",
+            "href": "/resume/#project-evaluation-platform"
+          }
+        ]
+      },
+      {
+        "date": "2026.07 — 2026.09",
+        "category": "Evaluation-driven Refinement",
+        "title": "평가 기반 도구 설명·KB 개선안 자동 생성·검증",
+        "impact": "Codex 기반 KB·도구 설명 개선안 자동 생성·검증으로 라우팅 정확도 개선에 기여.",
+        "points": [
+          {
+            "text": "기존 정답의 회귀를 확인해 최종 반영을 판단하고, 후속 도구 확장은 개발자 품질 이슈 대응용 triage 서비스로 이관."
+          }
+        ],
+        "links": [
+          {
+            "label": "이력서에서 상세 보기",
+            "href": "/resume/#project-evaluation-driven-refinement"
+          }
+        ]
+      },
+      {
+        "date": "2026.08 — 현재",
+        "category": "Model Integration",
+        "title": "LLM 연동·KV 캐시 활용 개선",
+        "impact": "LLM을 에이전트에 연동하고, 캐시 간섭을 줄이기 위한 provider 분리 정책을 구현.",
+        "points": [
+          {
+            "text": "DI 바인딩으로 분리 정책을 강제하고, sampling 설정의 실제 전달을 보정해 평가 재현성을 보완."
+          }
+        ],
+        "links": [
+          {
+            "label": "이력서에서 상세 보기",
+            "href": "/resume/#project-model-integration"
+          }
+        ]
+      },
+      {
+        "date": "2026.10 — 현재",
+        "category": "Prompt Design",
+        "title": "Bixby 에이전트 판단·실행 지침 재설계",
+        "impact": "판단 흐름에 맞춰 system prompt를 재구성하고 지침의 중복·충돌을 정리.",
+        "points": [
+          {
+            "text": "고정 prefix·가변 context 구분을 유지하며 조립 코드를 정비해 한국어 기본 프롬프트 분량을 축소."
+          }
+        ],
+        "links": [
+          {
+            "label": "이력서에서 상세 보기",
+            "href": "/resume/#project-prompt-design"
           }
         ]
       }

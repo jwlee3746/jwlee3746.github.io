@@ -12,7 +12,7 @@ function renderProject(project: Project): string {
   const title = project.url
     ? `<a href="${e(project.url)}" target="_blank" rel="noopener">${e(project.title)}</a>`
     : e(project.title);
-  return `    <article class="project">
+  return `    <article class="project" id="project-${e(project.id)}">
       <header>
         <h4 class="project-title">${title}</h4>
         <p class="project-date">${formatPeriod(project)}</p>
