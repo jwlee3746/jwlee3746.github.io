@@ -142,6 +142,16 @@ main { gap: var(--section-gap); }
   line-height: var(--line-height-body);
 }
 
+.timeline-period-title {
+  margin: 1rem 0 0;
+  color: var(--color-heading);
+  font-size: .93rem;
+  font-weight: var(--weight-semibold);
+  line-height: 1.5;
+}
+
+.timeline-period .timeline-desc { margin-top: .4rem; }
+
 .project-list { border-top: 1px solid var(--color-border); }
 
 .project-row {

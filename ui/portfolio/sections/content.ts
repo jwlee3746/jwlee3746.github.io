@@ -9,12 +9,14 @@ export function renderContent(data: Portfolio): string {
   section('experience', `<div class="timeline">${data.experience.map(entry => `<article class="timeline-entry"${entry.id ? ` id="${e(entry.id)}"` : ''}>
 <div class="timeline-date">${e(entry.date)}</div><div>
 <h3 class="timeline-title">${entry.href ? externalLink(entry.href, entry.title) : e(entry.title)}${entry.kind ? ` <span class="timeline-kind">${e(entry.kind)}</span>` : ''}</h3>
-<p class="timeline-desc">${e(entry.description)}</p></div></article>`).join('')}</div>`) +
+${entry.description ? `<p class="timeline-desc">${e(entry.description)}</p>` : ''}${entry.highlights?.map(highlight => `<section class="timeline-period">
+<h4 class="timeline-period-title">${e(highlight.title)}</h4>
+<p class="timeline-desc">${e(highlight.description)}</p></section>`).join('') ?? ''}</div></article>`).join('')}</div>`) +
   section('projects', `<div class="project-list">${data.projects.map(project => `<article class="project-row">
 <div class="project-meta"><strong>${e(project.date)}</strong>${e(project.category)}</div><div>
 <h3 class="project-title">${e(project.title)}</h3>
 <p class="project-impact">${e(project.impact)}</p>
-<ul class="project-points">${project.points.map(point => `<li><strong>${e(point.label)}</strong> — ${e(point.text)}</li>`).join('')}</ul>
+<ul class="project-points">${project.points.map(point => `<li>${point.label ? `<strong>${e(point.label)}</strong> — ` : ''}${e(point.text)}</li>`).join('')}</ul>
 ${project.links.length ? `<div class="project-links">${project.links.map(link => externalLink(link.href, link.label)).join('\n')}</div>` : ""}
 </div></article>`).join('')}</div>`) +
   section('writing', `<div class="post-list">${data.posts.map(post => `<a class="post-row" href="${e(post.href)}" target="_blank" rel="noopener">

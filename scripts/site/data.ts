@@ -31,12 +31,13 @@ export const portfolioSchema = z.strictObject({
   about: z.array(z.union([text, z.strictObject({ strong: text })])),
   headings: z.strictObject({ about: text, experience: text, projects: text, writing: text }),
   experience: z.array(z.strictObject({
-    date: text, title: text, description: text, id: text.regex(/^[a-z][a-z0-9-]*$/).optional(),
+    date: text, title: text, description: text.optional(), id: text.regex(/^[a-z][a-z0-9-]*$/).optional(),
+    highlights: z.array(z.strictObject({ title: text, description: text })).optional(),
     kind: text.optional(), href: href.optional(),
   })),
   projects: z.array(z.strictObject({
     date: text, category: text, title: text, impact: text,
-    points: z.array(z.strictObject({ label: text, text })), links: z.array(link),
+    points: z.array(z.strictObject({ label: text.optional(), text })), links: z.array(link),
   })),
   posts: z.array(z.strictObject({ href, image, category: text, title: text, description: text })),
   more: link,
