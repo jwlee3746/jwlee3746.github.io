@@ -121,23 +121,29 @@ li { orphans: 3; widows: 3; }
     box-shadow: none;
   }
   h1 { font-size: 27pt; }
-  .head { padding: 18px 0 16px; }
+  .head { padding: 14px 0 12px; }
   .summary { margin-top: 16px; font-size: 10.5pt; line-height: 1.65; }
-  h2 { margin: 28px 0 14px; font-size: 12pt; padding-bottom: 7px; }
+  h2 { margin: 20px 0 14px; font-size: 12pt; padding-bottom: 7px; }
   .row { grid-template-columns: 125px 1fr; gap: 22px; }
-  .row + .row { margin-top: 20px; }
+  .row + .row { margin-top: 16px; }
   .what { font-size: 11.5pt; }
   .history-period-title { margin-top: 10px; font-size: 9.5pt; }
   .history-details { margin-top: 5px; font-size: 8.8pt; }
   ul { margin-top: 7px; font-size: 9.5pt; line-height: 1.55; }
-  .project-group { margin-top: 18px; break-inside: auto; page-break-inside: auto; }
+  .project-group { margin-top: 12px; break-inside: auto; page-break-inside: auto; }
   .project-group + .project-group { margin-top: 26px; }
   .group-heading { grid-template-columns: 125px 1fr; gap: 22px; padding-bottom: 9px; }
   .group-title { font-size: 12.5pt; }
   .group-desc { font-size: 8.8pt; }
-  .project { grid-template-columns: 190px 1fr; gap: 24px; padding: 18px 0 21px; }
+  .project { grid-template-columns: 190px 1fr; gap: 24px; padding: 14px 0 18px; }
+  /* 첫 프로젝트는 용지 폭을 활용해 첫 페이지에서 시작하고 문장 단위로 나눈다. */
+  .project:first-of-type { display: block; break-inside: auto; }
+  .project:first-of-type > header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 5px 16px; margin-bottom: 9px; }
+  .project:first-of-type .project-title { flex-basis: 100%; }
+  .project:first-of-type .project-date, .project:first-of-type .project-stack { margin: 0; }
+  .project > header, .project-points > li { break-inside: avoid; }
   .project-title { font-size: 11pt; }
-  .project-impact { font-size: 10.5pt; line-height: 1.5; }
+  .project-impact { font-size: 10.5pt; line-height: 1.5; break-after: avoid; }
   .project-points { margin-top: 9px; }
   .project-points li + li { margin-top: 4px; }
   .project-points ul { margin-top: 3px; }
