@@ -1,6 +1,12 @@
 import type { Group, Project } from '../../../scripts/resume/data.ts';
 import { escapeHtml as e, formatPeriod } from '../../shared/html.ts';
 
+function renderPoint(point: Project['points'][number]): string {
+  const label = point.label ? `<span class="bullet-label">${e(point.label)}</span> — ` : '';
+  const children = point.children ? `<ul>${point.children.map(child => `<li>${e(child)}</li>`).join('')}</ul>` : '';
+  return `          <li>${label}${e(point.text)}${children}</li>`;
+}
+
 function renderProject(project: Project): string {
   const title = project.url
     ? `<a href="${e(project.url)}" target="_blank" rel="noopener">${e(project.title)}</a>`
@@ -14,7 +20,7 @@ function renderProject(project: Project): string {
       <div>
         <p class="project-impact">${e(project.impact)}</p>
         <ul class="project-points">
-${project.points.map(point => `          <li><span class="bullet-label">${e(point.label)}</span> — ${e(point.text)}</li>`).join('\n')}
+${project.points.map(renderPoint).join('\n')}
         </ul>
       </div>
     </article>`;

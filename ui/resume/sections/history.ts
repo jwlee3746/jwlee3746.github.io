@@ -8,7 +8,13 @@ export function renderHistory(title: string, entries: HistoryEntry[]): string {
       <div class="what">${e(entry.title)}</div>${entry.points.length ? `
       <ul>
 ${entry.points.map(point => `        <li>${e(point)}</li>`).join('\n')}
-      </ul>` : ''}
+      </ul>` : ''}${entry.highlights.map(highlight => `
+      <section class="history-period">
+        <h3 class="history-period-title">${e(highlight.title)}</h3>
+        <ul>
+${highlight.points.map(point => `          <li>${e(point)}</li>`).join('\n')}
+        </ul>
+      </section>`).join('')}
     </div>
   </div>`).join('\n');
 }
