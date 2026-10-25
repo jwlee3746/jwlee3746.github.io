@@ -86,7 +86,8 @@ test('year highlights share one employment entry, retain order, and escape text'
   await save(root, 'data/resume/experience.json', [{
     title: '삼성전자 경력', start: '2024-07', end: null, points: ['기존 단순 목록'],
     highlights: [
-      { title: '2026 · 현재 업무', points: ['실행 구조 <script>current</script>'] },
+      { title: '2026 · 현재 업무', points: ['실행 구조 <script>current</script>'],
+        detailsLink: { text: '상세 <script>내용</script>', href: '#core-projects-heading' } },
       { title: '2024–2025 · 이전 업무', points: ['평가·품질 대응'] },
     ],
   }]);
@@ -98,7 +99,35 @@ test('year highlights share one employment entry, retain order, and escape text'
   const period = document.querySelector('.history-period')!;
   assert.equal(period.querySelector('li')!.textContent, '실행 구조 <script>current</script>');
   assert.equal(period.querySelector('script'), null);
+  const link = period.querySelector('.history-details a')!;
+  assert.equal(link.textContent, '상세 <script>내용</script>');
+  assert.equal(link.getAttribute('href'), '#core-projects-heading');
+  assert.ok(document.querySelector(link.getAttribute('href')!));
   assert.ok(document.body.textContent?.includes('기존 단순 목록'));
+  await save(root, 'data/resume/experience.json', [{
+    title: '삼성전자 경력', start: '2024-07', end: null,
+    highlights: [{ title: '잘못된 링크', points: ['내용'],
+      detailsLink: { text: '이동', href: 'javascript:alert(1)' } }],
+  }]);
+  await assert.rejects(loadResume(root), /data\/resume\/experience.json/);
+});
+
+test('project emphasis supports bold spans without interpreting source HTML or links', async t => {
+  const root = await fixture(t);
+  await save(root, 'data/resume/projects/emphasis.json', {
+    ...await project(root), title: '강조 확인', order: 0,
+    points: [{
+      text: '일반 **핵심 <img src=x onerror=alert(1)>** 및 **판단 & 검증**',
+      children: ['하위 **<script>alert(1)</script>**', '그대로 [링크](javascript:alert(1))와 **미완성'],
+    }],
+  });
+  const { document } = parseHTML(await buildResume(root));
+  const points = document.querySelector('.project .project-points')!;
+  assert.deepEqual([...points.querySelectorAll('strong')].map(el => el.textContent), [
+    '핵심 <img src=x onerror=alert(1)>', '판단 & 검증', '<script>alert(1)</script>',
+  ]);
+  assert.equal(points.querySelector('img,script,a'), null);
+  assert.ok(points.textContent?.includes('**미완성'));
 });
 
 test('same-order projects use filenames as a stable tiebreaker', async t => {

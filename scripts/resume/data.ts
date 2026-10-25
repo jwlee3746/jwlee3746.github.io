@@ -18,7 +18,12 @@ export const siteSchema = z.strictObject({
 });
 export const historySchema = z.strictObject({
   title: text, ...period, points: z.array(text).default([]),
-  highlights: z.array(z.strictObject({ title: text, points: z.array(text).min(1) })).default([]),
+  highlights: z.array(z.strictObject({
+    title: text, points: z.array(text).min(1),
+    detailsLink: z.strictObject({
+      text, href: z.string().regex(/^#[a-z][a-z0-9-]*$/),
+    }).optional(),
+  })).default([]),
 }).refine(validPeriod, periodError);
 export const groupSchema = z.strictObject({
   id: z.string().regex(/^[a-z][a-z0-9-]*$/), order: z.number().int().nonnegative(),

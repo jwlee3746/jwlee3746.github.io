@@ -13,7 +13,8 @@ ${entry.points.map(point => `        <li>${e(point)}</li>`).join('\n')}
         <h3 class="history-period-title">${e(highlight.title)}</h3>
         <ul>
 ${highlight.points.map(point => `          <li>${e(point)}</li>`).join('\n')}
-        </ul>
+        </ul>${highlight.detailsLink ? `
+        <p class="history-details"><a href="${e(highlight.detailsLink.href)}">${e(highlight.detailsLink.text)}</a></p>` : ''}
       </section>`).join('')}
     </div>
   </div>`).join('\n');

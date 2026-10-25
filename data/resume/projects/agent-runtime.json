@@ -12,24 +12,24 @@
   "impact": "tool-calling Re-Act 구조 제안·PoC 검증부터 제품 개발용 실행 런타임의 초기 구현·확장까지 담당",
   "points": [
     {
-      "text": "fine-tuned LLM planner가 생성한 계획에 따라 실행하던 흐름을 개선하기 위해, 도구 결과를 보고 다음 행동을 결정하는 tool-calling Re-Act 구조를 제안",
+      "text": "fine-tuned LLM planner가 생성한 계획에 따라 실행하던 흐름을 개선하기 위해, 도구 결과를 보고 다음 행동을 결정하는 **tool-calling Re-Act 구조를 제안**",
       "children": [
-        "tool loop·Skills·HITL을 Bixby와 연동해 검증"
+        "**tool loop·Skills·HITL**을 Bixby와 연동해 검증"
       ]
     },
     {
-      "text": "PoC에서 검증한 구조를 제품 개발 코드로 전환하고, 실행 흐름·도구·미들웨어를 Bixby에 맞게 제어·확장하는 런타임을 개발",
+      "text": "PoC에서 검증한 구조를 **제품 개발 코드로 전환**하고, 실행 흐름·도구·미들웨어를 Bixby에 맞게 제어·확장하는 런타임을 개발",
       "children": [
         "도구 실행 결과에 따른 응답 생성과 실패·예외 처리 경로를 구현"
       ]
     },
     {
-      "text": "Action Chaining의 cross-tool result reference를 설계·반영해 선행 도구의 결과를 후속 도구가 원본 참조로 사용하도록 연결"
+      "text": "Action Chaining의 **cross-tool result reference**를 설계·반영해 선행 도구의 결과를 후속 도구가 원본 참조로 사용하도록 연결"
     },
     {
-      "text": "방대하고 복잡한 Skill 지침을 독립 context에서 처리하도록 subagent 위임 실행 경로를 구현",
+      "text": "방대하고 복잡한 Skill 지침을 독립 context에서 처리하도록 **subagent 위임 실행 경로**를 구현",
       "children": [
-        "Subagent별 reasoning effort override를 지원"
+        "Subagent별 **reasoning effort override**를 지원"
       ]
     }
   ]
