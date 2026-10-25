@@ -12,23 +12,18 @@
   "impact": "system prompt의 판단·실행 지침을 재설계하고, 조립 코드를 정비해 한국어 기본 프롬프트 분량을 축소",
   "points": [
     {
-      "label": "지침 재설계",
-      "text": "요청 해석·도구 호출·결과 처리·응답 생성의 판단 흐름에 맞춰 system prompt를 재구성하고, 공통 판단 절차·도구별 호출 규칙·응답 지침의 중복·충돌을 정리"
+      "text": "요청 해석·도구 호출·결과 처리·응답 생성의 판단 흐름에 맞춰 system prompt를 재구성하고, 공통 판단 절차·도구별 호출 규칙·응답 지침의 중복·충돌을 정리",
+      "children": [
+        "도구 호출 여부·대상 선택·입력 구성·결과 전달 지침을 통합"
+      ]
     },
     {
-      "label": "호출 지침 통합",
-      "text": "도구 호출 여부·대상 선택·입력 구성·결과 전달 지침을 통합"
+      "text": "기존 고정 prefix·가변 context 분리 구조를 유지하며 불필요한 placeholder·조립 helper를 제거",
+      "children": [
+        "가변 context를 구성하는 지침·형식 문구를 코드에서 Markdown 템플릿으로 분리"
+      ]
     },
     {
-      "label": "조립 코드 정비",
-      "text": "기존 고정 prefix·가변 context 분리 구조를 유지하며 불필요한 placeholder·조립 helper를 제거"
-    },
-    {
-      "label": "템플릿 분리",
-      "text": "가변 context를 구성하는 지침·형식 문구를 코드에서 Markdown 템플릿으로 분리"
-    },
-    {
-      "label": "분량 축소",
       "text": "tool schema·대화 이력·턴별 context를 제외한 한국어 기본 system prompt 분량을 축소"
     }
   ]

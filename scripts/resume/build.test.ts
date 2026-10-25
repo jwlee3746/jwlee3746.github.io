@@ -3,6 +3,7 @@ import { cp, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
+import { parseHTML } from 'linkedom';
 import { buildResume, projectRoot } from '../build-resume-html.ts';
 import { loadResume } from './data.ts';
 
@@ -55,6 +56,49 @@ test('history is newest first regardless of file order; ongoing work comes first
   ]);
   await save(root, 'data/resume/education.json', []);
   assert.deepEqual((await loadResume(root)).history.map(entry => entry.title), ['현재 경력', '최근 경력', '과거 경력']);
+});
+
+test('unlabelled nested points escape content and preserve optional legacy labels', async t => {
+  const root = await fixture(t);
+  await save(root, 'data/resume/projects/nested-points.json', {
+    ...await project(root), title: '계층형 프로젝트', order: 0,
+    points: [
+      { text: '핵심 기여 <script>parent</script>', children: ['구현 근거 <script>child</script>'] },
+      { label: '기존 <label>', text: '선택적 라벨 지원' },
+    ],
+  });
+  const html = await buildResume(root);
+  const { document } = parseHTML(html);
+  const first = document.querySelector('.project')!;
+  const parent = first.querySelector('.project-points > li')!;
+  assert.equal(parent.querySelector('.bullet-label'), null);
+  assert.equal(parent.querySelector('ul > li')!.textContent, '구현 근거 <script>child</script>');
+  assert.equal(first.querySelector('.bullet-label')!.textContent, '기존 <label>');
+  assert.equal(first.querySelector('script'), null);
+  await save(root, 'data/resume/projects/nested-points.json', {
+    ...await project(root), points: [{ text: '부모', children: [42] }],
+  });
+  await assert.rejects(loadResume(root), /data\/resume\/projects\/nested-points.json/);
+});
+
+test('year highlights share one employment entry, retain order, and escape text', async t => {
+  const root = await fixture(t);
+  await save(root, 'data/resume/experience.json', [{
+    title: '삼성전자 경력', start: '2024-07', end: null, points: ['기존 단순 목록'],
+    highlights: [
+      { title: '2026 · 현재 업무', points: ['실행 구조 <script>current</script>'] },
+      { title: '2024–2025 · 이전 업무', points: ['평가·품질 대응'] },
+    ],
+  }]);
+  const { document } = parseHTML(await buildResume(root));
+  assert.deepEqual([...document.querySelectorAll('.history-period-title')].map(el => el.textContent), [
+    '2026 · 현재 업무', '2024–2025 · 이전 업무',
+  ]);
+  assert.equal([...document.querySelectorAll('.what')].filter(el => el.textContent === '삼성전자 경력').length, 1);
+  const period = document.querySelector('.history-period')!;
+  assert.equal(period.querySelector('li')!.textContent, '실행 구조 <script>current</script>');
+  assert.equal(period.querySelector('script'), null);
+  assert.ok(document.body.textContent?.includes('기존 단순 목록'));
 });
 
 test('same-order projects use filenames as a stable tiebreaker', async t => {

@@ -18,6 +18,7 @@ export const siteSchema = z.strictObject({
 });
 export const historySchema = z.strictObject({
   title: text, ...period, points: z.array(text).default([]),
+  highlights: z.array(z.strictObject({ title: text, points: z.array(text).min(1) })).default([]),
 }).refine(validPeriod, periodError);
 export const groupSchema = z.strictObject({
   id: z.string().regex(/^[a-z][a-z0-9-]*$/), order: z.number().int().nonnegative(),
@@ -29,7 +30,9 @@ export const sectionsSchema = z.strictObject({
 export const projectSchema = z.strictObject({
   group: text, order: z.number().int().nonnegative(), title: text,
   url: url.optional(), ...period, stack: z.array(text).min(1), impact: text,
-  points: z.array(z.strictObject({ label: text, text })).min(1),
+  points: z.array(z.strictObject({
+    label: text.optional(), text, children: z.array(text).min(1).optional(),
+  })).min(1),
   visible: z.boolean().default(true),
 }).refine(validPeriod, periodError);
 

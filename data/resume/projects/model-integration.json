@@ -13,24 +13,22 @@
   "impact": "모델 연동·provider 분리·DI 정책과 sampling 설정을 담당하고, 전체 변경의 KV 캐시 적중률 개선에 기여",
   "points": [
     {
-      "label": "모델 연동",
       "text": "LLM을 기존 에이전트의 모델 호출 구조에 연동"
     },
     {
-      "label": "호출 분리",
-      "text": "모델 호출 간 KV 캐시 간섭을 줄이기 위해 provider 구성을 분리"
+      "text": "모델 호출 간 KV 캐시 간섭을 줄이기 위해 provider 구성을 분리",
+      "children": [
+        "DI 바인딩으로 신규 모델에도 provider 분리 정책이 적용되도록 강제"
+      ]
     },
     {
-      "label": "정책 강제",
-      "text": "DI 바인딩으로 신규 모델에도 provider 분리 정책이 적용되도록 강제"
+      "text": "동일 입력의 도구 선택 변동을 줄이고 평가 재현성을 높이기 위해 sampling 설정을 명시",
+      "children": [
+        "temperature·seed 설정이 실제 모델 호출에 전달되도록 보정"
+      ]
     },
     {
-      "label": "Sampling",
-      "text": "동일 입력의 도구 선택 변동을 줄이고 평가 재현성을 높이기 위해 temperature·seed를 명시하고 실제 모델 호출에 전달되도록 보정"
-    },
-    {
-      "label": "결과 범위",
-      "text": "KV 캐시 적중률 개선은 provider 분리·프롬프트 경계 개선 등을 포함한 전체 변경의 적용 결과"
+      "text": "provider 분리·프롬프트 경계 개선 등을 포함한 전체 변경 후 KV 캐시 적중률 개선에 기여"
     }
   ]
 }
