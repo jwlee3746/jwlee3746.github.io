@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="622" viewBox="0 0 800 622" data-article-diagram="true" class="article-diagram-art" role="img" aria-labelledby="title desc">
+<title id="title">모델과 실행 하네스를 함께 평가하는 구조</title><desc id="desc">평가 하네스가 조건을 준비하고 모델과 실행 하네스로 구성된 에이전트를 실행한다. 에이전트는 도구 환경과 상호작용한다. 실행 과정과 환경 상태를 함께 수집해 목표와 제약을 채점한다.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10" fill="#93b3d8"/></marker></defs>
+<style>.article-diagram-art text{font-family:var(--font-body);font-size:1rem;fill:#e1e6ef}.article-diagram-art .heading{font-size:1.125rem;font-weight:var(--weight-semibold,600)}.article-diagram-art .label{font-weight:var(--weight-semibold,600)}.article-diagram-art .note{font-size:.875rem;fill:#b9c8db}</style>
+<rect width="800" height="622" rx="12" fill="#181c24"/>
+<text x="24" y="32" class="heading" text-anchor="start"><tspan x="24" dy="0">평가 대상은 모델과 실행 하네스의 조합</tspan></text>
+<rect x="20" y="55" width="760" height="62" rx="10" fill="#232b39" stroke="#506581"/><text x="34" y="82" class="label" text-anchor="start"><tspan x="34" dy="0">평가 하네스 · 조건 준비 / 실행 요청 / 증거 수집 / 채점</tspan></text>
+<path d="M260 117 V143" fill="none" stroke="#93b3d8" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M670 117 V175" fill="none" stroke="#93b3d8" stroke-width="1.5" stroke-dasharray="5 5" marker-end="url(#arrow)"/>
+<text x="682" y="154" class="note" text-anchor="start"><tspan x="682" dy="0">초기화</tspan></text>
+<rect x="20" y="148" width="474" height="210" rx="10" fill="#1b2330" stroke="#64c5b8" stroke-dasharray="5 5"/>
+<text x="36" y="176" class="label" text-anchor="start"><tspan x="36" dy="0">평가받는 에이전트</tspan></text>
+<rect x="36" y="197" width="164" height="112" rx="10" fill="#232b39" stroke="#506581"/><text x="50" y="224" class="label" text-anchor="start"><tspan x="50" dy="0">모델</tspan></text><text x="50" y="250" class="note" text-anchor="start"><tspan x="50" dy="0">문맥을 받아</tspan><tspan x="50" dy="23">행동·답변 생성</tspan></text>
+<rect x="270" y="197" width="208" height="112" rx="10" fill="#232b39" stroke="#506581"/><text x="284" y="224" class="label" text-anchor="start"><tspan x="284" dy="0">실행 하네스</tspan></text><text x="284" y="250" class="note" text-anchor="start"><tspan x="284" dy="0">입력 / 도구 연결</tspan><tspan x="284" dy="23">결과 전달 / 상태 유지</tspan></text>
+<path d="M270 232 H200" fill="none" stroke="#93b3d8" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="235" y="222" class="note" text-anchor="middle"><tspan x="235" dy="0">입력</tspan></text>
+<path d="M200 281 H270" fill="none" stroke="#93b3d8" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="235" y="303" class="note" text-anchor="middle"><tspan x="235" dy="0">판단</tspan></text>
+<rect x="564" y="181" width="216" height="160" rx="10" fill="#232b39" stroke="#506581"/><text x="578" y="208" class="label" text-anchor="start"><tspan x="578" dy="0">도구 · 환경</tspan></text><text x="578" y="234" class="note" text-anchor="start"><tspan x="578" dy="0">호출 처리</tspan><tspan x="578" dy="23">상태 변경</tspan><tspan x="578" dy="23">성공·오류 결과 반환</tspan></text>
+<path d="M478 236 H564" fill="none" stroke="#93b3d8" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="521" y="223" class="note" text-anchor="middle"><tspan x="521" dy="0">호출</tspan></text>
+<path d="M564 285 H478" fill="none" stroke="#93b3d8" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="521" y="308" class="note" text-anchor="middle"><tspan x="521" dy="0">결과</tspan></text>
+<path d="M370 358 V402" fill="none" stroke="#93b3d8" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M672 341 V402" fill="none" stroke="#93b3d8" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="20" y="408" width="474" height="76" rx="10" fill="#232b39" stroke="#506581"/><text x="34" y="435" class="label" text-anchor="start"><tspan x="34" dy="0">실행 과정</tspan></text><text x="34" y="461" class="note" text-anchor="start"><tspan x="34" dy="0">입력 / 모델 출력 / 호출과 결과 / 종료 이유</tspan></text>
+<rect x="564" y="408" width="216" height="76" rx="10" fill="#232b39" stroke="#506581"/><text x="578" y="435" class="label" text-anchor="start"><tspan x="578" dy="0">환경 상태</tspan></text><text x="578" y="461" class="note" text-anchor="start"><tspan x="578" dy="0">초기 상태와 최종 상태</tspan></text>
+<path d="M257 484 V506 H320 V530" fill="none" stroke="#93b3d8" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M672 484 V506 H500 V530" fill="none" stroke="#93b3d8" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="20" y="536" width="760" height="64" rx="10" fill="#183c3b" stroke="#64c5b8"/><text x="34" y="563" class="label" text-anchor="start"><tspan x="34" dy="0">채점 · 목표 달성 / 필수 조건 / 자원 사용</tspan></text>
+</svg>
